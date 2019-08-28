@@ -2,8 +2,9 @@ import csv
 import enum
 import yaml
 
+# TODO - Convert to SQLite?
 
-class Boat:
+class BoatType:
     table_file_name = 'portsmouth_table_2017.csv'
 
     class BoatClass(enum.Enum):
@@ -51,25 +52,25 @@ class Boat:
                 return float(''.join(s_list))
 
         if row['class'].lower() == 'centerboard':
-            boat_class = Boat.BoatClass.CENTERBOARD
+            boat_class = BoatType.BoatClass.CENTERBOARD
         elif row['class'].lower() == 'keelboat':
-            boat_class = Boat.BoatClass.KEELBOAT
+            boat_class = BoatType.BoatClass.KEELBOAT
         else:
             print('Unknown boat class {:s}'.format(row['class']))
-            boat_class = Boat.BoatClass.UNKNOWN
+            boat_class = BoatType.BoatClass.UNKNOWN
 
         dpn_vals = [dpn_to_float(row['dpn'])]
         dpn_vals += [dpn_to_float(row['dpn{:d}'.format(i + 1)]) for i in range(4)]
 
-        return Boat(
+        return BoatType(
             name=row['boat'],
             boat_class=boat_class,
             code=row['code'].lower(),
             dpn_vals=dpn_vals)
 
     @staticmethod
-    def default():
-        return Boat.from_csv_file(Boat.table_file_name)
+    def default_db():
+        return BoatType.from_csv_file(BoatType.table_file_name)
 
     @staticmethod
     def from_csv_file(table_file_name):
@@ -93,37 +94,25 @@ class Boat:
                 else:
                     row_dict = {header_cols[i]: row[i] for i in range(len(header_cols))}
 
-                    b = Boat.from_row(row_dict)
+                    b = BoatType.from_row(row_dict)
 
                     if b.dpn_vals[0] is None:
                         print('Skipping {:s} due to no provided DPN values'.format(b.name))
                         continue
 
                     if b.code in boats:
-                        raise ValueError('Boat {:s} already in dictionary'.format(b.code))
+                        raise ValueError('BoatType {:s} already in dictionary'.format(b.code))
 
                     boats[b.code] = b
 
         return boats
-
-
-class Series:
-    def __init__(self):
-        pass
-
-class Race:
-    def __init__(self):
-        pass
-
-class Skipper:
-    def __init__(self):
-        pass
 
 #Ian_O     SF   39:58   2398 / 1.004 = 2388   39:48   5
 
 time = 39*60 + 58
 time = 64*60 + 26
 
+boats = BoatType.default_db()
 time_c = time * 100 / boats['sf'].dpn_for_beaufort(2)
 s_val = time_c % 60
 time_c = int((time_c - s_val) / 60)
