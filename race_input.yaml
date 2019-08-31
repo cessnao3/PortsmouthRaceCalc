@@ -1,4 +1,4 @@
-racers:
+skippers:
   Ian_O:
     default_boat: SF
     first: Ian
@@ -19,9 +19,12 @@ racers:
     default_boat: LASEM
   David_Bu:
     default_boat: SF
+fleets:
+  handicap_2019:
+    portsmouth_table: portsmouth_table_2017.csv
 series:
   2019 Series 1:
-    fleet: hanidcap
+    fleet: handicap_2019
     qualify_count: 2
     races:
       - notes: I2
