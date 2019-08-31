@@ -8,6 +8,12 @@ import enum
 # TODO - Convert to SQLite?
 
 
+class Fleet:
+    def __init__(self, name, boat_types):
+        self.name = name
+        self.boat_types = boat_types
+
+
 class BoatType:
     """
     A class to contain the necessary information to construct a boat type for
@@ -104,6 +110,7 @@ class BoatType:
 
             # Define an empty parameter for the header columns
             header_cols = None
+            expected_header_cols = ['boat', 'class', 'code', 'dpn', 'dpn1', 'dpn2', 'dpn3', 'dpn4']
 
             # Iterate over each row
             for row in reader:
@@ -113,7 +120,19 @@ class BoatType:
                 # If the header columns are None (first row), set the header columns to the string values
                 # and continue so as to not extract a boat from these
                 if header_cols is None:
-                    header_cols = [v.lower() for v in row]
+                    header_cols = [v.lower().strip() for v in row]
+                    if len(header_cols) != len(expected_header_cols):
+                        raise ValueError(
+                            'Header columns {:d} don\'t match the expected number {:d}'.format(
+                                len(header_cols),
+                                len(expected_header_cols)))
+                    for i in range(len(expected_header_cols)):
+                        if header_cols[i] != expected_header_cols[i]:
+                            raise ValueError(
+                                'Header column {:d} has {:s}, expected {:s}'.format(
+                                    i,
+                                    header_cols[i],
+                                    expected_header_cols[i]))
                     continue
 
                 # Otherwise, print error if the row lengths don't match up with the header
