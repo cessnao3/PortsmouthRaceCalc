@@ -1,0 +1,5 @@
+2019 Series 3:
+  fleet: handicap_2019
+  qualify_count: 2
+  racefile: 2019_s3.yaml
+  boat_overrides: ~

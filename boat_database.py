@@ -2,13 +2,15 @@
 Database and type to hold information regarding the boat parameters and handicap values
 """
 
-import csv
 import enum
-
-# TODO - Convert to SQLite?
+import race_utils
 
 
 class Fleet:
+    """
+    A class to contain the boats specified for a given fleet, allowing for different generations
+    of handicap parameters
+    """
     def __init__(self, name, boat_types):
         self.name = name
         self.boat_types = boat_types
@@ -78,15 +80,16 @@ class BoatType:
         return self.dpn_vals[dpn_ind]
 
     @staticmethod
-    def from_csv_file(table_file_name):
+    def load_from_csv(csv_table):
         """
-        Reads the Portsmouth precalculated table from an input CSV file
-        :param table_file_name: The filename to read
-        :type table_file_name: str
+        Reads the Portsmouth precalculated table from an input CSV file contents
+        :param csv_table: The filename to read
+        :type csv_table: str
         :return: A dictionary of boats, keyed by the type code
         """
         # Initialize the empty dictionary
         boats = dict()
+        expected_header = ['boat', 'class', 'code', 'dpn', 'dpn1', 'dpn2', 'dpn3', 'dpn4']
 
         # Create a function to extract the parameters
         def dpn_to_float(s):
@@ -103,68 +106,29 @@ class BoatType:
             else:
                 return float(s)
 
-        # Open the filename for reading
-        with open(table_file_name, 'r') as f:
-            # Define the CSV reader
-            reader = csv.reader(f)
+        def boat_row_func(row_dict):
+            # Extract the boat class from the input parameters
+            if row_dict['class'].lower() == 'centerboard':
+                boat_class = BoatType.BoatClass.CENTERBOARD
+            elif row_dict['class'].lower() == 'keelboat':
+                boat_class = BoatType.BoatClass.KEELBOAT
+            else:
+                print('Unknown boat class {:s}'.format(row_dict['class']))
+                boat_class = BoatType.BoatClass.UNKNOWN
 
-            # Define an empty parameter for the header columns
-            header_cols = None
-            expected_header_cols = ['boat', 'class', 'code', 'dpn', 'dpn1', 'dpn2', 'dpn3', 'dpn4']
+            # Extract the DPN values, both the initial and Beaufort values
+            dpn_values = [dpn_to_float(row_dict['dpn'])]
+            dpn_values += [dpn_to_float(row_dict['dpn{:d}'.format(i + 1)]) for i in range(4)]
 
-            # Iterate over each row
-            for row in reader:
-                # Extract the string values for each row
-                row = [v.strip() for v in row]
+            # Extract the name and code
+            boat_name = row_dict['boat']
+            boat_code = row_dict['code'].lower()
 
-                # If the header columns are None (first row), set the header columns to the string values
-                # and continue so as to not extract a boat from these
-                if header_cols is None:
-                    header_cols = [v.lower().strip() for v in row]
-                    if len(header_cols) != len(expected_header_cols):
-                        raise ValueError(
-                            'Header columns {:d} don\'t match the expected number {:d}'.format(
-                                len(header_cols),
-                                len(expected_header_cols)))
-                    for i in range(len(expected_header_cols)):
-                        if header_cols[i] != expected_header_cols[i]:
-                            raise ValueError(
-                                'Header column {:d} has {:s}, expected {:s}'.format(
-                                    i,
-                                    header_cols[i],
-                                    expected_header_cols[i]))
-                    continue
-
-                # Otherwise, print error if the row lengths don't match up with the header
-                if len(row) != len(header_cols):
-                    print('ERROR! {:s}'.format(', '.join(row)))
-                    continue
-
-                # Create a dictionary for the row based on the header columns and current vlaues
-                row_dict = {header_cols[i]: row[i] for i in range(len(header_cols))}
-
-                # Extract the boat class from the input parameters
-                if row_dict['class'].lower() == 'centerboard':
-                    boat_class = BoatType.BoatClass.CENTERBOARD
-                elif row_dict['class'].lower() == 'keelboat':
-                    boat_class = BoatType.BoatClass.KEELBOAT
-                else:
-                    print('Unknown boat class {:s}'.format(row_dict['class']))
-                    boat_class = BoatType.BoatClass.UNKNOWN
-
-                # Extract the DPN values, both the initial and Beaufort values
-                dpn_vals = [dpn_to_float(row_dict['dpn'])]
-                dpn_vals += [dpn_to_float(row_dict['dpn{:d}'.format(i + 1)]) for i in range(4)]
-
-                # Extract the name and code
-                boat_name = row_dict['boat']
-                boat_code = row_dict['code'].lower()
-
-                # Check that the primary DPN value is not null
-                if dpn_vals[0] is None:
-                    print('Skipping {:s} due to no provided DPN values'.format(boat_code))
-                    continue
-
+            # Check that the primary DPN value is not null
+            if dpn_values[0] is None:
+                print('Skipping {:s} due to no provided DPN values'.format(boat_code))
+            # Otherwise, there is a valid boat definition
+            else:
                 # Check that the boat code doesn't already exist in the dictionary
                 if boat_code in boats:
                     raise ValueError('BoatType {:s} already in dictionary'.format(boat_code))
@@ -174,5 +138,12 @@ class BoatType:
                     name=boat_name,
                     boat_class=boat_class,
                     code=boat_code,
-                    dpn_vals=dpn_vals)
+                    dpn_vals=dpn_values)
+
+        # Call the CSV load function
+        race_utils.load_from_csv(
+            csv_data=csv_table,
+            row_func=boat_row_func,
+            expected_header=expected_header)
+
         return boats

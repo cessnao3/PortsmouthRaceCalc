@@ -1,23 +1,28 @@
+"""
+Parses input files into Python object to parse race information
+"""
+
 import boat_database as bdb
 import skipper_database as sdb
 
 import yaml
 
-with open('race_input.yaml', 'r') as f:
-    data = yaml.safe_load(f)
+with open('series.yaml', 'r') as f:
+    series_data = yaml.safe_load(f)
+
+with open('fleets.yaml', 'r') as f:
+    fleet_data = yaml.safe_load(f)
 
 fleets = dict()
 
-for f in data['fleets']:
-    fleet_dict = data['fleets'][f]
-    fleets[f] = bdb.Fleet(name=f, boat_types=bdb.BoatType.from_csv_file(fleet_dict['portsmouth_table']))
+for f in fleet_data:
+    fleet_dict = fleet_data[f]
 
-skippers = dict()
+    with open(fleet_dict['portsmouth_table'], 'r') as f_handle:
+        boat_table = f_handle.read()
+    fleets[f] = bdb.Fleet(name=f, boat_types=bdb.BoatType.load_from_csv(boat_table))
 
-for s in data['skippers']:
-    skip_dict = data['skippers'][s]
-    skippers[s] = sdb.Skipper(name_code=s, **skip_dict)
+with open('skippers.csv', 'r') as f:
+    skippers = sdb.Skipper.load_from_csv(f.read())
 
 series = dict()
-
-print(data)
