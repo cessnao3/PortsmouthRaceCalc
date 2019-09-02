@@ -5,16 +5,6 @@ Common utilities useful for loading race parameters and performing calculations
 import csv
 
 
-def data_file(file_name):
-    """
-    Provides a modified filename to read from the input file directory
-    :param file_name: filename to add to the path
-    :return: modified filename to load from appropriate input file directory
-    """
-    data_directory = 'input'
-    return '{:s}/{:s}'.format(data_directory, file_name)
-
-
 def load_from_csv(csv_data, row_func, expected_header=None):
     """
     Reads the input CSV files, checking the headers if applicable. Each of the rows are parsed into a dictionary

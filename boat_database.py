@@ -15,6 +15,9 @@ class Fleet:
         self.name = name
         self.boat_types = boat_types
 
+    def get_boat(self, type_id):
+        return self.boat_types[type_id.lower()]
+
 
 class BoatType:
     """

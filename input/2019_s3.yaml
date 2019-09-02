@@ -1,56 +1,46 @@
-2019 Series 3:
-  fleet: handicap_2019
-  qualify_count: 2
+- date: '2019_08_11'
+  rc:
+    - Rod_H
+    - John_T
   races:
-    - notes: I2
+    - notes: I2 Port
       wind_bf: 2
-      date: 2019_08_11
-      rc:
-        - Rod_H
-        - John_T
       times:
         Mike_F: 33:39
         Nedra_F: 34:17
         Bill_P: 34:42
         Mike_S: 34:27
         Ian_O: 39:58
-    - notes: I2
+    - notes: I2 Port
       wind_bf: 2
-      date: 2019_08_11
-      rc:
-        - Rod_H
-        - John_T
       times:
         Mike_F: 27:17
         Nedra_F: 29:31
         Bill_P: 30:03
         Mike_S: 26:38
         Ian_O: 32:38
-    - notes: M2 Starboard
-      wind_bf: 2
-      date: 2019_08_18
-      rc:
-        - Bill_P
-        - Mike_S
-      times:
-        Ron_F: 36:14
-        Mike_F: 40:11
-        Rod_H: 40:21
-        John_T: 41:16
-        David_Bu: 41:25
-        Nedra_F: 41:38
-        Ian_O: 49:03
-    - notes: I2 Port
-      wind_bf: 2
-      date: 2019_08_18
-      rc:
-        - Bill_P
-        - Mike_S
-      times:
-        Ron_F: 47:21
-        Mike_F: 44:43
-        Rod_H: 57:51
-        John_T: 52:15
-        David_Bu: 52:50
-        Nedra_F: 51:46
-        Ian_O: 64:26
+- date: '2019_08_18'
+  rc:
+    - Bill_P
+    - Mike_S
+  races:
+  - notes: M2 Starboard
+    wind_bf: 2
+    times:
+      Ron_F: 36:14
+      Mike_F: 40:11
+      Rod_H: 40:21
+      John_T: 41:16
+      David_Bu: 41:25
+      Nedra_F: 41:38
+      Ian_O: 49:03
+  - notes: I2 Port
+    wind_bf: 2
+    times:
+      Ron_F: 47:21
+      Mike_F: 44:43
+      Rod_H: 57:51
+      John_T: 52:15
+      David_Bu: 52:50
+      Nedra_F: 51:46
+      Ian_O: 64:26
