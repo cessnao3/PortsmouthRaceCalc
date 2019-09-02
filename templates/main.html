@@ -1,0 +1,15 @@
+<html>
+    <head>
+        <title>PRC - Index</title>
+    </head>
+    <body>
+        <h1>Portsmouth Race Calculator</h1>
+
+        <h2>Race Series</h2>
+         <ul>
+            {% for series_name in series.keys() %}
+            <li><a href="{{ url_for('series_page', series_name=series_name) }}">{{ series_name }}</a></li>
+            {% endfor %}
+        </ul>
+    </body>
+</html>

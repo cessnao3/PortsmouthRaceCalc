@@ -1,0 +1,47 @@
+<html>
+    <head>
+        <title>PRC - {{ series.name }}</title>
+    </head>
+    <body>
+        <h1>Portsmouth Race Calculator</h1>
+
+        <a href="{{url_for('main_page')}}">Return</a>
+
+        <h2>Overall Results</h2>
+
+        <h2>Races</h2>
+
+        {% for race in series.races %}
+
+        <h3>Race Value</h3>
+
+        <table border = 1>
+            <tr>
+                <th>Rank</th>
+                <th>Name</th>
+                <th>Boat</th>
+                <th>Actual Time [mm:ss]</th>
+                <th>Actual Time [s]</th>
+                <th>Handicap</th>
+                <th>Corrected Time [s]</th>
+                <th>Corrected Time [mm:ss]</th>
+            </tr>
+            {% for race_result in race.finished_race_times_sorted() %}
+
+            {% set score = race_result[0] %}
+            {% set race_time = race_result[1] %}
+            <tr>
+                <td> {{ score }} </td>
+                <td> {{ race_time.skipper.identifier }} </td>
+                <td> {{ race_time.boat.code }} </td>
+                <td> {{ race_time.format_time(race_time.time_s) }} </td>
+                <td> {{ race_time.time_s }} </td>
+                <td> {{ '%0.5f' | format(race_time.boat.dpn_for_beaufort(race.wind_bf) / 100.0) }} </td>
+                <td> {{ race_time.corrected_time_s }} </td>
+                <td> {{ race_time.format_time(race_time.corrected_time_s) }} </td>
+            </tr>
+            {% endfor %}
+        </table>
+        {% endfor %}
+    </body>
+</html>

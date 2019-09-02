@@ -167,24 +167,19 @@ class Race:
         str_list.append('       Name   Boat   mm:ss   sec  /   hc  =c_sec   mm:ss  Rank')
         str_list.append('-----------   ----   -----   -------------------   -----  ----')
 
-        # Obtain the race results
-        scores = self.race_results()
-
-        # Obtain the list of skippers who finished the race and sort by the resulting scores obtained above
-        race_time_list = self.finished_race_times()
-        race_time_list.sort(key=lambda x: scores[x.skipper.identifier])
-
         # Iterate over each of the race time in the sorted list and add the column value
-        for race_time in race_time_list:
+        for race_result in self.finished_race_times_sorted():
+            score = race_result[0]
+            race_time = race_result[1]
             str_list.append('{:>11s} {:>6s}   {:5s}   {:4d} / {:0.03f} = {:4d}   {:5s}  {:.2f}'.format(
                 race_time.skipper.identifier,
                 race_time.boat.code,
                 race_time.format_time(race_time.time_s),
-                int(race_time.time_s),
+                round(race_time.time_s),
                 race_time.boat.dpn_for_beaufort(self.wind_bf) / 100.0,
                 race_time.corrected_time_s,
                 race_time.format_time(race_time.corrected_time_s),
-                scores[race_time.skipper.identifier]))
+                score))
 
         # Print a warning if there are skippers with other parameters (DQ / DNF / etc.)
         if len([r for r in self.race_times.values() if r.has_other_result()]) > 0:
@@ -208,6 +203,25 @@ class Race:
         :rtype: list of RaceTime
         """
         return [r for r in self.race_times.values() if r.finished()]
+
+    def finished_race_times_sorted(self):
+        """
+        Provides a sorted list of the finished race times by score
+        :return: a list of tuples containing the score and the race time object
+        :rtype: list of (float, RaceTime)
+        """
+        # Obtain the race results
+        scores = self.race_results()
+
+        # Obtain the list of skippers who finished the race and sort by the resulting scores obtained above
+        race_time_list = self.finished_race_times()
+
+        # Create the resulting dictionary
+        race_result_list = [(scores[rt.skipper.identifier], rt) for rt in race_time_list]
+        race_result_list.sort(key=lambda x: x[0])
+
+        # Return the results
+        return race_result_list
 
 
 class RaceTime:
