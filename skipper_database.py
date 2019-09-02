@@ -23,6 +23,15 @@ class Skipper:
         self.last = last
         self.default_boat_code = default_boat
 
+    def __eq__(self, other):
+        """
+        Returns true if this and the other skipper share the same unique identifier
+        :param other: the other Skipper object to compare against
+        :type other: Skipper
+        :return: True if the identifiers are equal in lower-case
+        """
+        return self.identifier.lower() == other.identifier.lower()
+
     @staticmethod
     def load_from_csv(csv_table):
         """
