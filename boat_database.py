@@ -12,11 +12,47 @@ class Fleet:
     of handicap parameters
     """
     def __init__(self, name, boat_types):
+        """
+        Initializes the fleet with the input parameters
+        :param name: The name of the fleet
+        :type name: str
+        :param boat_types: List of the boat types within the fleet
+        :type boat_types: {str: BoatType}
+        """
         self.name = name
         self.boat_types = boat_types
 
-    def get_boat(self, type_id):
-        return self.boat_types[type_id.lower()]
+    def get_boat(self, boat_code):
+        """
+        Attempts to find the boat associated with the given boat code. Returns None if no boat exists
+        :param boat_code: The input string to check for a boat type. This will be lower-cased
+        :type boat_code: str
+        :return: the boat, if provided. Otherwise, None
+        :rtype: BoatType or None
+        """
+        if boat_code.lower() in self.boat_types:
+            return self.boat_types[boat_code.lower()]
+        else:
+            return None
+
+    def dpn_len(self):
+        """
+        Provides the maximum number of DPN values for each boat
+        :return: the maximum number of DPN values
+        :rtype: int
+        """
+        max_len = 0
+        for b in self.boat_types.values():
+            max_len = max(max_len, len(b.dpn_vals))
+        return max_len
+
+    def fancy_name(self):
+        """
+        Provides the fancy name, removing underscores for spaces and capitalizing
+        :return: fancy name string
+        :rtype: str
+        """
+        return race_utils.capitalize_words(self.name.replace('_', ' '))
 
 
 class BoatType:

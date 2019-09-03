@@ -7,8 +7,15 @@
 
         <h2>Race Series</h2>
          <ul>
-            {% for series_name in series.keys() %}
-            <li><a href="{{ url_for('series_page', series_name=series_name) }}">{{ series_name }}</a></li>
+            {% for series in series.values() %}
+            <li><a href="{{ url_for('series_page', series_name=series.name) }}">{{ series.fancy_name() }}</a></li>
+            {% endfor %}
+        </ul>
+
+        <h2>Fleets</h2>
+        <ul>
+            {% for fleet in fleets.values() %}
+            <li><a href="{{ url_for('fleet_page', fleet_name=fleet.name) }}">{{ fleet.fancy_name() }}</a></li>
             {% endfor %}
         </ul>
     </body>

@@ -4,6 +4,7 @@ Provides a database for use in calculating the corrected times for race paramete
 
 from boat_database import Fleet
 from skipper_database import Skipper
+from race_utils import capitalize_words
 import enum
 
 
@@ -57,6 +58,14 @@ class Series:
 
         # Return the skipper list
         return skippers
+
+    def fancy_name(self):
+        """
+        Provides the fancy name, removing underscores for spaces and capitalizing
+        :return: fancy name string
+        :rtype: str
+        """
+        return capitalize_words(self.name.replace('_', ' '))
 
 
 class Race:

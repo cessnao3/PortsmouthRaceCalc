@@ -58,3 +58,14 @@ def load_from_csv(csv_data, row_func, expected_header=None):
 
             # call the function
             row_func(row_dict)
+
+
+def capitalize_words(str_in):
+    """
+    Capitalizes each word in a string
+    :param str_in: input string to capitalize
+    :type str_in: str
+    :return: output string with words capitalized
+    :rtype: str
+    """
+    return ' '.join([s.capitalize() for s in str_in.split(' ')])

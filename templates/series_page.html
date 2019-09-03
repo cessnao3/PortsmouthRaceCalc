@@ -1,11 +1,10 @@
 <html>
     <head>
-        <title>PRC - {{ series.name }}</title>
+        <title>PRC - {{ series.fancy_name() }}</title>
     </head>
     <body>
-        <h1>Portsmouth Race Calculator</h1>
-
-        <a href="{{url_for('main_page')}}">Return</a>
+        <h1>Series - {{series.fancy_name()}}</h1>
+        <a href="{{url_for('main_page')}}">Home</a>
 
         <h2>Overall Results</h2>
 
@@ -31,13 +30,17 @@
             {% set score = race_result[0] %}
             {% set race_time = race_result[1] %}
             <tr>
-                <td> {{ score }} </td>
+                {% if (score | round) == (score | int) %}
+                <td> {{ score | int }} </td>
+                {% else %}
+                <td> {{ '%.1f' | format(score) }} </td>
+                {% endif %}
                 <td> {{ race_time.skipper.identifier }} </td>
-                <td> {{ race_time.boat.code }} </td>
+                <td> <a href="{{ url_for('boat_page', fleet_name=series.fleet.name, boat_code=race_time.boat.code) }}">{{ race_time.boat.code }}</a> </td>
                 <td> {{ race_time.format_time(race_time.time_s) }} </td>
-                <td> {{ race_time.time_s }} </td>
+                <td> {{ race_time.time_s | round }} </td>
                 <td> {{ '%0.5f' | format(race_time.boat.dpn_for_beaufort(race.wind_bf) / 100.0) }} </td>
-                <td> {{ race_time.corrected_time_s }} </td>
+                <td> {{ race_time.corrected_time_s | round }} </td>
                 <td> {{ race_time.format_time(race_time.corrected_time_s) }} </td>
             </tr>
             {% endfor %}
