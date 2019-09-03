@@ -97,7 +97,8 @@ class Race:
             self.add_skipper_time(RaceTime(
                 race=self,
                 skipper=rc_skipper,
-                time_s=RaceTime.RaceFinishOther.RC))
+                time_s=0,
+                other_finish=RaceTime.RaceFinishOther.RC))
 
     def add_skipper_time(self, race_time):
         """
@@ -260,26 +261,26 @@ class RaceTime:
         DNF = 1
         DQ = 2
 
-    def __init__(self, race, skipper, time_s=None, rc=False, other=None):
+    def __init__(self, race, skipper, time_s, other_finish=None):
         """
         Initializes the race time object with the input parameters
-        :param race: The race to associate the time with
+        :param race: race to associate the time with
         :type race: Race
-        :param skipper: The skipper to associate the result with
+        :param skipper: skipper to associate the result with
         :type skipper: Skipper
-        :param time_s: The raw time, in seconds, of the result, or one of the other RaceFinishOther types
-        :type time_s: int or RaceFinishOther
+        :param time_s: raw time, in seconds, of the result, or one of the other RaceFinishOther types
+        :type time_s: int
+        :param other_finish: parameter to define a different type of race finish other than a time
+        :type other_finish: None or RaceFinishOther
         """
         # Initialize the race parameters
         self.race = race
         self.skipper = skipper
-
-        # Check the input for time_s
-        if type(time_s) is not int and type(time_s) is not self.RaceFinishOther:
-            raise TypeError('Race Time must be an int or a race finish value')
-
-        # Add the parameters
+        self.other_finish = other_finish
         self.time_s = time_s
+
+        if self.other_finish is not None:
+            self.time_s = 0
 
         # Extract the boat ID, from the override (if available), or the default in the skipper database
         boat_id = self.skipper.default_boat_code
@@ -295,7 +296,7 @@ class RaceTime:
         :return: True if the time_s is not one of the RaceFinishOther types
         :rtype: bool
         """
-        return type(self.time_s) is not self.RaceFinishOther
+        return self.other_finish is None
 
     def has_other_result(self):
         """
@@ -303,7 +304,7 @@ class RaceTime:
         :return: True if the skipper didn't finish the race and wasn't in RC
         :rtype: bool
         """
-        return not self.finished() and self.time_s != self.RaceFinishOther.RC
+        return not self.finished() and not self.is_rc()
 
     def is_rc(self):
         """
@@ -311,7 +312,7 @@ class RaceTime:
         :return: True if time_s is RaceFinishOther.RC
         :rtype: bool
         """
-        return not self.finished() and self.time_s == self.RaceFinishOther.RC
+        return not self.finished() and self.other_finish == self.RaceFinishOther.RC
 
     @property
     def corrected_time_s(self):
