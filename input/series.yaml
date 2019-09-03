@@ -1,3 +1,9 @@
+2019_series_1:
+  fleet: handicap_2017
+  qualify_count: 2
+  race_file: 2019_s1.yaml
+  boat_overrides:
+    John_T: US-1
 2019_series_3:
   fleet: handicap_2017
   qualify_count: 2

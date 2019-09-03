@@ -159,12 +159,21 @@ class MasterDatabase:
                     # Extract the race time results
                     time_values = race_dict['times']
 
+                    # Set an empty list of no time values are provided
+                    if time_values is None:
+                        time_values = list()
+
                     # Iterate over each of the skipper time values, creating a race time and adding it to the race
                     for skipper_id in time_values:
+                        result_value = time_values[skipper_id]
+                        if type(result_value) is str:
+                            if result_value.strip().lower() == 'dnf':
+                                result_value = rdb.RaceTime.RaceFinishOther.DNF
+
                         race_time = rdb.RaceTime(
                             race=race,
                             skipper=self.skippers[skipper_id],
-                            time_s=time_values[skipper_id])
+                            time_s=result_value)
                         race.add_skipper_time(race_time)
 
                     # Add the race to the series

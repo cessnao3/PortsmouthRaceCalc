@@ -155,8 +155,15 @@ class Race:
             place_dict[time_s] = sum(range(current_place, current_place + num_for_time)) / num_for_time
             current_place += num_for_time
 
+        # Result Dictionary Creation
+        result_dict = {rt.skipper.identifier: place_dict[rt.corrected_time_s] for rt in race_results}
+
+        # Add in all the other results
+        for rt in self.other_results():
+            result_dict[rt.skipper.identifier] = len(self.race_times)
+
         # Then, define the result dictionary as the place for each skipper and return
-        return {rt.skipper.identifier: place_dict[rt.corrected_time_s] for rt in race_results}
+        return result_dict
 
     def get_race_table(self):
         """
@@ -205,6 +212,14 @@ class Race:
         """
         return [r.skipper for r in self.race_times.values() if r.is_rc()]
 
+    def other_results(self):
+        """
+        Provides a list of other racers that did not finish the race and were not RC
+        :return: list of valid race times
+        :rtype: list of RaceTime
+        """
+        return [r for r in self.race_times.values() if not r.finished and not r.is_rc()]
+
     def finished_race_times(self):
         """
         Provides a list of the finished race times
@@ -245,7 +260,7 @@ class RaceTime:
         DNF = 1
         DQ = 2
 
-    def __init__(self, race, skipper, time_s=None):
+    def __init__(self, race, skipper, time_s=None, rc=False, other=None):
         """
         Initializes the race time object with the input parameters
         :param race: The race to associate the time with
