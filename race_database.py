@@ -176,7 +176,7 @@ class Race:
         str_list = list()
 
         # Append header parameters
-        str_list.append(' Wind: {:d} (BFT)'.format(self.wind_bf))
+        str_list.append(' Wind: {:d} (BFT)'.format(self.wind_bf if self.wind_bf else 0))
         str_list.append('   RC: {:s}'.format(', '.join([s.identifier for s in self.rc_skippers()])))
         str_list.append(' Date: {:s}'.format(self.date))
         str_list.append('Notes: {:s}'.format(self.notes))
@@ -185,22 +185,21 @@ class Race:
         str_list.append('-----------   ----   -----   -------------------   -----  ----')
 
         # Iterate over each of the race time in the sorted list and add the column value
-        for race_result in self.finished_race_times_sorted():
+        for race_result in self.race_times_sorted():
             score = race_result[0]
             race_time = race_result[1]
+            actual_time_value = race_time.format_time(race_time.time_s)
+            if race_time.other_finish is not None:
+                actual_time_value = race_time.other_finish.name
             str_list.append('{:>11s} {:>6s}   {:5s}   {:4d} / {:0.03f} = {:4d}   {:5s}  {:.2f}'.format(
                 race_time.skipper.identifier,
                 race_time.boat.code,
-                race_time.format_time(race_time.time_s),
+                actual_time_value,
                 round(race_time.time_s),
                 race_time.boat.dpn_for_beaufort(self.wind_bf) / 100.0,
                 race_time.corrected_time_s,
                 race_time.format_time(race_time.corrected_time_s),
                 score))
-
-        # Print a warning if there are skippers with other parameters (DQ / DNF / etc.)
-        if len([r for r in self.race_times.values() if r.has_other_result()]) > 0:
-            raise ValueError('Warning: No printing for other race results')
 
         # Return the joined list
         return '\n'.join(str_list)
