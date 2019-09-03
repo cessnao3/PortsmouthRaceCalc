@@ -161,7 +161,7 @@ class Race:
 
         # Add in all the other results
         for rt in self.other_results():
-            result_dict[rt.skipper.identifier] = len(self.race_times)
+            result_dict[rt.skipper.identifier] = len(self.race_times) - len(self.rc_skippers())
 
         # Then, define the result dictionary as the place for each skipper and return
         return result_dict
@@ -219,7 +219,7 @@ class Race:
         :return: list of valid race times
         :rtype: list of RaceTime
         """
-        return [r for r in self.race_times.values() if not r.finished and not r.is_rc()]
+        return [r for r in self.race_times.values() if not r.finished() and not r.is_rc()]
 
     def finished_race_times(self):
         """
@@ -229,7 +229,7 @@ class Race:
         """
         return [r for r in self.race_times.values() if r.finished()]
 
-    def finished_race_times_sorted(self):
+    def race_times_sorted(self):
         """
         Provides a sorted list of the finished race times by score
         :return: a list of tuples containing the score and the race time object
@@ -240,6 +240,7 @@ class Race:
 
         # Obtain the list of skippers who finished the race and sort by the resulting scores obtained above
         race_time_list = self.finished_race_times()
+        race_time_list.extend(self.other_results())
 
         # Create the resulting dictionary
         race_result_list = [(scores[rt.skipper.identifier], rt) for rt in race_time_list]
