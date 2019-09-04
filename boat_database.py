@@ -126,6 +126,15 @@ class Fleet:
         for b in self.boat_types.values():
             b.fleet = self
 
+    def boat_types_sorted(self):
+        """
+        Returns a list of sorted boats
+        :return: list of BoatType
+        """
+        boat_list = [b for b in self.boat_types.values()]
+        boat_list.sort(key=lambda x: x.code)
+        return boat_list
+
     def get_boat(self, boat_code):
         """
         Attempts to find the boat associated with the given boat code. Returns None if no boat exists

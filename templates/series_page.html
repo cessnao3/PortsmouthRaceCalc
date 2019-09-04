@@ -63,7 +63,7 @@
                 <td> {{ '%.1f' | format(score) }} </td>
                 {% endif %}
                 <td> {{ race_time.skipper.identifier }} </td>
-                <td> <a href="{{ url_for('boat_page', fleet_name=series.fleet.name, boat_code=race_time.boat.code) }}">{{ race_time.boat.code }}</a> </td>
+                <td> <a href="{{ url_for('boat_page', fleet_name=series.fleet.name, boat_code=race_time.boat.code) }}">{{ race_time.boat.code.upper() }}</a> </td>
                 {% if race_time.other_finish %}
                 <td> {{ race_time.other_finish.name }} </td>
                 {% else %}

@@ -39,9 +39,8 @@
                 <td>DPN {{loop.index - 1}}</td>
                 {% endfor %}
             </tr>
-            {% for boat_code in fleet.boat_types %}
+            {% for boat in fleet.boat_types_sorted() %}
             <tr>
-                {% set boat = fleet.boat_types[boat_code] %}
                 <td><a href="{{url_for('boat_page', boat_code=boat.code, fleet_name=fleet.name)}}">{{boat.code.upper()}}</a></td>
                 <td>{{boat.name}}</td>
                 <td>{{boat.boat_class.name.capitalize()}}</td>
