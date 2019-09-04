@@ -16,7 +16,11 @@
                 <th>Name</th>
                 <th>Class</th>
                 {% for d in boat.dpn_vals %}
+                {% if loop.index - 1 == 0 %}
+                <td>DPN</td>
+                {% else %}
                 <td>DPN {{loop.index - 1}}</td>
+                {% endif %}
                 {% endfor %}
             </tr>
             <tr>
