@@ -6,6 +6,28 @@
         <h1>Fleet - {{ fleet.fancy_name() }}</h1>
         <a href="{{url_for('main_page')}}">Home</a>
 
+        <h2>Wind Mapping</h2>
+
+        <table border=1>
+            <tr>
+                <th>Beaufort Start</th>
+                <th>Beaufort End</th>
+                <th>DPN Result</th>
+            </tr>
+            <tr>
+                <td>Default</td>
+                <td>Default</td>
+                <td>DPN{{fleet.wind_map.default.index}}</td>
+            </tr>
+            {% for wind_map in fleet.wind_map.wind_maps %}
+            <tr>
+                <td>{{ wind_map.start_bf }}</td>
+                <td>{{ wind_map.end_bf }}</td>
+                <td>DPN{{ wind_map.index }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+
         <h2>Boats</h2>
 
         <table border = 1>
@@ -36,4 +58,6 @@
         </table>
 
     </body>
+
+    {% include 'footer.html' %}
 </html>

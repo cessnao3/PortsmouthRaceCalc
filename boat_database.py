@@ -6,21 +6,122 @@ import enum
 import race_utils
 
 
+class WindMap:
+    """
+    A class to map Beaufort wind numbers to an index that can be used to extract DPN
+    or similar time correction factors
+    """
+    class Node:
+        """
+        A class to keep track of the wind map node parameters
+        """
+        def __init__(self, start_bf, end_bf, index):
+            """
+            Defines the wind map node
+            :param start_bf: starting Beaufort number for wind (inclusive)
+            :type start_bf: int
+            :param end_bf: ending Beaufort number for wind (inclusive)
+            :type end_bf: int
+            :param index: index to obtain for the given wind values
+            :type index: int
+            """
+            # Check for type errors
+            for v in (start_bf, end_bf, index):
+                if type(v) != int:
+                    raise TypeError('All types input into WindMap.Node must be of type int')
+
+            # Check that start <= end
+            if start_bf > end_bf:
+                raise ValueError('Wind mapping start {:d} must be <= end {:d}'.format(start_bf, end_bf))
+
+            # Save the parameters
+            self.start_bf = start_bf
+            self.end_bf = end_bf
+            self.index = index
+
+        def range_str(self):
+            """
+            Provides the range string for the given wind mapping
+            :return: definitions for the range of the mapping
+            :rtype: str
+            """
+            return '{:d}-{:d}'.format(self.start_bf, self.end_bf)
+
+    def __init__(self, default_index):
+        """
+        Initializes the Wind Map with a default index
+        :param default_index: Default index to use if no other wind mapping parameters fit
+        :type default_index: int
+        """
+        # Create the default index
+        self.default = self.Node(
+            start_bf=0,
+            end_bf=0,
+            index=default_index)
+        # Initialize the empty wind map list
+        self.wind_maps = list()
+
+    def add_wind_parameters(self, start_wind, end_wind, index):
+        """
+        Adds a wind mapping for a start/end wind speed, with an index
+        Raises an error if the mapping overlaps with another
+        :param start_wind: starting Beaufort number
+        :type start_wind: int
+        :param end_wind: ending Beaufort number
+        :type end_wind: int
+        :param index: index to associate with the Beaufort number
+        :type index: int
+        :return: None
+        """
+        # Iterate over all of the wind parameters to ensure that there are no overlaps
+        for w in self.wind_maps:
+            for v in (start_wind, end_wind):
+                if w.start_bf <= v <= w.end_bf:
+                    raise ValueError('WindMap parameter {:d} within the range of another map'.format(v))
+
+        # Add the wind map parameter
+        self.wind_maps.append(
+            self.Node(
+                start_bf=start_wind,
+                end_bf=end_wind,
+                index=index))
+        self.wind_maps.sort(key=lambda x: x.start_bf)
+
+    def get_wind_map_for_beaufort(self, bf_num):
+        """
+        Provides the wind mapping node for the input Beaufort number
+        :param bf_num: Input Beaufort number to find a mapping for
+        :return: associated mapping for the node
+        :rtype: WindMap.Node
+        """
+        for w in self.wind_maps:
+            if w.start_bf <= bf_num <= w.end_bf:
+                return w
+        return self.default
+
+
 class Fleet:
     """
     A class to contain the boats specified for a given fleet, allowing for different generations
     of handicap parameters
     """
-    def __init__(self, name, boat_types):
+    def __init__(self, name, boat_types, wind_map):
         """
         Initializes the fleet with the input parameters
         :param name: The name of the fleet
         :type name: str
         :param boat_types: List of the boat types within the fleet
         :type boat_types: {str: BoatType}
+        :param wind_map: A wind map to correlate Beaufort numbers to DPN indices
+        :type wind_map: WindMap
         """
         self.name = name
         self.boat_types = boat_types
+        self.wind_map = wind_map
+
+        # Set the boat fleet
+        for b in self.boat_types.values():
+            b.fleet = self
 
     def get_boat(self, boat_code):
         """
@@ -68,7 +169,7 @@ class BoatType:
         CENTERBOARD = 1
         KEELBOAT = 2
 
-    def __init__(self, name, boat_class, code, dpn_vals):
+    def __init__(self, name, boat_class, code, dpn_vals, fleet):
         """
         Initializes the boat parameter
         :param name: The name of the boat
@@ -79,16 +180,19 @@ class BoatType:
         :type code: str
         :param dpn_vals: A list of 5 values, identifying [DPN0, DPN1, DPN2, DPN3, DPN4]
         :type dpn_vals: list of float
+        :param fleet: A fleet to associate the boat type to
+        :type fleet: Fleet
         """
         self.name = name
         self.boat_class = boat_class
         self.code = code
         self.dpn_vals = dpn_vals
+        self.fleet = fleet
 
     def dpn_for_beaufort(self, beaufort):
         """
         Provides the DPN value associated with the input beaufort number. If the boat type doesn't have a specified DPN
-        for the provided beaufort number, the highest value that will satisfty the requirements will be returned.
+        for the provided beaufort number, the highest value that will satisfy the requirements will be returned.
         :param beaufort: The input Beaufort number
         :type beaufort: int
         :return: The DPN value associated with the given beaufort number, or the highest possible DPN index <= beaufort
@@ -96,6 +200,15 @@ class BoatType:
         # Ensure that the beaufort number is an integer
         if type(beaufort) != int:
             raise ValueError('Beaufort number must be of type int')
+
+        # Wind Map Node
+        dpn_val = None
+        current_bf = beaufort
+
+        while dpn_val is None and current_bf >= 0:
+            node_val = self.fleet.wind_map.get_wind_map_for_beaufort(current_bf)
+            dpn_val = self.dpn_vals[node_val.index]
+            current_bf -= 1
 
         # Find the ideal index for the given beaufort number
         if beaufort <= 1:
@@ -107,23 +220,21 @@ class BoatType:
         else:
             dpn_ind = 4
 
-        # If there is no number specified (None), reduce the index and try again. Failsafe stop at index 0
-        while self.dpn_vals[dpn_ind] is None and dpn_ind > 0:
-            dpn_ind -= 1
-
         # If there is no DPN value at any index, raise an error
-        if self.dpn_vals[dpn_ind] is None:
+        if dpn_val is None:
             raise RuntimeError('No DPN provided for code {:s}, index {:d}'.format(self.code, dpn_ind))
 
         # Return the DPN value
         return self.dpn_vals[dpn_ind]
 
     @staticmethod
-    def load_from_csv(csv_table):
+    def load_from_csv(csv_table, fleet):
         """
         Reads the Portsmouth precalculated table from an input CSV file contents
         :param csv_table: The filename to read
         :type csv_table: str
+        :param fleet: A fleet to associate the boat type to
+        :type fleet: Fleet or None
         :return: A dictionary of boats, keyed by the type code
         """
         # Initialize the empty dictionary
@@ -177,7 +288,8 @@ class BoatType:
                     name=boat_name,
                     boat_class=boat_class,
                     code=boat_code,
-                    dpn_vals=dpn_values)
+                    dpn_vals=dpn_values,
+                    fleet=fleet)
 
         # Call the CSV load function
         race_utils.load_from_csv(

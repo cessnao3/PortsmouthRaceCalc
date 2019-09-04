@@ -1,11 +1,14 @@
 2019_series_1:
-  fleet: handicap_2017
-  qualify_count: 2
+  fleet: portsmouth_2017
+  qualify_count: 5
   race_file: 2019_s1.yaml
   boat_overrides:
     John_T: US-1
+2019_series_2:
+  fleet: portsmouth_2017
+  qualify_count: 2
+  race_file: 2019_s2.yaml
 2019_series_3:
-  fleet: handicap_2017
+  fleet: portsmouth_2017
   qualify_count: 2
   race_file: 2019_s3.yaml
-  boat_overrides: ~

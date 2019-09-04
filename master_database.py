@@ -83,10 +83,20 @@ class MasterDatabase:
             with open(self._data_file(fleet_dict['portsmouth_table']), 'r') as table_handle:
                 boat_table = table_handle.read()
 
+            # Obtain the wind mapping
+            wind_map_dict = fleet_dict['wind_map']
+            wind_map = bdb.WindMap(default_index=wind_map_dict['default_index'])
+            for map_val in wind_map_dict['map_values']:
+                wind_map.add_wind_parameters(
+                    start_wind=map_val['start_bf'],
+                    end_wind=map_val['end_bf'],
+                    index=map_val['index'])
+
             # Define the fleet object
             fleets[fleet_name] = bdb.Fleet(
                 name=fleet_name,
-                boat_types=bdb.BoatType.load_from_csv(boat_table))
+                boat_types=bdb.BoatType.load_from_csv(boat_table, fleet=None),
+                wind_map=wind_map)
 
         # Set the fleet object to the loaded parameters
         self.fleets = fleets
@@ -128,7 +138,10 @@ class MasterDatabase:
             fleet = self.fleets[fleet_name]
 
             # Extract boat override parameters
-            boat_overrides = s['boat_overrides']
+            if 'boat_overrides' in s:
+                boat_overrides = s['boat_overrides']
+            else:
+                boat_overrides = None
 
             # Define the series object
             series = rdb.Series(
