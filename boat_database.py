@@ -45,7 +45,10 @@ class WindMap:
             :return: definitions for the range of the mapping
             :rtype: str
             """
-            return '{:d}-{:d}'.format(self.start_bf, self.end_bf)
+            if self.start_bf == self.end_bf:
+                return '{:d}'.format(self.start_bf)
+            else:
+                return '{:d}-{:d}'.format(self.start_bf, self.end_bf)
 
     def __init__(self, default_index):
         """

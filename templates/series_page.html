@@ -19,7 +19,11 @@
         <table border=1>
             <tr>
                 <th>Wind</th>
+                {% if race.wind_bf %}
                 <td>{{ series.fleet.wind_map.get_wind_map_for_beaufort(race.wind_bf).range_str()}} (BFT)</td>
+                {% else %}
+                <td>? (BFT)</td>
+                {% endif %}
             </tr>
             <tr>
                 <th>RC</th>
