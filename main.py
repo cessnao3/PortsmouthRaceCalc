@@ -1,3 +1,7 @@
+"""
+Race Database Console Main Function
+"""
+
 from master_database import MasterDatabase
 
 database = MasterDatabase()

@@ -6,7 +6,7 @@
     John_T: US-1
 2019_series_2:
   fleet: portsmouth_2017
-  qualify_count: 2
+  qualify_count: 5
   race_file: 2019_s2.yaml
 2019_series_3:
   fleet: portsmouth_2017

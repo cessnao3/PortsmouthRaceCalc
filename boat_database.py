@@ -181,7 +181,7 @@ class BoatType:
         CENTERBOARD = 1
         KEELBOAT = 2
 
-    def __init__(self, name, boat_class, code, dpn_vals, fleet):
+    def __init__(self, name, boat_class, code, dpn_values, fleet):
         """
         Initializes the boat parameter
         :param name: The name of the boat
@@ -190,15 +190,15 @@ class BoatType:
         :type boat_class: BoatType.BoatClass
         :param code: The unique identification code for the given boat class
         :type code: str
-        :param dpn_vals: A list of 5 values, identifying [DPN0, DPN1, DPN2, DPN3, DPN4]
-        :type dpn_vals: list of float
+        :param dpn_values: A list of 5 values, identifying [DPN0, DPN1, DPN2, DPN3, DPN4]
+        :type dpn_values: list of float
         :param fleet: A fleet to associate the boat type to
         :type fleet: Fleet
         """
         self.name = name
         self.boat_class = boat_class
         self.code = code
-        self.dpn_vals = dpn_vals
+        self.dpn_values = dpn_values
         self.fleet = fleet
 
     def dpn_for_beaufort(self, beaufort):
@@ -219,7 +219,7 @@ class BoatType:
 
         while dpn_val is None and current_bf >= 0:
             node_val = self.fleet.wind_map.get_wind_map_for_beaufort(current_bf)
-            dpn_val = self.dpn_vals[node_val.index]
+            dpn_val = self.dpn_values[node_val.index]
             current_bf -= 1
 
         # Find the ideal index for the given beaufort number
@@ -237,12 +237,12 @@ class BoatType:
             raise RuntimeError('No DPN provided for code {:s}, index {:d}'.format(self.code, dpn_ind))
 
         # Return the DPN value
-        return self.dpn_vals[dpn_ind]
+        return self.dpn_values[dpn_ind]
 
     @staticmethod
     def load_from_csv(csv_table, fleet):
         """
-        Reads the Portsmouth precalculated table from an input CSV file contents
+        Reads the Portsmouth pre-calculated table from an input CSV file contents
         :param csv_table: The filename to read
         :type csv_table: str
         :param fleet: A fleet to associate the boat type to
@@ -300,7 +300,7 @@ class BoatType:
                     name=boat_name,
                     boat_class=boat_class,
                     code=boat_code,
-                    dpn_vals=dpn_values,
+                    dpn_values=dpn_values,
                     fleet=fleet)
 
         # Call the CSV load function

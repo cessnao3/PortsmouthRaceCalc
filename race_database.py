@@ -7,6 +7,8 @@ from skipper_database import Skipper
 from race_utils import capitalize_words
 import enum
 
+round_tol = 1e-2
+
 
 class Series:
     """
@@ -29,6 +31,98 @@ class Series:
         self.fleet = fleet
         self.races = list()
         self.boat_overrides = boat_overrides if boat_overrides is not None else dict()
+        self._skipper_rc_pts = None
+        self._skippers = None
+        self._points = None
+
+    def reset(self):
+        """
+        Resets any stored calculated parameters
+        """
+        for r in self.races:
+            r.reset()
+        self._skipper_rc_pts = None
+        self._skippers = None
+        self._points = None
+
+    def skipper_rc_points(self, skipper_id):
+        """
+        Returns the number of points associated with RC for a given Skipper
+        :param skipper_id: skipper identifier
+        :type skipper_id: str
+        :return: Number of points estimated for RC races for a given Skipper
+        :rtype: int or float
+        """
+        if self._skipper_rc_pts is None:
+            # Initialize the dictionary
+            self._skipper_rc_pts = dict()
+
+            # Calculate parameters
+            for skip in self.get_all_skippers():
+                self._skipper_rc_pts[skip.identifier] = 0
+
+        # Return points if the skipper is in the list
+        if skipper_id in self._skipper_rc_pts:
+            return self._skipper_rc_pts[skipper_id]
+        else:
+            return None
+
+    def skipper_points_list(self, skipper_id):
+        """
+        Returns the points used to calculate the resulting score for a series
+        :return: list of points equal to the qualification, or DNQ if no qualification
+        :rtype: None or list of (float or int)
+        """
+        if self._points is None:
+            # Initialize the dictionary
+            self._points = dict()
+
+            # Calculate for all skippers
+            for skip in self.get_all_skippers():
+                # Obtain the results for a given skipper for all races
+                point_values = []
+                for r in self.races:
+                    results = r.race_results()
+                    if skip.identifier in results:
+                        point_values.append(results[skip.identifier])
+                    elif skip.identifier in r.race_times and r.race_times[skip.identifier].is_rc():
+                        point_values.append(self.skipper_rc_points(skip.identifier))
+
+                # Return None if there aren't enough races to qualify
+                if len(point_values) < self.qualify_count:
+                    self._points[skip.identifier] = None
+                # Otherwise, return the sum of the lowest to qualify
+                else:
+                    point_values.sort()
+                    self._points[skip.identifier] = point_values[:self.qualify_count]
+
+        # Return the pre-calculated result
+        if skipper_id in self._points:
+            return self._points[skipper_id]
+        else:
+            return None
+
+    def skipper_points(self, skipper_id):
+        """
+        Returns the number of points found for the given Skipper
+        :param skipper_id: skipper identifier
+        :type skipper_id: str
+        :return: Number of points calculated for the given skipper
+        :rtype: int or float or None
+        """
+        # Determine the points list
+        points_list = self.skipper_points_list(skipper_id)
+
+        # Return None if skipper not in the dictionary, otherwise return dictionary value
+        if points_list is not None:
+            # Calculate the point values and round accordingly
+            point_values = sum(self._points[skipper_id])
+            if abs(round(point_values) - point_values) < round_tol:
+                return round(point_values)
+            else:
+                return round(point_values, 1)
+        else:
+            return None
 
     def add_race(self, race):
         """
@@ -37,6 +131,15 @@ class Series:
         :type race: Race
         """
         self.races.append(race)
+        self.reset()
+
+    def valid_races_held(self):
+        """
+        Returns the number of valid races held
+        :return: count of valid races
+        :rtype: int
+        """
+        return len([r for r in self.races if r.valid_race()])
 
     def get_all_skippers(self):
         """
@@ -44,19 +147,47 @@ class Series:
         :return: list of unique skipper objects between all races
         :rtype: list of Skipper
         """
-        # Define the output list
-        skippers = list()
+        if self._skippers is None:
+            # Define the output list
+            skippers = list()
 
-        # Iterate over each race
-        for race in self.races:
-            # Iterate over each time
-            for rt in race.race_times:
-                race_time = race.race_times[rt]
-                # Add the skipper to the list if not already in the list
-                if race_time.skipper not in skippers:
-                    skippers.append(race_time.skipper)
+            # Iterate over each race
+            for race in self.races:
+                # Iterate over each time
+                for rt in race.race_times:
+                    race_time = race.race_times[rt]
+                    # Add the skipper to the list if not already in the list
+                    if race_time.skipper not in skippers:
+                        skippers.append(race_time.skipper)
+            self._skippers = skippers
 
         # Return the skipper list
+        return self._skippers
+
+    def get_all_skippers_sorted(self):
+        """
+        Provides all skippers in the series, sorted first by points, and then by alphabet
+        :return: list of unique skipper objects between all races, sorted
+        :rtype: list of Skipper
+        """
+        # Get all skippers and scores
+        skippers = self.get_all_skippers()
+        scores = {s.identifier: self.skipper_points(s.identifier) for s in skippers}
+
+        # Determine a maximum score value and apply to all skippers that haven't finished to push to the end
+        max_score = round(sum([s for s in scores.values() if s is not None]))
+
+        for s in scores:
+            if scores[s] is None:
+                scores[s] = max_score
+
+        # Sort first by alphabet
+        skippers.sort(key=lambda x: x.identifier)
+
+        # Next, sort by the score
+        skippers.sort(key=lambda x: scores[x.identifier])
+
+        # Return the result
         return skippers
 
     def fancy_name(self):
@@ -79,7 +210,7 @@ class Race:
         :type series: Series
         :param rc: a list of the skipper objects participating in the race committee
         :type rc: list of Skipper
-        :param date: a string containing the date of the race in the format yyyy_mm_dd
+        :param date: a string containing the date of the race in the format year_mm_dd
         :type date: str
         :param wind_bf: the Beaufort wind condition number associated with the race
         :type wind_bf: int
@@ -91,6 +222,7 @@ class Race:
         self.date = date
         self.wind_bf = wind_bf
         self.notes = notes
+        self._results_dict = None
 
         # Add the RC skippers to the race times as participating in RC
         for rc_skipper in rc:
@@ -99,6 +231,22 @@ class Race:
                 skipper=rc_skipper,
                 time_s=0,
                 other_finish=RaceTime.RaceFinishOther.RC))
+
+    def reset(self):
+        """
+        Resets any stored calculated parameters
+        """
+        for rt in self.race_times.values():
+            rt.reset()
+        self._results_dict = None
+
+    def valid_race(self):
+        """
+        Determines if a race is valid or not
+        :return: True if the race is valid, false otherwise
+        :rtype: bool
+        """
+        return len(self.race_times) > 3
 
     def add_skipper_time(self, race_time):
         """
@@ -120,12 +268,18 @@ class Race:
         else:
             self.race_times[skip_id] = race_time
 
+        # Call reset
+        self.reset()
+
     def race_results(self):
         """
         Provides the scores for each skipper in the race
         :return: dictionary of the skipper identifier keyed to the resulting point score
         :rtype: {str: float}
         """
+        if self._results_dict is not None:
+            return self._results_dict
+
         # Create a variable to hold the current list
         result_times = dict()
 
@@ -162,6 +316,9 @@ class Race:
         # Add in all the other results
         for rt in self.other_results():
             result_dict[rt.skipper.identifier] = len(self.race_times) - len(self.rc_skippers())
+
+        # Set the memoization value
+        self._results_dict = result_dict
 
         # Then, define the result dictionary as the place for each skipper and return
         return result_dict
@@ -203,6 +360,37 @@ class Race:
 
         # Return the joined list
         return '\n'.join(str_list)
+
+    def get_skipper_result(self, skipper_id):
+        """
+        Provides the resulting score text for the skipper ID provided.
+        :param skipper_id: the skipper identifier
+        :type skipper_id: str
+        :return: The score parameter for the given skipper value
+        :rtype: int or float or str or None
+        """
+        # Check if the skipper is in the race times
+        if skipper_id in self.race_times:
+            # Obtain the results
+            results = self.race_results()
+
+            # If the skipper has result points, obtain those
+            if skipper_id in results:
+                # Extract the result value
+                result_val = results[skipper_id]
+
+                # Return a rounded value if we are close enough
+                if abs(result_val - round(result_val)) < round_tol:
+                    return round(result_val)
+                # Otherwise, return the float value
+                else:
+                    return round(result_val, 1)
+            # Otherwise, return the other finish name for printing
+            else:
+                return self.race_times[skipper_id].other_finish.name
+        # Return None if no skipper of this name is provided
+        else:
+            return None
 
     def rc_skippers(self):
         """
@@ -282,6 +470,9 @@ class RaceTime:
         if self.other_finish is not None:
             self.time_s = 0
 
+        # Initialize memoization parameters
+        self._corrected_time_s = None
+
         # Extract the boat ID, from the override (if available), or the default in the skipper database
         boat_id = self.skipper.default_boat_code
         if skipper.identifier in race.series.boat_overrides:
@@ -289,6 +480,12 @@ class RaceTime:
 
         # Define the boat type object
         self.boat = race.series.fleet.get_boat(boat_id)
+
+    def reset(self):
+        """
+        Resets any stored calculated parameters
+        """
+        self._corrected_time_s = None
 
     def finished(self):
         """
@@ -321,7 +518,9 @@ class RaceTime:
         :return: rounded corrected time in seconds with the provided boat and wind speed
         :rtype: int
         """
-        return round(self.time_s * 100.0 / self.boat.dpn_for_beaufort(self.race.wind_bf))
+        if self._corrected_time_s is None:
+            self._corrected_time_s = round(self.time_s * 100.0 / self.boat.dpn_for_beaufort(self.race.wind_bf))
+        return self._corrected_time_s
 
     @staticmethod
     def format_time(time_s):
@@ -336,4 +535,3 @@ class RaceTime:
         time_c = int((time_s - s_val) / 60)
         m_val = time_c
         return '{:02d}:{:02d}'.format(m_val, round(s_val))
-

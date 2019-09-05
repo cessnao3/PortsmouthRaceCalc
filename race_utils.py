@@ -53,7 +53,7 @@ def load_from_csv(csv_data, row_func, expected_header=None):
                 print('ERROR! {:s}'.format(', '.join(row)))
                 continue
 
-            # Create a dictionary for the row based on the header columns and current vlaues
+            # Create a dictionary for the row based on the header columns and current values
             row_dict = {v[0]: v[1] for v in zip(header_cols, row)}
 
             # call the function

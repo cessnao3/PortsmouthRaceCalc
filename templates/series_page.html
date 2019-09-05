@@ -10,15 +10,53 @@
 
         <h2>Overall Results</h2>
 
+        <b>Valid Races Held:</b> {{ series.valid_races_held() }}
+        <br>
+        <b>Number to Qualify:</b> {{ series.qualify_count }}
+        <br>
+        <br>
+
+        <table border=1>
+            <tr>
+                <th>Skipper</th>
+                {% for race in series.races %}
+                <th>{{ loop.index }}</th>
+                {% endfor %}
+                <th>RC Points</th>
+                <th>Overall Points</th>
+            </tr>
+            {% for skipper in series.get_all_skippers_sorted() %}
+            <tr>
+                <td>{{ skipper.identifier }}</td>
+                {% for race in series.races %}
+                    {% set result = race.get_skipper_result(skipper.identifier) %}
+                    {% if result %}
+                    <td>{{ race.get_skipper_result(skipper.identifier) }}</td>
+                    {% else %}
+                    <td>--</td>
+                    {% endif %}
+                {% endfor %}
+                {% set points = series.skipper_points(skipper.identifier) %}
+                {% if points %}
+                <td>{{ series.skipper_rc_points(skipper.identifier) }}</td>
+                <td>{{ points }}</td>
+                {% else %}
+                <td>--</td>
+                <td>--</td>
+                {% endif %}
+            </tr>
+            {% endfor %}
+        </table>
+
         <h2>Races</h2>
 
         {% for race in series.races %}
 
         <h3>Race {{ loop.index }}</h3>
 
-        <table border=1>
+        <table border=0>
             <tr>
-                <th>Wind</th>
+                <th>Wind:</th>
                 {% if race.wind_bf %}
                 <td>{{ series.fleet.wind_map.get_wind_map_for_beaufort(race.wind_bf).range_str()}} (BFT)</td>
                 {% else %}
@@ -26,15 +64,15 @@
                 {% endif %}
             </tr>
             <tr>
-                <th>RC</th>
+                <th>RC:</th>
                 <td>{% for skipper in race.rc_skippers() %}{{skipper.identifier}}{% if not loop.last %}, {% endif %}{% endfor %}</td>
             </tr>
             <tr>
-                <th>Date</th>
+                <th>Date:</th>
                 <td>{{race.date}}</td>
             </tr>
             <tr>
-                <th>Notes</th>
+                <th>Notes:</th>
                 <td>{{race.notes}}</td>
             </tr>
         </table>
