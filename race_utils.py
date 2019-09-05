@@ -69,3 +69,18 @@ def capitalize_words(str_in):
     :rtype: str
     """
     return ' '.join([s.capitalize() for s in str_in.split(' ')])
+
+
+def round_score(score_in):
+    """
+    Rounds out the score to provide 0 or 1 decimal places
+    :param score_in: Input score
+    :type score_in: int or float
+    :return: rounded score
+    :rtype: int or float
+    """
+    tol = 1e-2
+    if abs(score_in - round(score_in)) < tol:
+        return round(score_in)
+    else:
+        return round(score_in, 1)

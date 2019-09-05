@@ -4,10 +4,8 @@ Provides a database for use in calculating the corrected times for race paramete
 
 from boat_database import Fleet
 from skipper_database import Skipper
-from race_utils import capitalize_words
+from race_utils import capitalize_words, round_score
 import enum
-
-round_tol = 1e-2
 
 
 class Series:
@@ -57,7 +55,7 @@ class Series:
             # Initialize the dictionary
             self._skipper_rc_pts = dict()
 
-            # Calculate parameters
+            # Calculate RC point parameters
             for skip in self.get_all_skippers():
                 self._skipper_rc_pts[skip.identifier] = 0
 
@@ -116,11 +114,7 @@ class Series:
         # Return None if skipper not in the dictionary, otherwise return dictionary value
         if points_list is not None:
             # Calculate the point values and round accordingly
-            point_values = sum(self._points[skipper_id])
-            if abs(round(point_values) - point_values) < round_tol:
-                return round(point_values)
-            else:
-                return round(point_values, 1)
+            return round_score(sum(self._points[skipper_id]))
         else:
             return None
 
@@ -277,51 +271,53 @@ class Race:
         :return: dictionary of the skipper identifier keyed to the resulting point score
         :rtype: {str: float}
         """
-        if self._results_dict is not None:
-            return self._results_dict
+        if self._results_dict is None:
+            # Create a variable to hold the current list
+            result_times = dict()
 
-        # Create a variable to hold the current list
-        result_times = dict()
+            # Race result list
+            race_results = self.finished_race_times()
+            race_results.sort(key=lambda x: x.corrected_time_s)
 
-        # Race result list
-        race_results = self.finished_race_times()
-        race_results.sort(key=lambda x: x.corrected_time_s)
+            # Add each result to the list based on bucket to provide a count for the number of times each result appears
+            for result in race_results:
+                ct_s = result.corrected_time_s
+                if ct_s in result_times:
+                    result_times[ct_s] += 1
+                else:
+                    result_times[ct_s] = 1
 
-        # Add each result to the list based on bucket to provide a count for the number of times each result appears
-        for result in race_results:
-            ct_s = result.corrected_time_s
-            if ct_s in result_times:
-                result_times[ct_s] += 1
-            else:
-                result_times[ct_s] = 1
+            # Next, define a dictionary for the points for each corrected time
+            place_dict = dict()
+            current_place = 1
+            for time_s in sorted(result_times.keys()):
+                # Extract the number of times the result has been repeated
+                num_for_time = result_times[time_s]
 
-        # Next, define a dictionary for the points for each corrected time
-        place_dict = dict()
-        current_place = 1
-        for time_s in sorted(result_times.keys()):
-            # Extract the number of times the result has been repeated
-            num_for_time = result_times[time_s]
+                # We define the score as the average of the scores that would be taken by all results with the same tie.
+                # For example, with a tie between 2 and 3 places, we would get
+                #       (2 + 3) / 2 = 2.5
+                # For a tie between 4 and 5 places, we would get
+                #       (4 + 5) / 2 = 4.5
+                place_dict[time_s] = sum(range(current_place, current_place + num_for_time)) / num_for_time
+                current_place += num_for_time
 
-            # We define the score as the average of the scores that would be taken by all results with the same tie.
-            # For example, with a tie between 2 and 3 places, we would get
-            #       (2 + 3) / 2 = 2.5
-            # For a tie between 4 and 5 places, we would get
-            #       (4 + 5) / 2 = 4.5
-            place_dict[time_s] = sum(range(current_place, current_place + num_for_time)) / num_for_time
-            current_place += num_for_time
+            # Result Dictionary Creation
+            result_dict = {rt.skipper.identifier: place_dict[rt.corrected_time_s] for rt in race_results}
 
-        # Result Dictionary Creation
-        result_dict = {rt.skipper.identifier: place_dict[rt.corrected_time_s] for rt in race_results}
+            # Add in all the other results
+            for rt in self.other_results():
+                result_dict[rt.skipper.identifier] = len(self.race_times) - len(self.rc_skippers())
 
-        # Add in all the other results
-        for rt in self.other_results():
-            result_dict[rt.skipper.identifier] = len(self.race_times) - len(self.rc_skippers())
+            # Round all race results
+            for key in result_dict:
+                result_dict[key] = round_score(result_dict[key])
 
-        # Set the memoization value
-        self._results_dict = result_dict
+            # Set the memoization value
+            self._results_dict = result_dict
 
-        # Then, define the result dictionary as the place for each skipper and return
-        return result_dict
+        # Return pre-computed results
+        return self._results_dict
 
     def get_race_table(self):
         """
@@ -380,11 +376,7 @@ class Race:
                 result_val = results[skipper_id]
 
                 # Return a rounded value if we are close enough
-                if abs(result_val - round(result_val)) < round_tol:
-                    return round(result_val)
-                # Otherwise, return the float value
-                else:
-                    return round(result_val, 1)
+                return result_val
             # Otherwise, return the other finish name for printing
             else:
                 return self.race_times[skipper_id].other_finish.name

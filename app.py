@@ -5,6 +5,7 @@ Main entry point for Flask web application
 from master_database import MasterDatabase
 
 from flask import Flask, redirect, url_for, render_template
+
 app = Flask(__name__)
 
 database = MasterDatabase()
