@@ -47,9 +47,9 @@
             <tr>
                 <td><a href="{{url_for('boat_page', boat_code=boat.code, fleet_name=fleet.name)}}">{{boat.code.upper()}}</a></td>
                 <td>{{boat.name}}</td>
-                <td>{{boat.boat_class.name.capitalize()}}</td>
+                <td>{{boat.boat_class.capitalize()}}</td>
 
-                {% for d in boat.dpn_vals %}
+                {% for d in boat.dpn_values %}
                 {% if d %}
                 <td>{{ d }}</td>
                 {% else %}

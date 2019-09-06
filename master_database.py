@@ -5,6 +5,7 @@ Parses input files into Python object to parse race information
 import boat_database as bdb
 import skipper_database as sdb
 import race_database as rdb
+import series_database as sdb
 
 import yaml
 
@@ -144,7 +145,7 @@ class MasterDatabase:
                 boat_overrides = None
 
             # Define the series object
-            series = rdb.Series(
+            series = sdb.Series(
                 name=series_name,
                 qualify_count=s['qualify_count'],
                 valid_required_skippers=s['valid_required_skippers'],

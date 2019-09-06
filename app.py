@@ -24,6 +24,14 @@ def series_page(series_name):
         return redirect(url_for('main_page'))
 
 
+@app.route('/series/<string:series_name>/<int:race_index>')
+def race_page(series_name, race_index):
+    if series_name in database.series or race_index > len(database.series[series_name].races):
+        return render_template('race_page.html', series=database.series[series_name], race_index=race_index)
+    else:
+        return redirect(url_for('main_page'))
+
+
 @app.route('/fleet/<string:fleet_name>')
 def fleet_page(fleet_name):
     if fleet_name in database.fleets:

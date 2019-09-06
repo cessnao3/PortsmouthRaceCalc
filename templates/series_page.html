@@ -1,3 +1,5 @@
+{%- import "race_description.html" as race_desc -%}
+
 <html>
     <head>
         <title>PRC - {{ series.fancy_name() }}</title>
@@ -20,10 +22,9 @@
             <tr>
                 <th>Skipper</th>
                 {% for race in series.races %}
-                <th>{{ '%2d' | format(loop.index) }}</th>
+                <th><a href="{{url_for('race_page', series_name=series.name, race_index=loop.index-1)}}">{{ '%2d' | format(loop.index) }}</a></th>
                 {% endfor %}
                 <th>RC Points</th>
-                <th>Expected RC Points</th>
                 <th>Overall Points</th>
             </tr>
             {% for skipper in series.get_all_skippers_sorted() %}
@@ -40,12 +41,15 @@
                 {% set points = series.skipper_points(skipper.identifier) %}
                 {% if points %}
                 <td>{{ series.skipper_rc_points(skipper.identifier) }}</td>
-                <td>{{ series.get_expected_for_skipper(skipper.identifier) }}</td>
                 <td>{{ points }}</td>
                 {% else %}
-                <td>--</td>
-                <td>--</td>
-                <td>--</td>
+                {% if series.skipper_rc_points(skipper.identifier) %}
+                <td>{{ series.skipper_rc_points(skipper.identifier) }}</td>
+                <td>DNQ</td>
+                {% else %}
+                <td>na</td>
+                <td>na</td>
+                {% endif %}
                 {% endif %}
             </tr>
             {% endfor %}
@@ -56,67 +60,7 @@
         {% for race in series.races %}
 
         <h3>Race {{ loop.index }}</h3>
-
-        <table border=0>
-            <tr>
-                <th>Wind:</th>
-                {% if race.wind_bf %}
-                <td>{{ series.fleet.wind_map.get_wind_map_for_beaufort(race.wind_bf).range_str()}} (BFT)</td>
-                {% else %}
-                <td>? (BFT)</td>
-                {% endif %}
-            </tr>
-            <tr>
-                <th>RC:</th>
-                <td>{% for skipper in race.rc_skippers() %}{{skipper.identifier}}{% if not loop.last %}, {% endif %}{% endfor %}</td>
-            </tr>
-            <tr>
-                <th>Date:</th>
-                <td>{{race.date}}</td>
-            </tr>
-            <tr>
-                <th>Notes:</th>
-                <td>{{race.notes}}</td>
-            </tr>
-        </table>
-
-        <br>
-
-        <table border=1>
-            <tr>
-                <th>Rank</th>
-                <th>Name</th>
-                <th>Boat</th>
-                <th>Actual Time [mm:ss]</th>
-                <th>Actual Time [s]</th>
-                <th>Handicap</th>
-                <th>Corrected Time [s]</th>
-                <th>Corrected Time [mm:ss]</th>
-            </tr>
-            {% for race_result in race.race_times_sorted() %}
-
-            {% set score = race_result[0] %}
-            {% set race_time = race_result[1] %}
-            <tr>
-                <td> {{ score }} </td>
-                <td> {{ race_time.skipper.identifier }} </td>
-                <td> <a href="{{ url_for('boat_page', fleet_name=series.fleet.name, boat_code=race_time.boat.code) }}">{{ race_time.boat.code.upper() }}</a> </td>
-                {% if race_time.other_finish %}
-                <td> {{ race_time.other_finish.name }} </td>
-                {% else %}
-                <td> {{ race_time.format_time(race_time.time_s) }} </td>
-                {% endif %}
-                <td> {{ race_time.time_s | round }} </td>
-                <td> {{ '%0.5f' | format(race_time.boat.dpn_for_beaufort(race.wind_bf) / 100.0) }} </td>
-                <td> {{ race_time.corrected_time_s | round }} </td>
-                {% if race_time.other_finish %}
-                <td> {{ race_time.other_finish.name }} </td>
-                {% else %}
-                <td> {{ race_time.format_time(race_time.corrected_time_s) }} </td>
-                {% endif %}
-            </tr>
-            {% endfor %}
-        </table>
+        {{ race_desc.display_race(series, race) }}
         {% endfor %}
     </body>
 

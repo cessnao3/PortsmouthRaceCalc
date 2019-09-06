@@ -156,7 +156,7 @@ class Fleet:
         """
         max_len = 0
         for b in self.boat_types.values():
-            max_len = max(max_len, len(b.dpn_vals))
+            max_len = max(max_len, len(b.dpn_values))
         return max_len
 
     def fancy_name(self):
@@ -173,21 +173,14 @@ class BoatType:
     A class to contain the necessary information to construct a boat type for
     Portsmouth Handicap race parameters
     """
-    class BoatClass(enum.Enum):
-        """
-        Definitions for the class of boat
-        """
-        UNKNOWN = 0
-        CENTERBOARD = 1
-        KEELBOAT = 2
 
     def __init__(self, name, boat_class, code, dpn_values, fleet):
         """
         Initializes the boat parameter
         :param name: The name of the boat
         :type name: str
-        :param boat_class: The class of the boat, of type
-        :type boat_class: BoatType.BoatClass
+        :param boat_class: The class of the boat
+        :type boat_class: str
         :param code: The unique identification code for the given boat class
         :type code: str
         :param dpn_values: A list of 5 values, identifying [DPN0, DPN1, DPN2, DPN3, DPN4]
@@ -196,7 +189,7 @@ class BoatType:
         :type fleet: Fleet
         """
         self.name = name
-        self.boat_class = boat_class
+        self.boat_class = boat_class.lower()
         self.code = code
         self.dpn_values = dpn_values
         self.fleet = fleet
@@ -269,22 +262,20 @@ class BoatType:
                 return float(s)
 
         def boat_row_func(row_dict):
-            # Extract the boat class from the input parameters
-            if row_dict['class'].lower() == 'centerboard':
-                boat_class = BoatType.BoatClass.CENTERBOARD
-            elif row_dict['class'].lower() == 'keelboat':
-                boat_class = BoatType.BoatClass.KEELBOAT
-            else:
-                print('Unknown boat class {:s}'.format(row_dict['class']))
-                boat_class = BoatType.BoatClass.UNKNOWN
-
             # Extract the DPN values, both the initial and Beaufort values
             dpn_values = [dpn_to_float(row_dict['dpn'])]
-            dpn_values += [dpn_to_float(row_dict['dpn{:d}'.format(i + 1)]) for i in range(4)]
+            dpn_len = len([key for key in row_dict if key.startswith('dpn') and len(key) > len('dpn')])
+            dpn_values += [dpn_to_float(row_dict['dpn{:d}'.format(i + 1)]) for i in range(dpn_len)]
 
             # Extract the name and code
             boat_name = row_dict['boat']
             boat_code = row_dict['code'].lower()
+
+            # Extract the boat class from the input parameters
+            boat_class = row_dict['class'].lower()
+            if row_dict['class'].lower() not in ('centerboard', 'keelboat'):
+                print('Unknown boat class {:s} for {:s}'.format(boat_class, boat_name))
+                boat_class = 'unknown'
 
             # Check that the primary DPN value is not null
             if dpn_values[0] is None:

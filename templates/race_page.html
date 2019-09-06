@@ -1,0 +1,25 @@
+{%- set race_num = race_index + 1 -%}
+{%- set race = series.races[race_index] -%}
+{%- import "race_description.html" as race_desc -%}
+
+<html>
+    <head>
+        <title>PRC - Race {{ race_num }}</title>
+    </head>
+    <body>
+        <h1>Series - {{series.fancy_name()}} - Race {{ race_num }}</h1>
+        <a href="{{url_for('main_page')}}">Home</a>
+        <br>
+        <a href="{{url_for('fleet_page', fleet_name=series.fleet.name)}}">Fleet: {{ series.fleet.fancy_name() }}</a>
+        <br>
+        <a href="{{url_for('series_page', series_name=series.name)}}">Series: {{ series.fancy_name() }}</a>
+
+        <h2>Race {{ race_num }}</h2>
+        {{ race_desc.display_race(series, race) }}
+
+        <h2>Result Image</h2>
+        <img src="data:image/png;base64,{{race.race_plot()}}" alt="Race Score Figure">
+    </body>
+
+    {% include 'footer.html' %}
+</html>

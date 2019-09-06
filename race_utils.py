@@ -79,8 +79,12 @@ def round_score(score_in):
     :return: rounded score
     :rtype: int or float
     """
-    tol = 0.05
-    if abs(score_in - round(score_in)) < tol:
+    # Add a small bias so that 0.5 and up get rounded up
+    score_in += 1e-4
+
+    # If the score is very close to an integer, return an integer rounding
+    if abs(round(score_in) - round(score_in, 1)) < 0.01:
         return round(score_in)
+    # Otherwise, return a float rounding to first decimal
     else:
         return round(score_in, 1)

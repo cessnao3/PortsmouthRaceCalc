@@ -1,0 +1,64 @@
+{% macro display_race(series, race) -%}
+
+<table border=0>
+<tr>
+    <th>Wind:</th>
+    {% if race.wind_bf %}
+    <td>{{ series.fleet.wind_map.get_wind_map_for_beaufort(race.wind_bf).range_str()}} (BFT)</td>
+    {% else %}
+    <td>? (BFT)</td>
+    {% endif %}
+</tr>
+<tr>
+    <th>RC:</th>
+    <td>{% for skipper in race.rc_skippers() %}{{skipper.identifier}}{% if not loop.last %}, {% endif %}{% endfor %}</td>
+</tr>
+<tr>
+    <th>Date:</th>
+    <td>{{race.date}}</td>
+</tr>
+<tr>
+    <th>Notes:</th>
+    <td>{{race.notes}}</td>
+</tr>
+</table>
+
+<br>
+
+<table border=1>
+<tr>
+    <th>Rank</th>
+    <th>Name</th>
+    <th>Boat</th>
+    <th>Actual Time [mm:ss]</th>
+    <th>Actual Time [s]</th>
+    <th>Handicap</th>
+    <th>Corrected Time [s]</th>
+    <th>Corrected Time [mm:ss]</th>
+</tr>
+{% for race_result in race.race_times_sorted() %}
+
+{% set score = race_result[0] %}
+{% set race_time = race_result[1] %}
+<tr>
+    <td> {{ score }} </td>
+    <td> {{ race_time.skipper.identifier }} </td>
+    <td> <a href="{{ url_for('boat_page', fleet_name=series.fleet.name, boat_code=race_time.boat.code) }}">{{ race_time.boat.code.upper() }}</a> </td>
+    {% if race_time.other_finish %}
+    <td> {{ race_time.other_finish.name }} </td>
+    {% else %}
+    <td> {{ race_time.format_time(race_time.time_s) }} </td>
+    {% endif %}
+    <td> {{ race_time.time_s | round }} </td>
+    <td> {{ '%0.5f' | format(race_time.boat.dpn_for_beaufort(race.wind_bf) / 100.0) }} </td>
+    <td> {{ race_time.corrected_time_s | round }} </td>
+    {% if race_time.other_finish %}
+    <td> {{ race_time.other_finish.name }} </td>
+    {% else %}
+    <td> {{ race_time.format_time(race_time.corrected_time_s) }} </td>
+    {% endif %}
+</tr>
+{% endfor %}
+</table>
+
+{%- endmacro %}
