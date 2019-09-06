@@ -147,6 +147,7 @@ class MasterDatabase:
             series = rdb.Series(
                 name=series_name,
                 qualify_count=s['qualify_count'],
+                valid_required_skippers=s['valid_required_skippers'],
                 fleet=fleet,
                 boat_overrides=boat_overrides)
 

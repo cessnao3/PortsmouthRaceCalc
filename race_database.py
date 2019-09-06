@@ -5,20 +5,25 @@ Provides a database for use in calculating the corrected times for race paramete
 from boat_database import Fleet
 from skipper_database import Skipper
 from race_utils import capitalize_words, round_score
+
 import enum
+import numpy as np
+import statistics
 
 
 class Series:
     """
     Defines a series of races, defined by a fleet type and a list of races
     """
-    def __init__(self, name, qualify_count, fleet, boat_overrides):
+    def __init__(self, name, qualify_count, valid_required_skippers, fleet, boat_overrides):
         """
         Initializes the series with the input parameters
         :param name: The unique name of the series
         :type name: str
         :param qualify_count: The number of races required to qualify for a scoring place
         :type qualify_count: int
+        :param valid_required_skippers: The number of racers needed to indicate a valid race
+        :type valid_required_skippers: int
         :param fleet: The fleet object to be used to define the corrected scoring parameters
         :type fleet: Fleet
         :param boat_overrides: A dictionary of boat overrides, containing {skipper_identifier: boat_identifier}
@@ -26,6 +31,7 @@ class Series:
         """
         self.name = name
         self.qualify_count = qualify_count
+        self.valid_required_skippers = valid_required_skippers
         self.fleet = fleet
         self.races = list()
         self.boat_overrides = boat_overrides if boat_overrides is not None else dict()
@@ -43,6 +49,54 @@ class Series:
         self._skippers = None
         self._points = None
 
+    def get_expected_for_skipper(self, skipper_id):
+        skipper_db = dict()
+
+        if self.name == '2019_series_1':
+            skipper_db['Mike_F'] = 1
+            skipper_db['Rod_H'] = 1.9
+            skipper_db['Ron_F'] = 3.7
+            skipper_db['Chris_E'] = 2.6
+            skipper_db['Art_M'] = 2
+            skipper_db['Bill_P'] = 3.4
+            skipper_db['David_Bu'] = 3.7
+            skipper_db['David_G'] = 6
+            skipper_db['Lewis_V'] = 5
+            skipper_db['Nedra_F'] = 5.3
+            skipper_db['Pat_B'] = 6.5
+        elif self.name == '2019_series_2':
+            pass
+        elif self.name == '2019_series_3':
+            pass
+
+        if skipper_id in skipper_db:
+            return round_score(skipper_db[skipper_id])
+        else:
+            return 'na'
+
+    def skipper_qualifies(self, skipper_id):
+        """
+        Returns whether a skipper has met the qualification count for the series
+        :param skipper_id: The skipper identifier to check
+        :type skipper_id: str
+        :return: True if the skipper qualifies, False otherwise
+        :rtype: bool
+        """
+        # Initialize a count
+        count = 0
+
+        # Iterate over all valid races
+        for r in [r for r in self.valid_races() if skipper_id in r.race_times]:
+            # Extract the race time object
+            rt = r.race_times[skipper_id]
+
+            # Add to the count if finished or rc
+            if skipper_id in r.race_results() or rt.is_rc():
+                count += 1
+
+        # Return true if the count meets the qualify count threshold
+        return count >= self.qualify_count
+
     def skipper_rc_points(self, skipper_id):
         """
         Returns the number of points associated with RC for a given Skipper
@@ -57,7 +111,46 @@ class Series:
 
             # Calculate RC point parameters
             for skip in self.get_all_skippers():
-                self._skipper_rc_pts[skip.identifier] = 0
+                # Extract the skipper_id
+                skip_id = skip.identifier
+
+                # Skip if no qualification
+                if not self.skipper_qualifies(skip_id):
+                    continue
+
+                # Obtain the finished races for the skipper
+                finished_races = [r for r in self.valid_races() if skip_id in r.race_times and r.race_times[skip_id].finished()]
+
+                # Calculate the average time for each skipper
+                skipper_times = [r.race_times[skip_id].corrected_time_s for r in finished_races]
+                avg_min_time = statistics.mean([r.min_time_s() for r in finished_races])
+                skipper_avg_time = statistics.mean(skipper_times)
+
+                if avg_min_time < 1:
+                    a = 3
+
+                # Calculate the average ratio of actual time / shortest_time
+                ratio_val = skipper_avg_time / avg_min_time
+
+                # List of estimated score results
+                estimated_score_results = list()
+
+                # Iterate over each race
+                for r in self.valid_races():
+                    # Get the race skippers
+                    r_skip = [s for s, rt in r.race_times.items() if rt.finished()]
+                    r_race_times = [r.race_times[s].corrected_time_s for s in r_skip]
+                    r_race_results = [r.race_results()[s] for s in r_skip]
+
+                    # Calculate the estimated time
+                    estimated_time = ratio_val * r.min_time_s()
+
+                    # Estimate the score
+                    score_val = np.interp(estimated_time, r_race_times, r_race_results)
+                    estimated_score_results.append(score_val)
+
+                # Take the average of the ratio scores as the RC points
+                self._skipper_rc_pts[skip_id] = round_score(statistics.mean(estimated_score_results))
 
         # Return points if the skipper is in the list
         if skipper_id in self._skipper_rc_pts:
@@ -78,21 +171,26 @@ class Series:
             # Calculate for all skippers
             for skip in self.get_all_skippers():
                 # Obtain the results for a given skipper for all races
-                point_values = []
-                for r in self.races:
-                    results = r.race_results()
-                    if skip.identifier in results:
-                        point_values.append(results[skip.identifier])
-                    elif skip.identifier in r.race_times and r.race_times[skip.identifier].is_rc():
-                        point_values.append(self.skipper_rc_points(skip.identifier))
+                points_list = list()
 
-                # Return None if there aren't enough races to qualify
-                if len(point_values) < self.qualify_count:
-                    self._points[skip.identifier] = None
-                # Otherwise, return the sum of the lowest to qualify
-                else:
-                    point_values.sort()
-                    self._points[skip.identifier] = point_values[:self.qualify_count]
+                # Ignore if the skipper doesn't qualify
+                if not self.skipper_qualifies(skip.identifier):
+                    continue
+
+                # Iterate over each race
+                for r in self.valid_races():
+                    # Obtain the results
+                    results = r.race_results()
+
+                    # Add the results to the list if the skipper has a result
+                    if skip.identifier in results:
+                        points_list.append(results[skip.identifier])
+                    elif skip.identifier in r.race_times and r.race_times[skip.identifier].is_rc():
+                        points_list.append(self.skipper_rc_points(skip.identifier))
+
+                # Add the sum of the lowest to qualify
+                points_list.sort()
+                self._points[skip.identifier] = points_list[:self.qualify_count]
 
         # Return the pre-calculated result
         if skipper_id in self._points:
@@ -127,13 +225,13 @@ class Series:
         self.races.append(race)
         self.reset()
 
-    def valid_races_held(self):
+    def valid_races(self):
         """
         Returns the number of valid races held
         :return: count of valid races
-        :rtype: int
+        :rtype: list of Race
         """
-        return len([r for r in self.races if r.valid_race()])
+        return [r for r in self.races if r.valid()]
 
     def get_all_skippers(self):
         """
@@ -234,13 +332,34 @@ class Race:
             rt.reset()
         self._results_dict = None
 
-    def valid_race(self):
+    def min_time_s(self):
+        """
+        Returns the minimum completion time
+        :return: minimum completion time in seconds
+        :rtype: int or None
+        """
+        valid_race_times = [rt.corrected_time_s for rt in self.race_times.values() if rt.finished()]
+
+        if len(valid_race_times) >= 0:
+            return min(valid_race_times)
+        else:
+            return None
+
+    def valid(self):
         """
         Determines if a race is valid or not
         :return: True if the race is valid, false otherwise
         :rtype: bool
         """
-        return len(self.race_times) > 3
+        # Calculate the wind condition
+        bf_condition = self.wind_bf is not None
+
+        # Calculate the starting race times
+        starting_race_times = [rt for rt in self.race_times.values() if not rt.is_rc()]
+        num_condition = len(starting_race_times) >= self.series.valid_required_skippers
+
+        # Return true if all conditions are true
+        return bf_condition and num_condition
 
     def add_skipper_time(self, race_time):
         """
@@ -501,7 +620,7 @@ class RaceTime:
         :return: True if time_s is RaceFinishOther.RC
         :rtype: bool
         """
-        return not self.finished() and self.other_finish == self.RaceFinishOther.RC
+        return not self.finished() and self.other_finish is RaceTime.RaceFinishOther.RC
 
     @property
     def corrected_time_s(self):

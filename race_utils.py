@@ -79,7 +79,7 @@ def round_score(score_in):
     :return: rounded score
     :rtype: int or float
     """
-    tol = 1e-2
+    tol = 0.05
     if abs(score_in - round(score_in)) < tol:
         return round(score_in)
     else:
