@@ -65,9 +65,23 @@ class Series:
             skipper_db['Nedra_F'] = 5.3
             skipper_db['Pat_B'] = 6.5
         elif self.name == '2019_series_2':
-            pass
+            skipper_db['Ron_F'] = 1.3
+            skipper_db['Mike_F'] = 1.6
+            skipper_db['Barry_O'] = 2.8
+            skipper_db['Lewis_V'] = 3.9
+            skipper_db['David_Bu'] = 2.8
+            skipper_db['Bill_P'] = 3.1
+            skipper_db['Nedra_F'] = 4.1
         elif self.name == '2019_series_3':
-            pass
+            skipper_db['Mike_F'] = 1
+            skipper_db['Ron_F'] = 1
+            skipper_db['Mike_S'] = 2
+            skipper_db['Nedra_F'] = 2.7
+            skipper_db['Bill_P'] = 3
+            skipper_db['Rod_H'] = 3
+            skipper_db['John_T'] = 4
+            skipper_db['Ian_O'] = 5.7
+            skipper_db['David_Bu'] = 5
 
         if skipper_id in skipper_db:
             return round_score(skipper_db[skipper_id])
@@ -121,36 +135,61 @@ class Series:
                 # Obtain the finished races for the skipper
                 finished_races = [r for r in self.valid_races() if skip_id in r.race_times and r.race_times[skip_id].finished()]
 
-                # Calculate the average time for each skipper
-                skipper_times = [r.race_times[skip_id].corrected_time_s for r in finished_races]
-                avg_min_time = statistics.mean([r.min_time_s() for r in finished_races])
-                skipper_avg_time = statistics.mean(skipper_times)
+                version = 2
 
-                if avg_min_time < 1:
-                    a = 3
+                if version == 3:
+                    max_points_in_race = [max([v for v in r.race_results().values()]) for r in finished_races]
+                    race_results = [r.race_results()[skip_id] for r in finished_races]
+                    values = zip(race_results, max_points_in_race)
+                    result_ratio = [v[0] / v[1] for v in values]
+                    avg_result_ratio = statistics.mean(result_ratio)
 
-                # Calculate the average ratio of actual time / shortest_time
-                ratio_val = skipper_avg_time / avg_min_time
+                    self._skipper_rc_pts[skip_id] = round_score(avg_result_ratio * statistics.mean(max_points_in_race))
 
-                # List of estimated score results
-                estimated_score_results = list()
+                elif version == 2:
+                    point_vals = [r.race_results()[skip_id] for r in finished_races]
+                    point_vals.sort()
 
-                # Iterate over each race
-                for r in self.valid_races():
-                    # Get the race skippers
-                    r_skip = [s for s, rt in r.race_times.items() if rt.finished()]
-                    r_race_times = [r.race_times[s].corrected_time_s for s in r_skip]
-                    r_race_results = [r.race_results()[s] for s in r_skip]
+                    if len(point_vals) > 1:
+                        point_vals.pop()
 
-                    # Calculate the estimated time
-                    estimated_time = ratio_val * r.min_time_s()
+                    self._skipper_rc_pts[skip_id] = round_score(statistics.mean(point_vals))
 
-                    # Estimate the score
-                    score_val = np.interp(estimated_time, r_race_times, r_race_results)
-                    estimated_score_results.append(score_val)
+                elif version == 1:
+                    # Calculate the average time for each skipper
+                    skipper_times = [r.race_times[skip_id].corrected_time_s for r in finished_races]
+                    avg_min_time = statistics.mean([r.min_time_s() for r in finished_races])
+                    skipper_avg_time = statistics.mean(skipper_times)
 
-                # Take the average of the ratio scores as the RC points
-                self._skipper_rc_pts[skip_id] = round_score(statistics.mean(estimated_score_results))
+                    if avg_min_time < 1:
+                        a = 3
+
+                    # Calculate the average ratio of actual time / shortest_time
+                    ratio_val = skipper_avg_time / avg_min_time
+
+                    # List of estimated score results
+                    estimated_score_results = list()
+
+                    # Iterate over each race
+                    for r in self.valid_races():
+                        # Get the race skippers
+                        r_skip = [s for s, rt in r.race_times.items() if rt.finished()]
+                        r_race_times = [r.race_times[s].corrected_time_s for s in r_skip]
+                        r_race_results = [r.race_results()[s] for s in r_skip]
+
+                        # Calculate the estimated time
+                        estimated_time = ratio_val * r.min_time_s()
+
+                        # Estimate the score
+                        #plt.plot(r_race_times, r_race_results)
+                        #plt.show()
+                        score_val = np.interp(estimated_time, r_race_times, r_race_results)
+                        #score_val = np.polyval(np.polyfit(r_race_times, r_race_results, 1), estimated_time)
+
+                        estimated_score_results.append(score_val)
+
+                    # Take the average of the ratio scores as the RC points
+                    self._skipper_rc_pts[skip_id] = round_score(statistics.mean(estimated_score_results))
 
         # Return points if the skipper is in the list
         if skipper_id in self._skipper_rc_pts:
