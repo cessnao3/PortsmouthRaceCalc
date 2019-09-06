@@ -17,8 +17,13 @@
         <h2>Race {{ race_num }}</h2>
         {{ race_desc.display_race(series, race) }}
 
-        <h2>Result Image</h2>
-        <img src="data:image/png;base64,{{race.race_plot()}}" alt="Race Score Figure">
+        <h2>Result Figure</h2>
+        {% set img_data = race.race_plot() %}
+        {% if img_data %}
+        <img src="data:image/png;base64,{{img_data}}" alt="Race Score Figure">
+        {% else %}
+        <p>Unable to import Matplotlib</p>
+        {% endif %}
     </body>
 
     {% include 'footer.html' %}

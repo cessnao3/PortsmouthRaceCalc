@@ -9,8 +9,6 @@ import base64
 import enum
 import io
 
-import matplotlib.pylab as plt
-
 
 class Race:
     """
@@ -272,26 +270,34 @@ class Race:
         """
         Provides a PNG image string in Base 64 providing a plot of result points vs. finishing time
         :return: encoded string value for the resulting figure in base64 for embedding
-        :rtype: str
+        :rtype: str or None
         """
-        # Extract the score and time results from finished scores
-        finished_results_sorted = [v for v in self.race_times_sorted() if v[1].finished()]
-        score_results = [v[0] for v in finished_results_sorted]
-        time_results = [v[1].corrected_time_s / 60.0 for v in finished_results_sorted]
+        try:
+            import matplotlib.pylab as plt
 
-        # Plot the results
-        f = plt.figure()
-        plt.plot(score_results, time_results, 'o--')
-        plt.xlabel('Score [points]')
-        plt.ylabel('Corrected Time [min]')
+            # Extract the score and time results from finished scores
+            finished_results_sorted = [v for v in self.race_times_sorted() if v[1].finished()]
+            score_results = [v[0] for v in finished_results_sorted]
+            time_results = [v[1].corrected_time_s / 60.0 for v in finished_results_sorted]
 
-        # Save the image to a memory buffer
-        buf = io.BytesIO()
-        plt.savefig(buf, format='png')
-        buf.seek(0)
+            # Plot the results
+            f = plt.figure()
+            plt.plot(score_results, time_results, 'o--')
+            plt.xlabel('Score [points]')
+            plt.ylabel('Corrected Time [min]')
 
-        # Encode the buffer bytes as a string and return
-        return base64.b64encode(buf.read()).decode('utf-8')
+            # Save the image to a memory buffer
+            buf = io.BytesIO()
+            plt.savefig(buf, format='png')
+            buf.seek(0)
+
+            # Encode the buffer bytes as a string
+            img_str = base64.b64encode(buf.read()).decode('utf-8')
+        except ImportError:
+            print('race_plot() could not import matplotlib')
+            img_str = None
+
+        return img_str
 
 
 class RaceTime:
