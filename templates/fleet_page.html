@@ -1,10 +1,11 @@
 <html>
     <head>
         <title>PRC - {{ fleet.fancy_name() }}</title>
+        {% include 'head_items.html' %}
     </head>
     <body>
         <h1>Fleet - {{ fleet.fancy_name() }}</h1>
-        <a href="{{url_for('main_page')}}">Home</a>
+        <a href="{{url_for('index_page')}}">Home</a>
 
         <h2>Wind Mapping</h2>
 

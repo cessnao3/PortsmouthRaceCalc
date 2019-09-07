@@ -4,9 +4,7 @@ Main entry point for Flask web application
 
 from master_database import MasterDatabase
 
-from flask import Flask, redirect, url_for, render_template
-import race_utils
-
+from flask import Flask, redirect, url_for, render_template, send_from_directory
 import race_utils
 
 app = Flask(__name__)
@@ -15,9 +13,15 @@ app.jinja_env.globals.update(format_time=race_utils.format_time)
 database = MasterDatabase()
 
 
+@app.route('/favicon.ico')
+def favicon():
+    return send_from_directory('static',
+                               'favicon.ico')
+
+
 @app.route('/')
-def main_page():
-    return render_template('main.html', series=database.series, fleets=database.fleets)
+def index_page():
+    return render_template('index.html', series=database.series, fleets=database.fleets)
 
 
 @app.route('/series/<string:series_name>')

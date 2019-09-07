@@ -1,10 +1,11 @@
 <html>
     <head>
         <title>PRC - {{ boat.code.upper() }}</title>
+        {% include 'head_items.html' %}
     </head>
     <body>
         <h1>Boat - {{ boat.code.upper() }}</h1>
-        <a href="{{url_for('main_page')}}">Home</a>
+        <a href="{{url_for('index_page')}}">Home</a>
         <br>
         <a href="{{url_for('fleet_page', fleet_name=fleet_name)}}">Fleet</a>
 
