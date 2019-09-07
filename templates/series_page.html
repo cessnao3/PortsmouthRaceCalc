@@ -1,4 +1,5 @@
-{%- import "race_description.html" as race_desc -%}
+{%- import "race_macro.html" as race_desc -%}
+{%- import "image_macro.html" as img -%}
 
 <html>
     <head>
@@ -64,12 +65,10 @@
         </table>
 
         <h2>Normalized Results</h2>
-        {% set img_data = series.scatter_plot() %}
-        {% if img_data %}
-        <img src="{{img_data}}" alt="Normalized Results">
-        {% else %}
-        <p>Unable to import Matplotlib</p>
-        {% endif %}
+        {{ img.place(series.scatter_plot(), "Normalized Results") }}
+
+        <h2>Boats Types in Series</h2>
+        {{ img.place(series.boat_pie_chart(), "Boats in Series") }}
 
         <h2>Races</h2>
 

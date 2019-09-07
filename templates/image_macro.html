@@ -1,0 +1,9 @@
+{% macro place(img_data, alt_text) -%}
+
+{% if (img_data | length) > 0 %}
+<img src="{{img_data}}" alt="{{alt_text}}">
+{% else %}
+<p>Unable to import Matplotlib</p>
+{% endif %}
+
+{%- endmacro %}

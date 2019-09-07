@@ -3,7 +3,7 @@ Provides a database for use in calculating the corrected times for race paramete
 """
 
 from skipper_database import Skipper
-from race_utils import round_score, get_pyplot, figure_to_base64
+from race_utils import round_score, get_pyplot, figure_to_base64, format_time
 
 import enum
 
@@ -30,9 +30,10 @@ class Race:
         self.series = series
         self.date = date
         self.wind_bf = wind_bf
-        self.race_index = None
         self.notes = notes
+        self._race_index = None
         self._results_dict = None
+        self._race_plot = None
 
         # Add the RC skippers to the race times as participating in RC
         for rc_skipper in rc:
@@ -46,9 +47,17 @@ class Race:
         """
         Resets any stored calculated parameters
         """
+        self._race_index = None
         for rt in self.race_times.values():
             rt.reset()
         self._results_dict = None
+
+    def set_index(self, i):
+        """
+        Sets the index to the provided value
+        :param i: Value to set the race index to
+        """
+        self._race_index = i
 
     @property
     def race_num(self):
@@ -57,7 +66,10 @@ class Race:
         :return: race index + 1
         :rtype: int
         """
-        return self.race_index + 1
+        if self._race_index is not None:
+            return self._race_index + 1
+        else:
+            return 0
 
     def min_time_s(self):
         """
@@ -128,10 +140,9 @@ class Race:
             # Add each result to the list based on bucket to provide a count for the number of times each result appears
             for result in race_results:
                 ct_s = result.corrected_time_s
-                if ct_s in result_times:
-                    result_times[ct_s] += 1
-                else:
-                    result_times[ct_s] = 1
+                if ct_s not in result_times:
+                    result_times[ct_s] = 0
+                result_times[ct_s] += 1
 
             # Next, define a dictionary for the points for each corrected time
             place_dict = dict()
@@ -143,17 +154,17 @@ class Race:
                 # We define the score as the average of the scores that would be taken by all results with the same tie.
                 # For example, with a tie between 2 and 3 places, we would get
                 #       (2 + 3) / 2 = 2.5
-                # For a tie between 4 and 5 places, we would get
-                #       (4 + 5) / 2 = 4.5
+                # For a tie between 4, 5, and 6 places, we would get
+                #       (4 + 5 + 6) / 3 = 5
                 place_dict[time_s] = sum(range(current_place, current_place + num_for_time)) / num_for_time
                 current_place += num_for_time
 
             # Result Dictionary Creation
-            result_dict = {rt.skipper.identifier: place_dict[rt.corrected_time_s] for rt in race_results}
+            result_dict = {rt.skipper.identifier: round_score(place_dict[rt.corrected_time_s]) for rt in race_results}
 
             # Add in all the other results
             for rt in self.other_results():
-                result_dict[rt.skipper.identifier] = len(self.race_times) - len(self.rc_skippers())
+                result_dict[rt.skipper.identifier] = round_score(len(self.race_times) - len(self.rc_skippers()))
 
             # Round all race results
             for key in result_dict:
@@ -187,7 +198,7 @@ class Race:
         for race_result in self.race_times_sorted():
             score = race_result[0]
             race_time = race_result[1]
-            actual_time_value = race_time.format_time(race_time.time_s)
+            actual_time_value = format_time(race_time.time_s)
             if race_time.other_finish is not None:
                 actual_time_value = race_time.other_finish.name
             str_list.append('{:>11s} {:>6s}   {:5s}   {:4d} / {:0.03f} = {:4d}   {:5s}  {:.2f}'.format(
@@ -197,7 +208,7 @@ class Race:
                 round(race_time.time_s),
                 race_time.boat.dpn_for_beaufort(self.wind_bf) / 100.0,
                 race_time.corrected_time_s,
-                race_time.format_time(race_time.corrected_time_s),
+                format_time(race_time.corrected_time_s),
                 score))
 
         # Return the joined list
@@ -277,28 +288,31 @@ class Race:
     def race_plot(self):
         """
         Provides a PNG image string in Base 64 providing a plot of result points vs. finishing time
-        :return: encoded string value for the resulting figure in base64 for embedding
-        :rtype: str or None
+        :return: encoded string value for the resulting figure in base64 for embedding, empty on failure
+        :rtype: str
         """
-        # Get the pyplot instance
-        plt = get_pyplot()
-        img_str = None
+        if self._race_plot is None:
+            # Get the pyplot instance
+            plt = get_pyplot()
+            img_str = ''
 
-        if plt is not None:
-            # Extract the score and time results from finished scores
-            finished_results_sorted = [v for v in self.race_times_sorted() if v[1].finished()]
-            score_results = [v[0] for v in finished_results_sorted]
-            time_results = [v[1].corrected_time_s / 60.0 for v in finished_results_sorted]
+            if plt is not None:
+                # Extract the score and time results from finished scores
+                finished_results_sorted = [v for v in self.race_times_sorted() if v[1].finished()]
+                score_results = [v[0] for v in finished_results_sorted]
+                time_results = [v[1].corrected_time_s / 60.0 for v in finished_results_sorted]
 
-            # Plot the results
-            f = plt.figure()
-            plt.plot(score_results, time_results, 'o--')
-            plt.xlabel('Score [points]')
-            plt.ylabel('Corrected Time [min]')
+                # Plot the results
+                f = plt.figure()
+                plt.plot(score_results, time_results, 'o--')
+                plt.xlabel('Score [points]')
+                plt.ylabel('Corrected Time [min]')
 
-            img_str = figure_to_base64(f)
+                img_str = figure_to_base64(f)
 
-        return img_str
+            self._race_plot = img_str
+
+        return self._race_plot
 
 
 class RaceTime:
@@ -385,17 +399,3 @@ class RaceTime:
         if self._corrected_time_s is None:
             self._corrected_time_s = round(self.time_s * 100.0 / self.boat.dpn_for_beaufort(self.race.wind_bf))
         return self._corrected_time_s
-
-    @staticmethod
-    def format_time(time_s):
-        """
-        Formats the time in seconds into a mm:ss format
-        :param time_s: The input time, in seconds, to format
-        :type time_s: int
-        :return: string of formatted time
-        :rtype: str
-        """
-        s_val = time_s % 60
-        time_c = int((time_s - s_val) / 60)
-        m_val = time_c
-        return '{:02d}:{:02d}'.format(m_val, round(s_val))

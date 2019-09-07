@@ -122,3 +122,17 @@ def figure_to_base64(figure):
 
     # Encode the buffer bytes as a string
     return 'data:image/png;base64,{:s}'.format(base64.b64encode(buf.read()).decode('utf-8'))
+
+
+def format_time(time_s):
+    """
+    Formats the time in seconds into a mm:ss format
+    :param time_s: The input time, in seconds, to format
+    :type time_s: int
+    :return: string of formatted time
+    :rtype: str
+    """
+    s_val = time_s % 60
+    time_c = int((time_s - s_val) / 60)
+    m_val = time_c
+    return '{:02d}:{:02d}'.format(m_val, round(s_val))

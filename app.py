@@ -5,10 +5,12 @@ Main entry point for Flask web application
 from master_database import MasterDatabase
 
 from flask import Flask, redirect, url_for, render_template
+import race_utils
 
 import race_utils
 
 app = Flask(__name__)
+app.jinja_env.globals.update(format_time=race_utils.format_time)
 
 database = MasterDatabase()
 

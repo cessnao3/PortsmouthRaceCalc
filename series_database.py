@@ -34,6 +34,8 @@ class Series:
         self._skipper_rc_pts = None
         self._skippers = None
         self._points = None
+        self._scatter_plot = None
+        self._pie_plot = None
 
     def reset(self):
         """
@@ -42,11 +44,13 @@ class Series:
         race_counter = 0
         for r in self.races:
             r.reset()
-            r.race_index = race_counter
+            r.set_index(race_counter)
             race_counter += 1
         self._skipper_rc_pts = None
         self._skippers = None
         self._points = None
+        self._scatter_plot = None
+        self._pie_plot = None
 
     def skipper_qualifies(self, skipper_id):
         """
@@ -123,7 +127,7 @@ class Series:
         """
         if self._points is None:
             # Initialize the dictionary
-            self._points = dict()
+            points = dict()
 
             # Calculate for all skippers
             for skip in self.get_all_skippers():
@@ -150,7 +154,10 @@ class Series:
 
                 # Add the sum of the lowest to qualify
                 points_list.sort()
-                self._points[skip_id] = points_list[:self.qualify_count]
+                points[skip_id] = points_list[:self.qualify_count]
+
+            # Append the result to the static variable
+            self._points = points
 
         # Return the pre-calculated result
         if skipper_id in self._points:
@@ -203,14 +210,12 @@ class Series:
             # Define the output list
             skippers = list()
 
-            # Iterate over each race
-            for race in self.races:
-                # Iterate over each time
-                for rt in race.race_times:
-                    race_time = race.race_times[rt]
-                    # Add the skipper to the list if not already in the list
-                    if race_time.skipper not in skippers:
-                        skippers.append(race_time.skipper)
+            all_skipper_instances = [rt.skipper for r in self.races for rt in r.race_times.values()]
+
+            for s in all_skipper_instances:
+                if s not in skippers:
+                    skippers.append(s)
+
             self._skippers = skippers
 
         # Return the skipper list
@@ -245,37 +250,84 @@ class Series:
     def scatter_plot(self):
         """
         Provides a plot of the fraction of corrected / minimum race time as a function of race score
-        :return: An encoded base64 HTML source string of figure, or None if errors
-        :rtype: str or none
+        :return: An encoded base64 HTML source string of figure, empty on failure
+        :rtype: str
         """
-        plt = get_pyplot()
-        img_str = None
+        if self._scatter_plot is None:
+            plt = get_pyplot()
+            img_str = ''
 
-        if plt is not None:
-            f = plt.figure()
+            if plt is not None:
+                f = plt.figure()
 
-            for race in self.valid_races():
-                results_list = list()
+                for race in self.valid_races():
+                    results_list = list()
 
-                for skipper, score in race.race_results().items():
-                    if race.race_times[skipper].finished():
-                        results_list.append((score, race.race_times[skipper].corrected_time_s / race.min_time_s()))
+                    for skipper, score in race.race_results().items():
+                        if race.race_times[skipper].finished():
+                            results_list.append((score, race.race_times[skipper].corrected_time_s / race.min_time_s()))
 
-                # Sort the values
-                results_list.sort(key=lambda x: x[0])
+                    # Sort the values
+                    results_list.sort(key=lambda x: x[0])
 
-                # Plot results
-                plt.plot([x[0] for x in results_list], [y[1] for y in results_list], 'o--')
+                    # Plot results
+                    plt.plot([x[0] for x in results_list], [y[1] for y in results_list], 'o--')
 
-            # Assign the legend and axes labels
-            leg = plt.legend(['Race {:d}'.format(r.race_index + 1) for r in self.valid_races()], loc='upper left')
-            leg.get_frame().set_alpha(0.5)
-            plt.xlabel('Score [points]')
-            plt.ylabel('Normalized Finish Time [corrected / shortest]')
+                # Assign the legend and axes labels
+                leg = plt.legend(['Race {:d}'.format(r.race_num) for r in self.valid_races()], loc='upper left')
+                leg.get_frame().set_alpha(0.5)
+                plt.xlabel('Score [points]')
+                plt.ylabel('Normalized Finish Time [corrected / shortest]')
 
-            img_str = figure_to_base64(f)
+                # Encode the image
+                img_str = figure_to_base64(f)
 
-        return img_str
+            self._scatter_plot = img_str
+
+        return self._scatter_plot
+
+    def boat_pie_chart(self):
+        """
+        Provides a pie chart for the count for each existing boat in the series
+        :return: An encoded base64 HTML source string of figure, empty on failure
+        :rtype: str
+        """
+        if self._pie_plot is None:
+            # Initialize plotting requirements
+            plt = get_pyplot()
+            img_str = ''
+
+            if plt is not None:
+                # Obtain the boats for each skipper
+                skip_boat_dict = dict()
+                boat_type_dict = dict()
+
+                for r in self.races:
+                    for rt in r.race_times.values():
+                        if rt.skipper.identifier not in skip_boat_dict and rt.skipper.identifier in r.race_results():
+                            skip_boat_dict[rt.skipper.identifier] = rt.boat.code
+
+                            if rt.boat.code not in boat_type_dict:
+                                boat_type_dict[rt.boat.code] = 0
+                            boat_type_dict[rt.boat.code] += 1
+
+                combined = [(key, val) for key, val in boat_type_dict.items()]
+                labels = [v[0].upper() for v in combined]
+                sizes = [v[1] for v in combined]
+
+                def percent2count(percent):
+                    return '{:1.0f}'.format(round(percent/100.0 * sum(sizes)))
+
+                f = plt.figure()
+                ax = plt.gca()
+                ax.pie(sizes, labels=labels, autopct=percent2count, explode=[0.03 for i in combined])
+                ax.axis('equal')
+
+                img_str = figure_to_base64(f)
+
+            self._pie_plot = img_str
+
+        return self._pie_plot
 
     def fancy_name(self):
         """

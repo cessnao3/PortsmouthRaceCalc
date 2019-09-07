@@ -1,6 +1,6 @@
-{%- set race_num = race_index + 1 -%}
 {%- set race = series.races[race_index] -%}
-{%- import "race_description.html" as race_desc -%}
+{%- import "race_macro.html" as race_desc -%}
+{%- import "image_macro.html" as img -%}
 
 <html>
     <head>
@@ -18,12 +18,7 @@
         {{ race_desc.display_race(series, race) }}
 
         <h2>Result Figure</h2>
-        {% set img_data = race.race_plot() %}
-        {% if img_data %}
-        <img src="{{img_data}}" alt="Race Score Figure">
-        {% else %}
-        <p>Unable to import Matplotlib</p>
-        {% endif %}
+        {{ img.place(race.race_plot(), "Race Results") }}
     </body>
 
     {% include 'footer.html' %}
