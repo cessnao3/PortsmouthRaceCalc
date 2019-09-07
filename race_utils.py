@@ -98,6 +98,8 @@ def get_pyplot():
     :return: matplotlib.pyplot instance
     """
     try:
+        import matplotlib
+        matplotlib.use('Agg')
         import matplotlib.pyplot as plt
     except ImportError:
         print('Could not import pyplot')
@@ -115,7 +117,7 @@ def figure_to_base64(figure):
     """
     # Save the image to a memory buffer
     buf = io.BytesIO()
-    figure.savefig(buf, format='png')
+    figure.savefig(buf, format='png', transparent=True)
     buf.seek(0)
 
     # Encode the buffer bytes as a string

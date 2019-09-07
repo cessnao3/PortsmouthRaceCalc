@@ -6,6 +6,8 @@ from master_database import MasterDatabase
 
 from flask import Flask, redirect, url_for, render_template
 
+import race_utils
+
 app = Flask(__name__)
 
 database = MasterDatabase()
@@ -56,4 +58,9 @@ def boat_page(fleet_name, boat_code):
 
 
 if __name__ == '__main__':
+    # Initialize Pyplot
+    race_utils.get_pyplot()
+
+    # Run the app
     app.run()
+

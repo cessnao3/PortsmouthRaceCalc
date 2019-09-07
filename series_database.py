@@ -268,7 +268,8 @@ class Series:
                 plt.plot([x[0] for x in results_list], [y[1] for y in results_list], 'o--')
 
             # Assign the legend and axes labels
-            plt.legend(['Race {:d}'.format(r.race_index + 1) for r in self.valid_races()], loc='upper_left')
+            leg = plt.legend(['Race {:d}'.format(r.race_index + 1) for r in self.valid_races()], loc='upper left')
+            leg.get_frame().set_alpha(0.5)
             plt.xlabel('Score [points]')
             plt.ylabel('Normalized Finish Time [corrected / shortest]')
 
