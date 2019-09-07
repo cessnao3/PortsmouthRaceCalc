@@ -4,7 +4,7 @@ Provides a database for use in calculating and scoring a race series
 
 from boat_database import Fleet
 from skipper_database import Skipper
-from race_utils import capitalize_words, round_score
+from race_utils import capitalize_words, round_score, get_pyplot, figure_to_base64
 
 
 class Series:
@@ -37,10 +37,13 @@ class Series:
 
     def reset(self):
         """
-        Resets any stored calculated parameters
+        Resets any stored calculated parameters and sets the race index parameter for each race
         """
+        race_counter = 0
         for r in self.races:
             r.reset()
+            r.race_index = race_counter
+            race_counter += 1
         self._skipper_rc_pts = None
         self._skippers = None
         self._points = None
@@ -238,6 +241,40 @@ class Series:
 
         # Return the result
         return skippers
+
+    def scatter_plot(self):
+        """
+        Provides a plot of the fraction of corrected / minimum race time as a function of race score
+        :return: An encoded base64 HTML source string of figure, or None if errors
+        :rtype: str or none
+        """
+        plt = get_pyplot()
+        img_str = None
+
+        if plt is not None:
+            f = plt.figure()
+
+            for race in self.valid_races():
+                results_list = list()
+
+                for skipper, score in race.race_results().items():
+                    if race.race_times[skipper].finished():
+                        results_list.append((score, race.race_times[skipper].corrected_time_s / race.min_time_s()))
+
+                # Sort the values
+                results_list.sort(key=lambda x: x[0])
+
+                # Plot results
+                plt.plot([x[0] for x in results_list], [y[1] for y in results_list], 'o--')
+
+            # Assign the legend and axes labels
+            plt.legend(['Race {:d}'.format(r.race_index + 1) for r in self.valid_races()], loc='upper_left')
+            plt.xlabel('Score [points]')
+            plt.ylabel('Normalized Finish Time [corrected / shortest]')
+
+            img_str = figure_to_base64(f)
+
+        return img_str
 
     def fancy_name(self):
         """

@@ -196,6 +196,9 @@ class MasterDatabase:
                     # Add the race to the series
                     series.add_race(race)
 
+            # Reset the series to update values
+            series.reset()
+
             # Set the series value to the loaded parameters
             series_values[series_name] = series
 

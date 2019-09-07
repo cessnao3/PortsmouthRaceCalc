@@ -3,6 +3,8 @@ Common utilities useful for loading race parameters and performing calculations
 """
 
 import csv
+import io
+import base64
 
 
 def load_from_csv(csv_data, row_func, expected_header=None):
@@ -88,3 +90,33 @@ def round_score(score_in):
     # Otherwise, return a float rounding to first decimal
     else:
         return round(score_in, 1)
+
+
+def get_pyplot():
+    """
+    Imports and provides pyplot instance
+    :return: matplotlib.pyplot instance
+    """
+    try:
+        import matplotlib.pyplot as plt
+    except ImportError:
+        print('Could not import pyplot')
+        plt = None
+
+    return plt
+
+
+def figure_to_base64(figure):
+    """
+    Turns a matplotlib figure into a HTML-compatible image source string
+    :param figure: Matplotlib figure object
+    :return: HTML data encoding of figure
+    :rtype: str
+    """
+    # Save the image to a memory buffer
+    buf = io.BytesIO()
+    figure.savefig(buf, format='png')
+    buf.seek(0)
+
+    # Encode the buffer bytes as a string
+    return 'data:image/png;base64,{:s}'.format(base64.b64encode(buf.read()).decode('utf-8'))

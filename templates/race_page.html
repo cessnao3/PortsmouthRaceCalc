@@ -4,23 +4,23 @@
 
 <html>
     <head>
-        <title>PRC - Race {{ race_num }}</title>
+        <title>PRC - Race {{ race.race_num }}</title>
     </head>
     <body>
-        <h1>Series - {{series.fancy_name()}} - Race {{ race_num }}</h1>
+        <h1>Series - {{series.fancy_name()}} - Race {{ race.race_num }}</h1>
         <a href="{{url_for('main_page')}}">Home</a>
         <br>
         <a href="{{url_for('fleet_page', fleet_name=series.fleet.name)}}">Fleet: {{ series.fleet.fancy_name() }}</a>
         <br>
         <a href="{{url_for('series_page', series_name=series.name)}}">Series: {{ series.fancy_name() }}</a>
 
-        <h2>Race {{ race_num }}</h2>
+        <h2>Race {{ race.race_num }}</h2>
         {{ race_desc.display_race(series, race) }}
 
         <h2>Result Figure</h2>
         {% set img_data = race.race_plot() %}
         {% if img_data %}
-        <img src="data:image/png;base64,{{img_data}}" alt="Race Score Figure">
+        <img src="{{img_data}}" alt="Race Score Figure">
         {% else %}
         <p>Unable to import Matplotlib</p>
         {% endif %}

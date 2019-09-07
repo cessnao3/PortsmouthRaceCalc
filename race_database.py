@@ -3,11 +3,9 @@ Provides a database for use in calculating the corrected times for race paramete
 """
 
 from skipper_database import Skipper
-from race_utils import round_score
+from race_utils import round_score, get_pyplot, figure_to_base64
 
-import base64
 import enum
-import io
 
 
 class Race:
@@ -32,6 +30,7 @@ class Race:
         self.series = series
         self.date = date
         self.wind_bf = wind_bf
+        self.race_index = None
         self.notes = notes
         self._results_dict = None
 
@@ -50,6 +49,15 @@ class Race:
         for rt in self.race_times.values():
             rt.reset()
         self._results_dict = None
+
+    @property
+    def race_num(self):
+        """
+        Provides the 1's indexed race number
+        :return: race index + 1
+        :rtype: int
+        """
+        return self.race_index + 1
 
     def min_time_s(self):
         """
@@ -272,9 +280,11 @@ class Race:
         :return: encoded string value for the resulting figure in base64 for embedding
         :rtype: str or None
         """
-        try:
-            import matplotlib.pylab as plt
+        # Get the pyplot instance
+        plt = get_pyplot()
+        img_str = None
 
+        if plt is not None:
             # Extract the score and time results from finished scores
             finished_results_sorted = [v for v in self.race_times_sorted() if v[1].finished()]
             score_results = [v[0] for v in finished_results_sorted]
@@ -286,16 +296,7 @@ class Race:
             plt.xlabel('Score [points]')
             plt.ylabel('Corrected Time [min]')
 
-            # Save the image to a memory buffer
-            buf = io.BytesIO()
-            plt.savefig(buf, format='png')
-            buf.seek(0)
-
-            # Encode the buffer bytes as a string
-            img_str = base64.b64encode(buf.read()).decode('utf-8')
-        except ImportError:
-            print('race_plot() could not import matplotlib')
-            img_str = None
+            img_str = figure_to_base64(f)
 
         return img_str
 

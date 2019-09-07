@@ -22,10 +22,18 @@
             <tr>
                 <th>Skipper</th>
                 {% for race in series.races %}
-                <th><a href="{{url_for('race_page', series_name=series.name, race_index=loop.index-1)}}">{{ '%2d' | format(loop.index) }}</a></th>
+                <th><a href="{{url_for('race_page', series_name=series.name, race_index=loop.index-1)}}">{{ '%2d' | format(race.race_num) }}</a></th>
                 {% endfor %}
                 <th>RC Points</th>
                 <th>Overall Points</th>
+            </tr>
+            <tr>
+                <th>Finished Times</th>
+                {% for race in series.races %}
+                <th>{{ race.race_results() | length }}</th>
+                {% endfor %}
+                <th></th>
+                <th></th>
             </tr>
             {% for skipper in series.get_all_skippers_sorted() %}
             <tr>
@@ -55,11 +63,18 @@
             {% endfor %}
         </table>
 
+        <h2>Normalized Results</h2>
+        {% set img_data = series.scatter_plot() %}
+        {% if img_data %}
+        <img src="{{img_data}}" alt="Normalized Results">
+        {% else %}
+        <p>Unable to import Matplotlib</p>
+        {% endif %}
+
         <h2>Races</h2>
 
         {% for race in series.races %}
-
-        <h3>Race {{ loop.index }}</h3>
+        <h3>Race {{ race.race_num }}</h3>
         {{ race_desc.display_race(series, race) }}
         {% endfor %}
     </body>
