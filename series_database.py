@@ -64,12 +64,12 @@ class Series:
         count = 0
 
         # Iterate over all valid races
-        for r in [r for r in self.valid_races() if skipper_id in r.race_times]:
+        for r in [r for r in self.races if skipper_id in r.race_times]:
             # Extract the race time object
             rt = r.race_times[skipper_id]
 
             # Add to the count if finished or rc
-            if skipper_id in r.race_results() or rt.is_rc():
+            if (skipper_id in r.race_results() and r.valid()) or rt.is_rc():
                 count += 1
 
         # Return true if the count meets the qualify count threshold
