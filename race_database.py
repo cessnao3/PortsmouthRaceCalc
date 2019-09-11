@@ -100,6 +100,23 @@ class Race:
         # Return true if all conditions are true
         return bf_condition and num_condition
 
+    def valid_for_rc(self, skipper_id):
+        """
+        Determines if a race is valid for RC points with a given skipper_id
+        :param skipper_id: the ID of the skipper to check
+        :type skipper_id: str
+        :return: True if the race time can be counted for RC points for the skipper, otherwise False
+        :rtype: bool
+        """
+        # Determine if the race was valid
+        valid_check = self.valid()
+
+        # Determine if the skipper was RC for the race
+        rc_check = skipper_id in self.race_times and self.race_times[skipper_id].is_rc()
+
+        # Determine if we can use the race for RC
+        return valid_check or rc_check
+
     def add_skipper_time(self, race_time):
         """
         Adds a skipper's time to the race results
