@@ -141,8 +141,11 @@ class Series:
                 if not self.skipper_qualifies(skip_id):
                     continue
 
+                # Select the race values
+                race_vals = [r for r in self.races if r.valid() or (skip_id in r.race_times and r.race_times[skip_id].is_rc())]
+
                 # Iterate over each race
-                for r in self.valid_races():
+                for r in race_vals:
                     # Obtain the results
                     results = r.race_results()
 
