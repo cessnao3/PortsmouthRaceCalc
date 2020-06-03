@@ -143,15 +143,22 @@ class Series:
                     # Obtain the results
                     results = r.race_results()
 
+                    value_to_add = None
+
                     # Add the results to the list if the skipper has a result
                     if skip_id in results:
-                        points_list.append(results[skip_id])
+                        value_to_add = results[skip_id]
                     elif skip_id in r.race_times and r.race_times[skip_id].is_rc():
-                        points_list.append(self.skipper_rc_points(skip_id))
+                        value_to_add = self.skipper_rc_points(skip_id)
+
+                    if value_to_add is not None:
+                        points_list.append(value_to_add)
 
                 # Add the sum of the lowest to qualify
                 points_list.sort()
-                points[skip_id] = points_list[:self.qualify_count]
+
+                if len(points_list) > 0:
+                    points[skip_id] = points_list[:self.qualify_count]
 
             # Append the result to the static variable
             self._points = points
@@ -237,6 +244,15 @@ class Series:
 
         # Sort first by alphabet
         skippers.sort(key=lambda x: x.identifier)
+
+        # Then, sort by RC points
+        def rc_pts_sort(s):
+            rc_pts = self.skipper_rc_points(s.identifier)
+            if rc_pts is None:
+                return 100
+            else:
+                return rc_pts
+        skippers.sort(key=lambda x: rc_pts_sort(x))
 
         # Next, sort by the score
         skippers.sort(key=lambda x: scores[x.identifier])
@@ -333,3 +349,66 @@ class Series:
         :rtype: str
         """
         return capitalize_words(self.name.replace('_', ' '))
+
+    def get_series_table(self):
+        """
+        Calculates the resulting scores, sorts, and prints out in a table
+        :return: a string table of the race results that can be printed to the console
+        :rtype: str
+        """
+        # Initialize the string list
+        str_list = list()
+
+        # Append header parameters
+        str_list.append('{:>24s}: {:d}'.format('Races Held', len(self.races)))
+        str_list.append('{:>24s}: {:d}'.format('Races Needed to Qualify', self.qualify_count))
+        str_list.append(('{:>20s}{:>' + '{:d}'.format(4 * len(self.races)) + 's}{:>8s}{:>8s}').format(
+            'Name / Boat',
+            'Races',
+            'RC Pts',
+            'Points'))
+
+        tmp_str = ''.join([' '] * 20)
+        tmp_str_1 = tmp_str
+        tmp_str_2 = tmp_str
+        for i in range(len(self.races)):
+            tmp_str_1 += '{:4d}'.format(i + 1)
+            tmp_str_2 += '{:>4s}'.format('--')
+
+        str_list.append(tmp_str_1)
+        str_list.append(tmp_str_2)
+
+        for skipper in self.get_all_skippers_sorted():
+            skipper_line = '{:>20s}'.format(skipper.identifier)
+
+            for race in self.races:
+                result = race.get_skipper_result(skipper.identifier)
+                if result is not None:
+                    skipper_line += '{:>4s}'.format(str(result))
+                else:
+                    skipper_line += '{:>4s}'.format('-')
+
+            skipper_line += ' |'
+
+            points = self.skipper_points(skipper.identifier)
+            rc_pts = self.skipper_rc_points(skipper.identifier)
+
+            if rc_pts is not None:
+                skipper_line += '{:6.1f}'.format(rc_pts)
+            else:
+                skipper_line += '{:>6s}'.format('na')
+
+            if points is not None:
+                skipper_line += '{:8.1f}'.format(points)
+            else:
+                skipper_line += '{:>8s}'.format('DNQ')
+
+
+
+            str_list.append(skipper_line)
+
+
+
+
+        # Return the results
+        return '\n'.join(str_list)

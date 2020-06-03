@@ -13,3 +13,4 @@ for series in database.series.values():
         print(race.get_race_table())
         print()
         race_num += 1
+    print(series.get_series_table())

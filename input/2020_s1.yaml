@@ -1,0 +1,56 @@
+- date: '2020_05_31'
+  rc:
+    - Nedra_F
+    - Mike_F
+  races:
+    - notes: M2 Starboard
+      wind_bf: 2
+      times:
+        Ron_F: 22:57
+        Rod_H: 23:10
+        Bill_P: 26:15
+        Barry_O: 29:17
+        Nick_H: 28:10
+        Ian_O: 32:08
+        Jim_S: 42:22
+        Matt_L: 60:00
+    - notes: M2 Starboard
+      wind_bf: 2
+      times:
+        Ron_F: 20:26
+        Bill_P: 23:29
+        Rod_H: 22:48
+        Barry_O: 26:48
+        Nick_H: 25:45
+        Ian_O: 26:28
+        Jim_S: 33:07
+        Matt_L: 27:08
+- date: '2020_06_07'
+  rc:
+    - Barry_O
+    - Bill_P
+  races:
+    - notes: M3 Starboard Rounding
+      wind_bf: 2
+      times:
+        Mike_F: 37:10
+        Rod_H: 36:12
+        Matt_L: 41:28
+        Lewis_V: 33:43
+        Ian_O: 39:39
+        Nedra_F: 40:56
+        Jay_H: 39:19
+        Ron_F: DNF
+        Jim_S: 2:00:00
+    - notes: M3 Starboard Rounding
+      wind_bf: 2
+      times:
+        Ron_F: 31:11
+        Rod_H: 34:49
+        Mike_F: 36:07
+        Jay_H: 34:43
+        Nedra_F: 36:30
+        Ian_O: 37:16
+        Lewis_V: 33:44
+        Jim_S: 45:37
+        Matt_L: 50:17
