@@ -274,11 +274,14 @@ class Series:
                 f = plt.figure()
 
                 for race in self.valid_races():
+                    # Define the result list for the scatter plot
                     results_list = list()
 
+                    # Add each valid item to the scatter plot
                     for skipper, score in race.race_results().items():
-                        if race.race_times[skipper].finished():
-                            results_list.append((score, race.race_times[skipper].corrected_time_s / race.min_time_s()))
+                        rt = race.race_times[skipper]
+                        if rt.finished() and rt.fip_val is None:
+                            results_list.append((score, rt.corrected_time_s / race.min_time_s()))
 
                     # Sort the values
                     results_list.sort(key=lambda x: x[0])
@@ -295,8 +298,10 @@ class Series:
                 # Encode the image
                 img_str = figure_to_base64(f)
 
+            # Memoize the plot
             self._scatter_plot = img_str
 
+        # Return the result
         return self._scatter_plot
 
     def boat_pie_chart(self):

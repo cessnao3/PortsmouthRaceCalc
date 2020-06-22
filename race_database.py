@@ -80,7 +80,7 @@ class Race:
         :return: minimum completion time in seconds
         :rtype: int or None
         """
-        valid_race_times = [rt.corrected_time_s for rt in self.race_times.values() if rt.finished()]
+        valid_race_times = [rt.corrected_time_s for rt in self.race_times.values() if rt.finished_with_time()]
 
         if len(valid_race_times) >= 0:
             return min(valid_race_times)
@@ -281,7 +281,7 @@ class Race:
         :return: list of valid race times that did not finish the race and were not RC
         :rtype: list of RaceTime
         """
-        return [r for r in self.race_times.values() if not r.finished() and not r.is_rc() and r.fip_val is None]
+        return [r for r in self.race_times.values() if not r.finished() and not r.is_rc()]
 
     def fip_results(self):
         """
@@ -289,7 +289,7 @@ class Race:
         :return: list of valid race times for finishing in place
         :rtype: list of RaceTime
         """
-        return [r for r in self.race_times.values() if r.fip_val is not None]
+        return [r for r in self.race_times.values() if r.finished_without_time()]
 
     def finished_race_times(self):
         """
@@ -297,7 +297,7 @@ class Race:
         :return: a list of the race times that were completed
         :rtype: list of RaceTime
         """
-        return [r for r in self.race_times.values() if r.finished()]
+        return [r for r in self.race_times.values() if r.finished_with_time()]
 
     def race_times_sorted(self):
         """
@@ -415,10 +415,26 @@ class RaceTime:
     def finished(self):
         """
         Return whether the skipper finished the race
+        :return: True if the time_s is not one of the RaceFinishOther types or is FIP
+        :rtype: bool
+        """
+        return self.finished_with_time() or self.finished_without_time()
+
+    def finished_with_time(self):
+        """
+        Return whether the skipper finished the race with a time
         :return: True if the time_s is not one of the RaceFinishOther types
         :rtype: bool
         """
         return self.other_finish is None
+
+    def finished_without_time(self):
+        """
+        Return whether the skipper finished the race without a time
+        :return: True if the time_s is FIP
+        :rtype: bool
+        """
+        return self.other_finish == self.RaceFinishOther.FIP
 
     def has_other_result(self):
         """
