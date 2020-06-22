@@ -30,7 +30,7 @@ class Series:
         self.valid_required_skippers = valid_required_skippers
         self.fleet = fleet
         self.races = list()
-        self.boat_overrides = boat_overrides if boat_overrides is not None else dict()
+        self.boat_overrides = boat_overrides
         self._skipper_rc_pts = None
         self._skippers = None
         self._points = None

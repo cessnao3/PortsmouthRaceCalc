@@ -41,7 +41,7 @@
         Nedra_F: 40:56
         Jay_H: 39:19
         Ron_F: DNF
-        Jim_S: 2:00:00
+        Jim_S: FIP8
     - notes: M3 Starboard Rounding
       wind_bf: 2
       times:
@@ -54,3 +54,30 @@
         Lewis_V: 33:44
         Jim_S: 45:37
         Matt_L: 50:17
+- date: '2020_06_14'
+  rc:
+    - Nick_H
+    - Lewis_V
+  races:
+    - notes: M2 Starboard Rounding
+      wind_bf: 2
+      times:
+        Mike_F: 27:44
+        Nedra_F: 27:56
+        Ron_F: 27:10
+        Bill_P: 28:18
+        Ian_O: 28:57
+        Rod_H: 28:38
+        Matt_L: 40:06
+        Jim_S: 38:20
+    - notes: M2 Starboard Rounding
+      wind_bf: 2
+      times:
+        Mike_F: 30:41
+        Rod_H: 30:22
+        Ron_F: 30:12
+        Nedra_F: 32:29
+        Bill_P : 32:30
+        Matt_L: 39:58
+        Ian_O: 37:57
+        Jim_S: 42:20

@@ -12,7 +12,7 @@ class Race:
     """
     An object to maintain the information for a single race
     """
-    def __init__(self, series, rc, date, wind_bf, notes):
+    def __init__(self, series, rc, date, wind_bf, notes, boat_overrides):
         """
         Initializes the race object
         :param series: reference to the series associated with the current race
@@ -25,12 +25,15 @@ class Race:
         :type wind_bf: int
         :param notes: any additional notes about the race
         :type notes: str
+        :param boat_overrides: a dict of boat overrides for a given race
+        :type boat_overrides: dict[str, str]
         """
         self.race_times = dict()
         self.series = series
         self.date = date
         self.wind_bf = wind_bf
         self.notes = notes
+        self.boat_overrides = boat_overrides
         self._race_index = None
         self._results_dict = None
         self._race_plot = None
@@ -179,6 +182,10 @@ class Race:
             # Result Dictionary Creation
             result_dict = {rt.skipper.identifier: round_score(place_dict[rt.corrected_time_s]) for rt in race_results}
 
+            # Add in the finish-in-place values
+            for rt in self.fip_results():
+                result_dict[rt.skipper.identifier] = round_score(rt.fip_val)
+
             # Add in all the other results
             for rt in self.other_results():
                 result_dict[rt.skipper.identifier] = round_score(len(self.race_times) - len(self.rc_skippers()))
@@ -186,6 +193,8 @@ class Race:
             # Round all race results
             for key in result_dict:
                 result_dict[key] = round_score(result_dict[key])
+
+            # Define override parameters
 
             # Set the memoization value
             self._results_dict = result_dict
@@ -269,10 +278,18 @@ class Race:
     def other_results(self):
         """
         Provides a list of other racers that did not finish the race and were not RC
-        :return: list of valid race times
+        :return: list of valid race times that did not finish the race and were not RC
         :rtype: list of RaceTime
         """
-        return [r for r in self.race_times.values() if not r.finished() and not r.is_rc()]
+        return [r for r in self.race_times.values() if not r.finished() and not r.is_rc() and r.fip_val is None]
+
+    def fip_results(self):
+        """
+        Provides a list of the racers that have a Finish-In-Place indication
+        :return: list of valid race times for finishing in place
+        :rtype: list of RaceTime
+        """
+        return [r for r in self.race_times.values() if r.fip_val is not None]
 
     def finished_race_times(self):
         """
@@ -294,6 +311,7 @@ class Race:
         # Obtain the list of skippers who finished the race and sort by the resulting scores obtained above
         race_time_list = self.finished_race_times()
         race_time_list.extend(self.other_results())
+        race_time_list.extend(self.fip_results())
 
         # Create the resulting dictionary
         race_result_list = [(scores[rt.skipper.identifier], rt) for rt in race_time_list]
@@ -343,8 +361,9 @@ class RaceTime:
         RC = 0
         DNF = 1
         DQ = 2
+        FIP = 3
 
-    def __init__(self, race, skipper, time_s, other_finish=None):
+    def __init__(self, race, skipper, time_s, other_finish=None, finish_in_place=None):
         """
         Initializes the race time object with the input parameters
         :param race: race to associate the time with
@@ -355,12 +374,21 @@ class RaceTime:
         :type time_s: int
         :param other_finish: parameter to define a different type of race finish other than a time
         :type other_finish: None or RaceFinishOther
+        :param finish_in_place: parameter to define a type of finish to assign points
+        :type finish_in_place: int
         """
         # Initialize the race parameters
         self.race = race
         self.skipper = skipper
         self.other_finish = other_finish
         self.time_s = time_s
+
+        if self.other_finish == self.RaceFinishOther.FIP:
+            self.fip_val = finish_in_place
+        elif finish_in_place is not None:
+            raise ValueError('Cannot have a FIP value without the associated result')
+        else:
+            self.fip_val = None
 
         if self.other_finish is not None:
             self.time_s = 0
@@ -370,7 +398,9 @@ class RaceTime:
 
         # Extract the boat ID, from the override (if available), or the default in the skipper database
         boat_id = self.skipper.default_boat_code
-        if skipper.identifier in race.series.boat_overrides:
+        if skipper.identifier in race.boat_overrides:
+            boat_id = race.boat_overrides[skipper.identifier]
+        elif skipper.identifier in race.series.boat_overrides:
             boat_id = race.series.boat_overrides[skipper.identifier]
 
         # Define the boat type object

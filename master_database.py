@@ -142,7 +142,7 @@ class MasterDatabase:
             if 'boat_overrides' in s:
                 boat_overrides = s['boat_overrides']
             else:
-                boat_overrides = None
+                boat_overrides = dict()
 
             # Define the series object
             series = sdb.Series(
@@ -163,13 +163,19 @@ class MasterDatabase:
 
                 # Iterate over each race
                 for race_dict in race_date_dict['races']:
+                    if 'boat_overrides' in race_dict:
+                        race_boat_overrides = race_dict['boat_overrides']
+                    else:
+                        race_boat_overrides = dict()
+
                     # Create the race object
                     race = rdb.Race(
                         series=series,
                         rc=race_committee,
                         date=race_date_dict['date'],
                         wind_bf=race_dict['wind_bf'],
-                        notes=race_dict['notes'])
+                        notes=race_dict['notes'],
+                        boat_overrides=race_boat_overrides)
 
                     # Extract the race time results
                     time_values = race_dict['times']
@@ -180,17 +186,31 @@ class MasterDatabase:
 
                     # Iterate over each of the skipper time values, creating a race time and adding it to the race
                     for skipper_id in time_values:
+                        # Extract the time result
                         time_result = time_values[skipper_id]
+
+                        # Check for other race types
                         other_result_type = None
+                        finish_in_place_val = None
                         if type(time_result) is str:
-                            other_result_type = rdb.RaceTime.RaceFinishOther[time_result.strip().upper()]
+                            # Check for finish in place
+                            tr_str = time_result.strip().upper()
+                            fip_name = rdb.RaceTime.RaceFinishOther.FIP.name
+
+                            if tr_str[:len(fip_name)] == rdb.RaceTime.RaceFinishOther.FIP.name:
+                                finish_in_place_val = int(tr_str[len(fip_name):])
+                                tr_str = tr_str[:len(fip_name)]
+
+                            other_result_type = rdb.RaceTime.RaceFinishOther[tr_str]
                             time_result = 0
 
+                        # Create and add the race time value
                         race_time = rdb.RaceTime(
                             race=race,
                             skipper=self.skippers[skipper_id],
                             time_s=time_result,
-                            other_finish=other_result_type)
+                            other_finish=other_result_type,
+                            finish_in_place=finish_in_place_val)
                         race.add_skipper_time(race_time)
 
                     # Add the race to the series
