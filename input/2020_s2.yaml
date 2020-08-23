@@ -1,0 +1,93 @@
+- date: '2020_07_19'
+  rc:
+    - Mike_S
+    - Rod_H
+  races:
+    - notes: M2 Starboard Rounding low winds
+      wind_bf: 0
+      times:
+        Bill_P: 52:47
+        Barry_O: 59:16
+        Ian_O: 60:47
+        Matt_L: 73:07
+    - notes: M1 Starboard Rounding low winds
+      wind_bf: 0
+      times:
+        Bill_P: 23:11
+        Barry_O: 37:52
+        Ian_O: 41:33
+        Matt_L: 39:26
+- date: '2020_07_26'
+  rc:
+    - Ron_F
+    - Connie_M
+  races:
+    - notes: M2 Starboard Rounding
+      wind_bf: 2
+      times:
+        Mike_F: 30:10
+        Bill_P: 30:58
+        Nedra_F: 31:11
+        Rod_H: 30:42
+        Ian_O: 36:26
+        Matt_L: 42:47
+        Jim_S: FIP7
+    - notes: M2 Starboard Rounding
+      wind_bf: 2
+      times:
+        Mike_F: 35:40
+        Bill_P: 34:51
+        Nedra_F: 38:23
+        Rod_H: 33:19
+        Ian_O: 40:21
+        Matt_L: 40:31
+        Jim_S: FIP7
+- date: '2020_08_02'
+  rc:
+    - Nick_H
+    - Lewis_V
+  races:
+    - notes: M3 Starboard Rounding
+      wind_bf: 2
+      times:
+        Mike_F: 34:10
+        Nedra_F: 34:17
+        Bill_P: 34:30
+        Rod_H: 33:30
+        Barry_O: 41:14
+        Ian_O: 41:56
+        Jim_S: 45:22
+        Matt_L: 51:23
+    - notes: M3 Starboard Rounding
+      wind_bf: 2
+      times:
+        Mike_F: 29:41
+        Nedra_F: 30:06
+        Bill_P: 30:34
+        Rod_H: 30:14
+        Ron_F: 33:15
+        Barry_O: 37:03
+        Matt_L: 37:43
+        Ian_O: 39:40
+        Jim_S: 43:51
+      boat_overrides:
+        Ron_F: SF
+- date: '2020_08_16  '
+  rc:
+    - Bill_P
+    - Ian_O
+  races:
+    - notes: I2
+      wind_bf: 0
+      times:
+        Mike_F: 43:01
+        Nedra_F: 43:56
+        Lewis_V: 43:17
+        Mike_S: 47:52
+    - notes: M3 Starboard Rounding
+      wind_bf: 2
+      times:
+        Mike_F: 34:02
+        Nedra_F: 35:57
+        Lewis_V: 29:27
+        Mike_S: 35:07

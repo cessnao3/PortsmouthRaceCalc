@@ -78,6 +78,35 @@
         Ron_F: 30:12
         Nedra_F: 32:29
         Bill_P : 32:30
-        Matt_L: 39:58
+        Matt_L: FIP8
         Ian_O: 37:57
         Jim_S: 42:20
+- date: '2020_06_21'
+  rc:
+    - David_Bu
+    - Mike_S
+  races:
+    - notes: M2
+      wind_bf: 2
+      times:
+        Bill_P: 35:39
+        Ron_F: 34:35
+        Barry_O: 40:26
+        Jay_H: 37:33
+        Matt_L: 41:04
+        Ian_O: 40:24
+        Jim_S: 41:21
+      boat_overrides:
+        Jay_H: CAT125
+    - notes: M2
+      wind_bf: 2
+      times:
+        Barry_O: 42:01
+        Bill_P: 38:30
+        Ron_F: 37:44
+        Ian_O: 41:29
+        Jay_H: 42:39
+        Matt_L: 52:12
+        Jim_S: 50:35
+      boat_overrides:
+        Jay_H: CAT125

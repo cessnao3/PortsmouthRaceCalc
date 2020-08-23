@@ -333,7 +333,7 @@ class Race:
 
             if plt is not None:
                 # Extract the score and time results from finished scores
-                finished_results_sorted = [v for v in self.race_times_sorted() if v[1].finished()]
+                finished_results_sorted = [v for v in self.race_times_sorted() if v[1].finished_with_time()]
                 score_results = [v[0] for v in finished_results_sorted]
                 time_results = [v[1].corrected_time_s / 60.0 for v in finished_results_sorted]
 
