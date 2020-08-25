@@ -144,13 +144,19 @@ class MasterDatabase:
             else:
                 boat_overrides = dict()
 
+            # Define the qualify count overrides
+            if 'qualify_count' in s:
+                qualify_count_override = s['qualify_count']
+            else:
+                qualify_count_override = None
+
             # Define the series object
             series = sdb.Series(
                 name=series_name,
-                qualify_count=s['qualify_count'],
                 valid_required_skippers=s['valid_required_skippers'],
                 fleet=fleet,
-                boat_overrides=boat_overrides)
+                boat_overrides=boat_overrides,
+                qualify_count_override=qualify_count_override)
 
             # Load in the race data YAML object from the provided file
             with open(self._data_file(s['race_file']), 'r') as f:

@@ -11,22 +11,22 @@ class Series:
     """
     Defines a series of races, defined by a fleet type and a list of races
     """
-    def __init__(self, name, qualify_count, valid_required_skippers, fleet, boat_overrides):
+    def __init__(self, name, valid_required_skippers, fleet, boat_overrides, qualify_count_override=None):
         """
         Initializes the series with the input parameters
         :param name: The unique name of the series
         :type name: str
-        :param qualify_count: The number of races required to qualify for a scoring place
-        :type qualify_count: int
         :param valid_required_skippers: The number of racers needed to indicate a valid race
         :type valid_required_skippers: int
         :param fleet: The fleet object to be used to define the corrected scoring parameters
         :type fleet: Fleet
         :param boat_overrides: A dictionary of boat overrides, containing {skipper_identifier: boat_identifier}
         :type boat_overrides: {str: str}
+        :param qualify_count_override: The number of races required to qualify for a scoring place
+        :type qualify_count_override: int
         """
         self.name = name
-        self.qualify_count = qualify_count
+        self.qualify_count_override = qualify_count_override
         self.valid_required_skippers = valid_required_skippers
         self.fleet = fleet
         self.races = list()
@@ -195,6 +195,13 @@ class Series:
         """
         self.races.append(race)
         self.reset()
+
+    @property
+    def qualify_count(self):
+        if self.qualify_count_override is not None:
+            return self.qualify_count_override
+        else:
+            return len(self.races) // 2
 
     def valid_races(self):
         """
