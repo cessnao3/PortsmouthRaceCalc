@@ -30,6 +30,6 @@
   race_file: 2020_s1.yaml
 2020_series_2:
   fleet: portsmouth_2017
-  qualify_count: 4
+  qualify_count: 5
   valid_required_skippers: 4
   race_file: 2020_s2.yaml

@@ -72,7 +72,7 @@
         Jim_S: 43:51
       boat_overrides:
         Ron_F: SF
-- date: '2020_08_16  '
+- date: '2020_08_16'
   rc:
     - Bill_P
     - Ian_O
@@ -91,3 +91,33 @@
         Nedra_F: 35:57
         Lewis_V: 29:27
         Mike_S: 35:07
+- date: '2020_08_23'
+  rc:
+    - Mike_F
+    - Nedra_F
+    - Jim_S
+  races:
+    - notes: M2 Port rounding dog cove, C cove, back E
+      wind_bf: 2
+      times:
+        Rod_H: 32:33
+        Bill_P: 33:50
+        Ian_O: 35:10
+        Lewis_V: 31:44
+        Mike_S: 34:39
+        Barry_O: 44:57
+        Jay_H: 41:20
+        Matt_L: 54:11
+        Mark_C: 56:18
+    - notes: M3 Starboard Rounding
+      wind_bf: 2
+      times:
+        Bill_P: 36:42
+        Ian_O: 37:10
+        Rod_H: 36:44
+        Lewis_V: 33:11
+        Barry_O: 42:39
+        Mike_S: 35:38
+        Matt_L: 43:11
+        Jay_H: 41:08
+        Mark_C: FIP9
