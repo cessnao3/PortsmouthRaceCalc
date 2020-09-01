@@ -121,3 +121,35 @@
         Matt_L: 43:11
         Jay_H: 41:08
         Mark_C: FIP9
+- date: '2020_08_30'
+  rc:
+    - Barry_O
+  races:
+    - notes: M2 Starboard, RC help from Samantha
+      wind_bf: 2
+      times:
+        Mike_F: 20:56
+        John_T: 21:39
+        Nedra_F: 23:43
+        Lewis_V: 21:02
+        Bill_P: 26:02
+        Ian_O: 26:05
+        Jay_H: 25:12
+        Rod_H: 26:26
+        Matt_L: 30:05
+        Jim_S: 31:08
+        Mark_C: 36:33
+    - notes: M3 (shortened to 2) Starboard, RC help from Samantha
+      wind_bf: 0
+      times:
+        Mike_F: 45:33
+        Matt_L: 50:10
+        Ian_O: 46:26
+        Bill_P: 47:16
+        Nedra_F: 47:27
+        Jim_S: 49:39
+        Rod_H: 48:57
+        Jay_H: 49:56
+        Mark_C: 51:49
+        Lewis_V: 49:05
+
