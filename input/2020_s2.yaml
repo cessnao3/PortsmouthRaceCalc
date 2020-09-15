@@ -152,4 +152,28 @@
         Jay_H: 49:56
         Mark_C: 51:49
         Lewis_V: 49:05
-
+- date: '2020_09_13'
+  rc:
+    - Bill_P
+    - Mike_S
+  races:
+    - notes: M2
+      wind_bf: 2
+      times:
+        Mike_F: 36:02
+        Nedra_F: 38:02
+        Barry_O: 48:22
+        Lewis_V: 36:23
+        Ian_O: 44:38
+        Jay_H: 49:01
+        Matt_L: 47:13
+    - notes: M2
+      wind_bf: 2
+      times:
+        Mike_F: 36:05
+        Nedra_F: 38:11
+        Barry_O: 46:31
+        Lewis_V: 36:48
+        Ian_O: 42:49
+        Jay_H: 49:28
+        Matt_L: 60:38
