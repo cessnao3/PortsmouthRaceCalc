@@ -4,40 +4,36 @@ Database and type to hold information regarding the boat parameters and handicap
 
 import race_utils
 
+import typing
+
 
 class Skipper:
-    def __init__(self, identifier, first=None, last=None, default_boat=None):
+    def __init__(self, identifier: str, first: str = None, last: str = None, default_boat: str = None):
         """
         Defines a skipper object used in the race
         :param identifier: identification string used to match a skipper object with race performance
-        :type identifier: str
         :param first: first name of the skipper
-        :type first: str
         :param last: last name of the skipper
-        :type last: str
         :param default_boat: default boat code for the skipper
-        :type default_boat: str
         """
         self.identifier = identifier
         self.first = first
         self.last = last
         self.default_boat_code = default_boat
 
-    def __eq__(self, other):
+    def __eq__(self, other: 'Skipper') -> bool:
         """
         Returns true if this and the other skipper share the same unique identifier
         :param other: the other Skipper object to compare against
-        :type other: Skipper
         :return: True if the identifiers are equal in lower-case
         """
         return self.identifier.lower() == other.identifier.lower()
 
     @staticmethod
-    def load_from_csv(csv_table):
+    def load_from_csv(csv_table: str) -> typing.Dict[str, 'Skipper']:
         """
         Loads the skippers from a
         :param csv_table: CSV file contents
-        :type csv_table: str
         :return: dictionary, by name_code, of skippers in the CSV file
         """
         # Initialize the skipper database
@@ -47,11 +43,11 @@ class Skipper:
         expected_header = ['identifier', 'first_name', 'last_name', 'default_boat']
 
         # Define a None-if-empty function
-        def none_if_empty(s):
+        def none_if_empty(s: str) -> typing.Union[None, str]:
             return s if len(s) > 0 else None
 
         # Define the skipper row function
-        def skipper_row_func(row_dict):
+        def skipper_row_func(row_dict: typing.Dict[str, str]) -> None:
             identifier = none_if_empty(row_dict['identifier'])
             first = none_if_empty(row_dict['first_name'])
             last = none_if_empty(row_dict['last_name'])

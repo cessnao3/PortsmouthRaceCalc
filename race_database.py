@@ -6,27 +6,28 @@ from skipper_database import Skipper
 from race_utils import round_score, get_pyplot, figure_to_base64, format_time
 
 import enum
+import typing
 
 
 class Race:
     """
     An object to maintain the information for a single race
     """
-    def __init__(self, series, rc, date, wind_bf, notes, boat_overrides):
+    def __init__(self,
+                 series: 'Series',
+                 rc: typing.List[Skipper],
+                 date: str,
+                 wind_bf: int,
+                 notes: str,
+                 boat_overrides: typing.Dict[str, str]):
         """
         Initializes the race object
         :param series: reference to the series associated with the current race
-        :type series: Series
         :param rc: a list of the skipper objects participating in the race committee
-        :type rc: list of Skipper
         :param date: a string containing the date of the race in the format year_mm_dd
-        :type date: str
         :param wind_bf: the Beaufort wind condition number associated with the race
-        :type wind_bf: int
         :param notes: any additional notes about the race
-        :type notes: str
         :param boat_overrides: a dict of boat overrides for a given race
-        :type boat_overrides: dict[str, str]
         """
         self.race_times = dict()
         self.series = series
@@ -46,7 +47,7 @@ class Race:
                 time_s=0,
                 other_finish=RaceTime.RaceFinishOther.RC))
 
-    def reset(self):
+    def reset(self) -> None:
         """
         Resets any stored calculated parameters
         """
@@ -55,7 +56,7 @@ class Race:
             rt.reset()
         self._results_dict = None
 
-    def set_index(self, i):
+    def set_index(self, i: int) -> None:
         """
         Sets the index to the provided value
         :param i: Value to set the race index to
@@ -63,22 +64,20 @@ class Race:
         self._race_index = i
 
     @property
-    def race_num(self):
+    def race_num(self) -> int:
         """
         Provides the 1's indexed race number
         :return: race index + 1
-        :rtype: int
         """
         if self._race_index is not None:
             return self._race_index + 1
         else:
             return 0
 
-    def min_time_s(self):
+    def min_time_s(self) -> typing.Union[None, int]:
         """
         Returns the minimum completion time
         :return: minimum completion time in seconds
-        :rtype: int or None
         """
         valid_race_times = [rt.corrected_time_s for rt in self.race_times.values() if rt.finished_with_time()]
 
@@ -87,11 +86,10 @@ class Race:
         else:
             return None
 
-    def valid(self):
+    def valid(self) -> bool:
         """
         Determines if a race is valid or not
         :return: True if the race is valid, false otherwise
-        :rtype: bool
         """
         # Calculate the wind condition
         bf_condition = self.wind_bf is not None
@@ -103,13 +101,11 @@ class Race:
         # Return true if all conditions are true
         return bf_condition and num_condition
 
-    def valid_for_rc(self, skipper_id):
+    def valid_for_rc(self, skipper_id: str) -> bool:
         """
         Determines if a race is valid for RC points with a given skipper_id
         :param skipper_id: the ID of the skipper to check
-        :type skipper_id: str
         :return: True if the race time can be counted for RC points for the skipper, otherwise False
-        :rtype: bool
         """
         # Determine if the race was valid
         valid_check = self.valid()
@@ -120,11 +116,10 @@ class Race:
         # Determine if we can use the race for RC
         return valid_check or rc_check
 
-    def add_skipper_time(self, race_time):
+    def add_skipper_time(self, race_time: 'RaceTime') -> None:
         """
         Adds a skipper's time to the race results
         :param race_time: race_time object to add to the database
-        :type race_time: RaceTime
         """
         # Obtain the skipper's identifier
         skip_id = race_time.skipper.identifier
@@ -143,11 +138,10 @@ class Race:
         # Call reset
         self.reset()
 
-    def race_results(self):
+    def race_results(self) -> typing.Dict[str, float]:
         """
         Provides the scores for each skipper in the race
         :return: dictionary of the skipper identifier keyed to the resulting point score
-        :rtype: {str: float}
         """
         if self._results_dict is None:
             # Create a variable to hold the current list
@@ -202,11 +196,10 @@ class Race:
         # Return pre-computed results
         return self._results_dict
 
-    def get_race_table(self):
+    def get_race_table(self) -> str:
         """
         Calculates the resulting scores, sorts, and prints out in a table
         :return: a string table of the race results that can be printed to the console
-        :rtype: str
         """
         # Initialize the string list
         str_list = list()
@@ -240,13 +233,11 @@ class Race:
         # Return the joined list
         return '\n'.join(str_list)
 
-    def get_skipper_result(self, skipper_id):
+    def get_skipper_result(self, skipper_id: str) -> typing.Union[str, int, float, None]:
         """
         Provides the resulting score text for the skipper ID provided.
         :param skipper_id: the skipper identifier
-        :type skipper_id: str
         :return: The score parameter for the given skipper value
-        :rtype: int or float or str or None
         """
         # Check if the skipper is in the race times
         if skipper_id in self.race_times:
@@ -267,43 +258,38 @@ class Race:
         else:
             return None
 
-    def rc_skippers(self):
+    def rc_skippers(self) -> typing.List[Skipper]:
         """
         Provides the skippers participating in the race committee
         :return: list of Skippers in the race committee
-        :rtype: list of Skipper
         """
         return [r.skipper for r in self.race_times.values() if r.is_rc()]
 
-    def other_results(self):
+    def other_results(self) -> typing.List['RaceTime']:
         """
         Provides a list of other racers that did not finish the race and were not RC
         :return: list of valid race times that did not finish the race and were not RC
-        :rtype: list of RaceTime
         """
         return [r for r in self.race_times.values() if not r.finished() and not r.is_rc()]
 
-    def fip_results(self):
+    def fip_results(self) -> typing.List['RaceTime']:
         """
         Provides a list of the racers that have a Finish-In-Place indication
         :return: list of valid race times for finishing in place
-        :rtype: list of RaceTime
         """
         return [r for r in self.race_times.values() if r.finished_without_time()]
 
-    def finished_race_times(self):
+    def finished_race_times(self) -> typing.List['RaceTime']:
         """
         Provides a list of the finished race times
         :return: a list of the race times that were completed
-        :rtype: list of RaceTime
         """
         return [r for r in self.race_times.values() if r.finished_with_time()]
 
-    def race_times_sorted(self):
+    def race_times_sorted(self) -> typing.List[typing.Tuple[float, 'RaceTime']]:
         """
         Provides a sorted list of the finished race times by score
         :return: a list of tuples containing the score and the race time object
-        :rtype: list of (float, RaceTime)
         """
         # Obtain the race results
         scores = self.race_results()
@@ -320,11 +306,10 @@ class Race:
         # Return the results
         return race_result_list
 
-    def race_plot(self):
+    def race_plot(self) -> str:
         """
         Provides a PNG image string in Base 64 providing a plot of result points vs. finishing time
         :return: encoded string value for the resulting figure in base64 for embedding, empty on failure
-        :rtype: str
         """
         if self._race_plot is None:
             # Get the pyplot instance
@@ -363,19 +348,19 @@ class RaceTime:
         DQ = 2
         FIP = 3
 
-    def __init__(self, race, skipper, time_s, other_finish=None, finish_in_place=None):
+    def __init__(self,
+                 race: 'Race',
+                 skipper: Skipper,
+                 time_s: int,
+                 other_finish: 'RaceFinishOther' = None,
+                 finish_in_place: int = None):
         """
         Initializes the race time object with the input parameters
         :param race: race to associate the time with
-        :type race: Race
         :param skipper: skipper to associate the result with
-        :type skipper: Skipper
         :param time_s: raw time, in seconds, of the result, or one of the other RaceFinishOther types
-        :type time_s: int
         :param other_finish: parameter to define a different type of race finish other than a time
-        :type other_finish: None or RaceFinishOther
         :param finish_in_place: parameter to define a type of finish to assign points
-        :type finish_in_place: int
         """
         # Initialize the race parameters
         self.race = race
@@ -406,58 +391,52 @@ class RaceTime:
         # Define the boat type object
         self.boat = race.series.fleet.get_boat(boat_id)
 
-    def reset(self):
+    def reset(self) -> None:
         """
         Resets any stored calculated parameters
         """
         self._corrected_time_s = None
 
-    def finished(self):
+    def finished(self) -> bool:
         """
         Return whether the skipper finished the race
         :return: True if the time_s is not one of the RaceFinishOther types or is FIP
-        :rtype: bool
         """
         return self.finished_with_time() or self.finished_without_time()
 
-    def finished_with_time(self):
+    def finished_with_time(self) -> bool:
         """
         Return whether the skipper finished the race with a time
         :return: True if the time_s is not one of the RaceFinishOther types
-        :rtype: bool
         """
         return self.other_finish is None
 
-    def finished_without_time(self):
+    def finished_without_time(self) -> bool:
         """
         Return whether the skipper finished the race without a time
         :return: True if the time_s is FIP
-        :rtype: bool
         """
         return self.other_finish == self.RaceFinishOther.FIP
 
-    def has_other_result(self):
+    def has_other_result(self) -> bool:
         """
         Whether the skipper did not finish the race and did not participate in RC
         :return: True if the skipper didn't finish the race and wasn't in RC
-        :rtype: bool
         """
         return not self.finished() and not self.is_rc()
 
-    def is_rc(self):
+    def is_rc(self) -> bool:
         """
         Return whether a skipper participated in the RC
         :return: True if time_s is RaceFinishOther.RC
-        :rtype: bool
         """
         return not self.finished() and self.other_finish is RaceTime.RaceFinishOther.RC
 
     @property
-    def corrected_time_s(self):
+    def corrected_time_s(self) -> int:
         """
         Calculates the corrected time from the beaufort DPN value, and rounds the result
         :return: rounded corrected time in seconds with the provided boat and wind speed
-        :rtype: int
         """
         if self._corrected_time_s is None:
             self._corrected_time_s = round(self.time_s * 100.0 / self.boat.dpn_for_beaufort(self.race.wind_bf))

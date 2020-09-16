@@ -6,24 +6,26 @@ from boat_database import Fleet
 from skipper_database import Skipper
 from race_utils import capitalize_words, round_score, get_pyplot, figure_to_base64
 
+import typing
+
 
 class Series:
     """
     Defines a series of races, defined by a fleet type and a list of races
     """
-    def __init__(self, name, valid_required_skippers, fleet, boat_overrides, qualify_count_override=None):
+    def __init__(self,
+                 name: str,
+                 valid_required_skippers: int,
+                 fleet: Fleet,
+                 boat_overrides: typing.Dict[str, str],
+                 qualify_count_override: typing.Union[int, None] = None):
         """
         Initializes the series with the input parameters
         :param name: The unique name of the series
-        :type name: str
         :param valid_required_skippers: The number of racers needed to indicate a valid race
-        :type valid_required_skippers: int
         :param fleet: The fleet object to be used to define the corrected scoring parameters
-        :type fleet: Fleet
         :param boat_overrides: A dictionary of boat overrides, containing {skipper_identifier: boat_identifier}
-        :type boat_overrides: {str: str}
         :param qualify_count_override: The number of races required to qualify for a scoring place
-        :type qualify_count_override: int
         """
         self.name = name
         self.qualify_count_override = qualify_count_override
@@ -37,7 +39,7 @@ class Series:
         self._scatter_plot = None
         self._pie_plot = None
 
-    def reset(self):
+    def reset(self) -> None:
         """
         Resets any stored calculated parameters and sets the race index parameter for each race
         """
@@ -52,13 +54,11 @@ class Series:
         self._scatter_plot = None
         self._pie_plot = None
 
-    def skipper_qualifies(self, skipper_id):
+    def skipper_qualifies(self, skipper_id: str) -> bool:
         """
         Returns whether a skipper has met the qualification count for the series
         :param skipper_id: The skipper identifier to check
-        :type skipper_id: str
         :return: True if the skipper qualifies, False otherwise
-        :rtype: bool
         """
         # Initialize a count
         count = 0
@@ -72,13 +72,11 @@ class Series:
         # Return true if the count meets the qualify count threshold
         return count >= self.qualify_count
 
-    def skipper_rc_points(self, skipper_id):
+    def skipper_rc_points(self, skipper_id: str) -> typing.Union[int, float, None]:
         """
         Returns the number of points associated with RC for a given Skipper
         :param skipper_id: skipper identifier
-        :type skipper_id: str
         :return: Number of points estimated for RC races for a given Skipper
-        :rtype: int or float
         """
         if self._skipper_rc_pts is None:
             # Initialize the dictionary
@@ -116,11 +114,11 @@ class Series:
         else:
             return None
 
-    def skipper_points_list(self, skipper_id):
+    def skipper_points_list(self, skipper_id: str) -> typing.Union[None, typing.List[typing.Union[int, float]]]:
         """
         Returns the points used to calculate the resulting score for a series
+        :param skipper_id: the skipper identifier to search for
         :return: list of points equal to the qualification, or DNQ if no qualification
-        :rtype: None or list of (float or int)
         """
         if self._points is None:
             # Initialize the dictionary
@@ -169,13 +167,11 @@ class Series:
         else:
             return None
 
-    def skipper_points(self, skipper_id):
+    def skipper_points(self, skipper_id: str) -> typing.Union[int, float, None]:
         """
         Returns the number of points found for the given Skipper
         :param skipper_id: skipper identifier
-        :type skipper_id: str
         :return: Number of points calculated for the given skipper
-        :rtype: int or float or None
         """
         # Determine the points list
         points_list = self.skipper_points_list(skipper_id)
@@ -187,35 +183,35 @@ class Series:
         else:
             return None
 
-    def add_race(self, race):
+    def add_race(self, race: 'Race') -> None:
         """
         Adds a race to the race list. Races are in the order they are added to the list
         :param race: The race object to add
-        :type race: Race
         """
         self.races.append(race)
         self.reset()
 
     @property
-    def qualify_count(self):
+    def qualify_count(self) -> int:
+        """
+        Provides the qualification count for the series
+        """
         if self.qualify_count_override is not None:
             return self.qualify_count_override
         else:
             return len(self.races) // 2
 
-    def valid_races(self):
+    def valid_races(self) -> typing.List['Race']:
         """
         Returns the number of valid races held
         :return: count of valid races
-        :rtype: list of Race
         """
         return [r for r in self.races if r.valid()]
 
-    def get_all_skippers(self):
+    def get_all_skippers(self) -> typing.List[Skipper]:
         """
         Provides all skippers in the series
         :return: list of unique skipper objects between all races
-        :rtype: list of Skipper
         """
         if self._skippers is None:
             # Define the output list
@@ -232,11 +228,10 @@ class Series:
         # Return the skipper list
         return self._skippers
 
-    def get_all_skippers_sorted(self):
+    def get_all_skippers_sorted(self) -> typing.List[Skipper]:
         """
         Provides all skippers in the series, sorted first by points, and then by alphabet
         :return: list of unique skipper objects between all races, sorted
-        :rtype: list of Skipper
         """
         # Get all skippers and scores
         skippers = self.get_all_skippers()
@@ -267,11 +262,10 @@ class Series:
         # Return the result
         return skippers
 
-    def scatter_plot(self):
+    def scatter_plot(self) -> str:
         """
         Provides a plot of the fraction of corrected / minimum race time as a function of race score
         :return: An encoded base64 HTML source string of figure, empty on failure
-        :rtype: str
         """
         if self._scatter_plot is None:
             plt = get_pyplot()
@@ -311,11 +305,10 @@ class Series:
         # Return the result
         return self._scatter_plot
 
-    def boat_pie_chart(self):
+    def boat_pie_chart(self) -> str:
         """
         Provides a pie chart for the count for each existing boat in the series
         :return: An encoded base64 HTML source string of figure, empty on failure
-        :rtype: str
         """
         if self._pie_plot is None:
             # Initialize plotting requirements
@@ -354,19 +347,17 @@ class Series:
 
         return self._pie_plot
 
-    def fancy_name(self):
+    def fancy_name(self) -> str:
         """
         Provides the fancy name, removing underscores for spaces and capitalizing
         :return: fancy name string
-        :rtype: str
         """
         return capitalize_words(self.name.replace('_', ' '))
 
-    def get_series_table(self):
+    def get_series_table(self) -> str:
         """
         Calculates the resulting scores, sorts, and prints out in a table
         :return: a string table of the race results that can be printed to the console
-        :rtype: str
         """
         # Initialize the string list
         str_list = list()
@@ -415,12 +406,7 @@ class Series:
             else:
                 skipper_line += '{:>8s}'.format('DNQ')
 
-
-
             str_list.append(skipper_line)
-
-
-
 
         # Return the results
         return '\n'.join(str_list)

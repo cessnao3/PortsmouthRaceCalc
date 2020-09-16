@@ -186,6 +186,11 @@ class MasterDatabase:
                     # Extract the race time results
                     time_values = race_dict['times']
 
+                    # Define the override time
+                    offset_time = 0.0
+                    if 'offset_time' in race_date_dict:
+                        offset_time = race_date_dict['offset_time']
+
                     # Set an empty list of no time values are provided
                     if time_values is None:
                         time_values = list()
@@ -194,6 +199,10 @@ class MasterDatabase:
                     for skipper_id in time_values:
                         # Extract the time result
                         time_result = time_values[skipper_id]
+
+                        # Add the offset time if possible
+                        if type(time_result) is not str:
+                            time_result = time_result - offset_time
 
                         # Check for other race types
                         other_result_type = None

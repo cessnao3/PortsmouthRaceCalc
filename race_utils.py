@@ -5,18 +5,16 @@ Common utilities useful for loading race parameters and performing calculations
 import csv
 import io
 import base64
+import typing
 
 
-def load_from_csv(csv_data, row_func, expected_header=None):
+def load_from_csv(csv_data: str, row_func: typing.Callable, expected_header: typing.List[str] = None) -> None:
     """
     Reads the input CSV files, checking the headers if applicable. Each of the rows are parsed into a dictionary
     to be input into the row_func function for local calculations
     :param csv_data: string containing all the CSV data
-    :type csv_data: str
     :param row_func: function to be called with the row dictionary, with lower-case headers used as keys
     :param expected_header: list of expected header strings in lower-case
-    :type expected_header: list of str
-    :return: None
     """
     # Define the CSV reader
     reader = csv.reader(csv_data.splitlines())
@@ -62,24 +60,20 @@ def load_from_csv(csv_data, row_func, expected_header=None):
             row_func(row_dict)
 
 
-def capitalize_words(str_in):
+def capitalize_words(str_in: str) -> str:
     """
     Capitalizes each word in a string
     :param str_in: input string to capitalize
-    :type str_in: str
     :return: output string with words capitalized
-    :rtype: str
     """
     return ' '.join([s.capitalize() for s in str_in.split(' ')])
 
 
-def round_score(score_in):
+def round_score(score_in: typing.Union[int, float]) -> typing.Union[int, float]:
     """
     Rounds out the score to provide 0 or 1 decimal places
     :param score_in: Input score
-    :type score_in: int or float
     :return: rounded score
-    :rtype: int or float
     """
     # Add a small bias so that 0.5 and up get rounded up
     score_in += 1e-4
@@ -92,10 +86,9 @@ def round_score(score_in):
         return round(score_in, 1)
 
 
-def get_pyplot():
+def _create_get_pyplot() -> typing.Callable:
     """
-    Imports and provides pyplot instance
-    :return: matplotlib.pyplot instance
+    Imports matplotlib and provides a function to provide the matplotlib.pyplot instance
     """
     try:
         import matplotlib
@@ -103,17 +96,26 @@ def get_pyplot():
         import matplotlib.pyplot as plt
     except ImportError:
         print('Could not import pyplot')
+        matplotlib = None
         plt = None
 
-    return plt
+    def get_pyplot_inner() -> typing.Union['matplotlib.pyplot', None]:
+        """
+        Returns the pyplot instance
+        """
+        return plt
+
+    return get_pyplot_inner
 
 
-def figure_to_base64(figure):
+get_pyplot = _create_get_pyplot()
+
+
+def figure_to_base64(figure) -> str:
     """
     Turns a matplotlib figure into a HTML-compatible image source string
     :param figure: Matplotlib figure object
     :return: HTML data encoding of figure
-    :rtype: str
     """
     # Save the image to a memory buffer
     buf = io.BytesIO()
@@ -124,13 +126,11 @@ def figure_to_base64(figure):
     return 'data:image/png;base64,{:s}'.format(base64.b64encode(buf.read()).decode('utf-8'))
 
 
-def format_time(time_s):
+def format_time(time_s: int) -> str:
     """
     Formats the time in seconds into a mm:ss format
     :param time_s: The input time, in seconds, to format
-    :type time_s: int
     :return: string of formatted time
-    :rtype: str
     """
     s_val = time_s % 60
     time_c = int((time_s - s_val) / 60)

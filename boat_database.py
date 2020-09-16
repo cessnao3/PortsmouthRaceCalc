@@ -2,8 +2,8 @@
 Database and type to hold information regarding the boat parameters and handicap values
 """
 
-import enum
 import race_utils
+import typing
 
 
 class WindMap:
@@ -15,15 +15,12 @@ class WindMap:
         """
         A class to keep track of the wind map node parameters
         """
-        def __init__(self, start_bf, end_bf, index):
+        def __init__(self, start_bf: int, end_bf: int, index: int):
             """
             Defines the wind map node
             :param start_bf: starting Beaufort number for wind (inclusive)
-            :type start_bf: int
             :param end_bf: ending Beaufort number for wind (inclusive)
-            :type end_bf: int
             :param index: index to obtain for the given wind values
-            :type index: int
             """
             # Check for type errors
             for v in (start_bf, end_bf, index):
@@ -39,7 +36,7 @@ class WindMap:
             self.end_bf = end_bf
             self.index = index
 
-        def range_str(self):
+        def range_str(self) -> str:
             """
             Provides the range string for the given wind mapping
             :return: definitions for the range of the mapping
@@ -50,11 +47,10 @@ class WindMap:
             else:
                 return '{:d}-{:d}'.format(self.start_bf, self.end_bf)
 
-    def __init__(self, default_index):
+    def __init__(self, default_index: int):
         """
         Initializes the Wind Map with a default index
         :param default_index: Default index to use if no other wind mapping parameters fit
-        :type default_index: int
         """
         # Create the default index
         self.default = self.Node(
@@ -64,17 +60,13 @@ class WindMap:
         # Initialize the empty wind map list
         self.wind_maps = list()
 
-    def add_wind_parameters(self, start_wind, end_wind, index):
+    def add_wind_parameters(self, start_wind: int, end_wind: int, index: int) -> None:
         """
         Adds a wind mapping for a start/end wind speed, with an index
         Raises an error if the mapping overlaps with another
         :param start_wind: starting Beaufort number
-        :type start_wind: int
         :param end_wind: ending Beaufort number
-        :type end_wind: int
         :param index: index to associate with the Beaufort number
-        :type index: int
-        :return: None
         """
         # Iterate over all of the wind parameters to ensure that there are no overlaps
         for w in self.wind_maps:
@@ -90,7 +82,7 @@ class WindMap:
                 index=index))
         self.wind_maps.sort(key=lambda x: x.start_bf)
 
-    def get_wind_map_for_beaufort(self, bf_num):
+    def get_wind_map_for_beaufort(self, bf_num: int) -> 'Node':
         """
         Provides the wind mapping node for the input Beaufort number
         :param bf_num: Input Beaufort number to find a mapping for
@@ -108,15 +100,12 @@ class Fleet:
     A class to contain the boats specified for a given fleet, allowing for different generations
     of handicap parameters
     """
-    def __init__(self, name, boat_types, wind_map):
+    def __init__(self, name: str, boat_types: typing.Dict[str, 'BoatType'], wind_map: 'WindMap'):
         """
         Initializes the fleet with the input parameters
         :param name: The name of the fleet
-        :type name: str
         :param boat_types: List of the boat types within the fleet
-        :type boat_types: {str: BoatType}
         :param wind_map: A wind map to correlate Beaufort numbers to DPN indices
-        :type wind_map: WindMap
         """
         self.name = name
         self.boat_types = boat_types
@@ -126,7 +115,7 @@ class Fleet:
         for b in self.boat_types.values():
             b.fleet = self
 
-    def boat_types_sorted(self):
+    def boat_types_sorted(self) -> typing.List['BoatType']:
         """
         Returns a list of sorted boats
         :return: list of BoatType
@@ -135,35 +124,31 @@ class Fleet:
         boat_list.sort(key=lambda x: x.code)
         return boat_list
 
-    def get_boat(self, boat_code):
+    def get_boat(self, boat_code: str) -> typing.Union['BoatType', None]:
         """
         Attempts to find the boat associated with the given boat code. Returns None if no boat exists
         :param boat_code: The input string to check for a boat type. This will be lower-cased
-        :type boat_code: str
         :return: the boat, if provided. Otherwise, None
-        :rtype: BoatType or None
         """
         if boat_code.lower() in self.boat_types:
             return self.boat_types[boat_code.lower()]
         else:
             return None
 
-    def dpn_len(self):
+    def dpn_len(self) -> int:
         """
         Provides the maximum number of DPN values for each boat
         :return: the maximum number of DPN values
-        :rtype: int
         """
         max_len = 0
         for b in self.boat_types.values():
             max_len = max(max_len, len(b.dpn_values))
         return max_len
 
-    def fancy_name(self):
+    def fancy_name(self) -> str:
         """
         Provides the fancy name, removing underscores for spaces and capitalizing
         :return: fancy name string
-        :rtype: str
         """
         return race_utils.capitalize_words(self.name.replace('_', ' '))
 
@@ -174,19 +159,14 @@ class BoatType:
     Portsmouth Handicap race parameters
     """
 
-    def __init__(self, name, boat_class, code, dpn_values, fleet):
+    def __init__(self, name: str, boat_class: str, code: str, dpn_values: typing.List[float], fleet: Fleet):
         """
         Initializes the boat parameter
         :param name: The name of the boat
-        :type name: str
         :param boat_class: The class of the boat
-        :type boat_class: str
         :param code: The unique identification code for the given boat class
-        :type code: str
         :param dpn_values: A list of 5 values, identifying [DPN0, DPN1, DPN2, DPN3, DPN4]
-        :type dpn_values: list of float
         :param fleet: A fleet to associate the boat type to
-        :type fleet: Fleet
         """
         self.name = name
         self.boat_class = boat_class.lower()
@@ -194,7 +174,7 @@ class BoatType:
         self.dpn_values = dpn_values
         self.fleet = fleet
 
-    def dpn_for_beaufort(self, beaufort):
+    def dpn_for_beaufort(self, beaufort: int) -> float:
         """
         Provides the DPN value associated with the input beaufort number. If the boat type doesn't have a specified DPN
         for the provided beaufort number, the highest value that will satisfy the requirements will be returned.
@@ -233,13 +213,11 @@ class BoatType:
         return self.dpn_values[dpn_ind]
 
     @staticmethod
-    def load_from_csv(csv_table, fleet):
+    def load_from_csv(csv_table: str, fleet: typing.Union[None, Fleet]) -> typing.Dict[str, 'BoatType']:
         """
         Reads the Portsmouth pre-calculated table from an input CSV file contents
         :param csv_table: The filename to read
-        :type csv_table: str
         :param fleet: A fleet to associate the boat type to
-        :type fleet: Fleet or None
         :return: A dictionary of boats, keyed by the type code
         """
         # Initialize the empty dictionary
