@@ -2,11 +2,12 @@
 Parses input files into Python object to parse race information
 """
 
-import boat_database as bdb
-import skipper_database as sdb
-import race_database as rdb
-import series_database as sdb
+import boat_database as boat_db
+import skipper_database as skipper_db
+import race_database as race_db
+import series_database as series_db
 
+import pathlib
 import yaml
 
 
@@ -14,26 +15,48 @@ class MasterDatabase:
     """
     Master database to keep track of all input parameters
     """
-    input_folder_name = 'input'
+    input_folder = pathlib.Path('input')
+
     fleet_input_name = 'fleets.yaml'
     skipper_input_name = 'skippers.csv'
     series_input_name = 'series.yaml'
 
-    def __init__(self, input_folder=None, fleet_file=None, skipper_file=None, series_file=None):
+    @property
+    def fleet_file(self) -> pathlib.Path:
+        """
+        :return: the fleet file
+        """
+        return self.input_folder / self.fleet_input_name
+
+    @property
+    def skipper_file(self) -> pathlib.Path:
+        """
+        :return: the skipper file
+        """
+        return self.input_folder / self.skipper_input_name
+
+    @property
+    def series_file(self) -> pathlib.Path:
+        """
+        :return: the series master file
+        """
+        return self.input_folder / self.series_input_name
+
+    def __init__(self,
+                 input_folder: pathlib.Path = None,
+                 fleet_file: str = None,
+                 skipper_file: str = None,
+                 series_file: str = None):
         """
         Initializes the master database with the provided inputs
         :param input_folder: folder where the input files are provided
-        :type input_folder: str
         :param fleet_file: filename to override the fleet input file
-        :type fleet_file: str
         :param skipper_file: filename to override the skipper input file
-        :type skipper_file: str
         :param series_file: filename to override the series input file
-        :type series_file: str
         """
         # Handle override parameter inputs
         if input_folder is not None:
-            self.input_folder_name = input_folder
+            self.input_folder = input_folder
         if fleet_file is not None:
             self.fleet_input_name = fleet_file
         if skipper_file is not None:
@@ -51,21 +74,12 @@ class MasterDatabase:
         self._load_skippers()
         self._load_series()
 
-    def _data_file(self, file_name):
-        """
-        Provides a modified filename to read from the input file directory
-        :param file_name: filename to add to the path
-        :type file_name: str
-        :return: modified filename to load from appropriate input file directory
-        """
-        return '{:s}/{:s}'.format(self.input_folder_name, file_name)
-
-    def _load_fleets(self):
+    def _load_fleets(self) -> None:
         """
         Loads the fleet database from the provided files
         """
         # Read the YAML input file
-        with open(self._data_file(self.fleet_input_name), 'r') as fleet_handle:
+        with self.fleet_file.open('r') as fleet_handle:
             fleet_data = yaml.safe_load(fleet_handle)
 
         # Initialize the dictionary
@@ -81,12 +95,13 @@ class MasterDatabase:
             fleet_dict = fleet_data[fleet_name]
 
             # Read in the portsmouth table for the fleet
-            with open(self._data_file(fleet_dict['portsmouth_table']), 'r') as table_handle:
+            portsmouth_file = self.input_folder / fleet_dict['portsmouth_table']
+            with portsmouth_file.open('r') as table_handle:
                 boat_table = table_handle.read()
 
             # Obtain the wind mapping
             wind_map_dict = fleet_dict['wind_map']
-            wind_map = bdb.WindMap(default_index=wind_map_dict['default_index'])
+            wind_map = boat_db.WindMap(default_index=wind_map_dict['default_index'])
             for map_val in wind_map_dict['map_values']:
                 wind_map.add_wind_parameters(
                     start_wind=map_val['start_bf'],
@@ -94,25 +109,25 @@ class MasterDatabase:
                     index=map_val['index'])
 
             # Define the fleet object
-            fleets[fleet_name] = bdb.Fleet(
+            fleets[fleet_name] = boat_db.Fleet(
                 name=fleet_name,
-                boat_types=bdb.BoatType.load_from_csv(boat_table, fleet=None),
+                boat_types=boat_db.BoatType.load_from_csv(boat_table, fleet=None),
                 wind_map=wind_map)
 
         # Set the fleet object to the loaded parameters
         self.fleets = fleets
 
-    def _load_skippers(self):
+    def _load_skippers(self) -> None:
         """
         Loads the skipper database from the provided files
         """
         # Read in the skipper object and load the CSV parameters
-        with open(self._data_file(self.skipper_input_name), 'r') as skipper_handle:
-            skippers = sdb.Skipper.load_from_csv(skipper_handle.read())
+        with self.skipper_file.open('r') as skipper_handle:
+            skippers = skipper_db.Skipper.load_from_csv(skipper_handle.read())
         # Set the skipper object to the loaded parameters
         self.skippers = skippers
 
-    def _load_series(self):
+    def _load_series(self) -> None:
         """
         Loads the series database from the provided files
         """
@@ -120,7 +135,7 @@ class MasterDatabase:
         series_values = dict()
 
         # Read in the series YAML data
-        with open(self._data_file(self.series_input_name), 'r') as f:
+        with self.series_file.open('r') as f:
             series_data = yaml.safe_load(f)
 
         # Iterate over the series name
@@ -139,10 +154,10 @@ class MasterDatabase:
             fleet = self.fleets[fleet_name]
 
             # Extract boat override parameters
-            if 'boat_overrides' in s:
-                boat_overrides = s['boat_overrides']
+            if 'boat_dict' in s:
+                series_boat_dict = s['boat_dict']
             else:
-                boat_overrides = dict()
+                series_boat_dict = dict()
 
             # Define the qualify count overrides
             if 'qualify_count' in s:
@@ -151,37 +166,56 @@ class MasterDatabase:
                 qualify_count_override = None
 
             # Define the series object
-            series = sdb.Series(
+            series = series_db.Series(
                 name=series_name,
                 valid_required_skippers=s['valid_required_skippers'],
                 fleet=fleet,
-                boat_overrides=boat_overrides,
                 qualify_count_override=qualify_count_override)
 
             # Load in the race data YAML object from the provided file
-            with open(self._data_file(s['race_file']), 'r') as f:
-                race_data = yaml.safe_load(f)
+            race_file = self.input_folder / s['race_file']
+            with race_file.open('r') as f:
+                all_race_data = yaml.safe_load(f)
+
+            # Extract the boat data and set default boats for each skipper
+            boat_list = all_race_data['boats']
+            for skipper_id, boat_code in boat_list.items():
+                series.add_skipper_boat(
+                    skipper=self.skippers[skipper_id],
+                    boat=series.fleet.get_boat(boat_code))
+
+            # Extract the race data
+            race_list = all_race_data['races']
 
             # Iterate over each race date
-            for race_date_dict in race_data:
+            for race_date_dict in race_list:
                 # Extract the race committee
                 race_committee = [self.skippers[person] for person in race_date_dict['rc']]
 
                 # Iterate over each race
                 for race_dict in race_date_dict['races']:
+                    # Define the race boat dictionary
+                    race_boat_dict = dict(series.boat_dict)
+
                     if 'boat_overrides' in race_dict:
+                        # Extract the race boat overrides
                         race_boat_overrides = race_dict['boat_overrides']
-                    else:
-                        race_boat_overrides = dict()
+
+                        # Update the values based on the skipper identifiers provided
+                        for skipper_id, boat_code in race_boat_overrides.items():
+                            skip = self.skippers[skipper_id]
+                            if skip in race_boat_dict:
+                                race_boat_dict[skip] = series.fleet.get_boat(boat_code)
 
                     # Create the race object
-                    race = rdb.Race(
-                        series=series,
+                    race = race_db.Race(
+                        fleet=series.fleet,
+                        boat_dict=race_boat_dict,
+                        required_skippers=series.valid_required_skippers,
                         rc=race_committee,
                         date=race_date_dict['date'],
                         wind_bf=race_dict['wind_bf'],
-                        notes=race_dict['notes'],
-                        boat_overrides=race_boat_overrides)
+                        notes=race_dict['notes'])
 
                     # Extract the race time results
                     time_values = race_dict['times']
@@ -210,17 +244,17 @@ class MasterDatabase:
                         if type(time_result) is str:
                             # Check for finish in place
                             tr_str = time_result.strip().upper()
-                            fip_name = rdb.RaceTime.RaceFinishOther.FIP.name
+                            fip_name = race_db.RaceTime.RaceFinishOther.FIP.name
 
-                            if tr_str[:len(fip_name)] == rdb.RaceTime.RaceFinishOther.FIP.name:
+                            if tr_str[:len(fip_name)] == race_db.RaceTime.RaceFinishOther.FIP.name:
                                 finish_in_place_val = int(tr_str[len(fip_name):])
                                 tr_str = tr_str[:len(fip_name)]
 
-                            other_result_type = rdb.RaceTime.RaceFinishOther[tr_str]
+                            other_result_type = race_db.RaceTime.RaceFinishOther[tr_str]
                             time_result = 0
 
                         # Create and add the race time value
-                        race_time = rdb.RaceTime(
+                        race_time = race_db.RaceTime(
                             race=race,
                             skipper=self.skippers[skipper_id],
                             time_s=time_result,

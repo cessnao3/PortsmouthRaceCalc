@@ -2,8 +2,9 @@
 Provides a database for use in calculating and scoring a race series
 """
 
-from boat_database import Fleet
+from boat_database import Fleet, BoatType
 from skipper_database import Skipper
+from race_database import Race
 from race_utils import capitalize_words, round_score, get_pyplot, figure_to_base64
 
 import typing
@@ -17,14 +18,12 @@ class Series:
                  name: str,
                  valid_required_skippers: int,
                  fleet: Fleet,
-                 boat_overrides: typing.Dict[str, str],
                  qualify_count_override: typing.Union[int, None] = None):
         """
         Initializes the series with the input parameters
         :param name: The unique name of the series
         :param valid_required_skippers: The number of racers needed to indicate a valid race
         :param fleet: The fleet object to be used to define the corrected scoring parameters
-        :param boat_overrides: A dictionary of boat overrides, containing {skipper_identifier: boat_identifier}
         :param qualify_count_override: The number of races required to qualify for a scoring place
         """
         self.name = name
@@ -32,12 +31,25 @@ class Series:
         self.valid_required_skippers = valid_required_skippers
         self.fleet = fleet
         self.races = list()
-        self.boat_overrides = boat_overrides
+        self.boat_dict: typing.Dict[Skipper, BoatType] = dict()
         self._skipper_rc_pts = None
         self._skippers = None
         self._points = None
         self._scatter_plot = None
         self._pie_plot = None
+
+    def add_skipper_boat(self, skipper: Skipper, boat: BoatType) -> None:
+        """
+        Adds the given skipper and boat to the race boat dictionary
+        :param skipper: the skipper to add to the database
+        :param boat: the boat to associate by default for the skipper
+        """
+        if skipper not in self.boat_dict:
+            self.boat_dict[skipper] = boat
+        else:
+            raise ValueError('Cannot add duplicate boat entry to series {:s} for {:s}'.format(
+                self.name,
+                skipper.identifier))
 
     def reset(self) -> None:
         """
@@ -54,28 +66,49 @@ class Series:
         self._scatter_plot = None
         self._pie_plot = None
 
-    def skipper_qualifies(self, skipper_id: str) -> bool:
+    def skipper_num_finished(self, skipper: Skipper) -> int:
+        """
+        :param skipper: the skipper to check
+        :return: the number of races that a skipper has finished with a time
+        """
+        count = 0
+        for r in self.races:
+            if skipper in r.race_times:
+                res = r.race_times[skipper]
+                if res.finished():
+                    count += 1
+        return count
+
+    def skipper_num_rc(self, skipper: Skipper) -> int:
+        """
+        :param skipper: the skipper to check
+        :return: the number of races that a skipper has been RC for
+        """
+        count = 0
+        for r in self.races:
+            if skipper in r.race_times:
+                res = r.race_times[skipper]
+                if res.is_rc():
+                    count += 1
+        return count
+
+    def skipper_qualifies(self, skipper: Skipper) -> bool:
         """
         Returns whether a skipper has met the qualification count for the series
-        :param skipper_id: The skipper identifier to check
+        :param skipper: The skipper to check
         :return: True if the skipper qualifies, False otherwise
         """
-        # Initialize a count
-        count = 0
-
-        # Iterate over all valid races
-        for r in [r for r in self.races if skipper_id in r.race_times]:
-            # Add to the count if finished or rc
-            if r.valid_for_rc(skipper_id):
-                count += 1
+        # Initialize a count for valid races and valid RC (RC may only be counted twice for qualification)
+        count = self.skipper_num_finished(skipper)
+        count_rc = self.skipper_num_rc(skipper)
 
         # Return true if the count meets the qualify count threshold
-        return count >= self.qualify_count
+        return count + min(2, count_rc) >= self.qualify_count
 
-    def skipper_rc_points(self, skipper_id: str) -> typing.Union[int, float, None]:
+    def skipper_rc_points(self, skipper: Skipper) -> typing.Union[int, float, None]:
         """
         Returns the number of points associated with RC for a given Skipper
-        :param skipper_id: skipper identifier
+        :param skipper: skipper to get RC points for
         :return: Number of points estimated for RC races for a given Skipper
         """
         if self._skipper_rc_pts is None:
@@ -84,14 +117,11 @@ class Series:
 
             # Calculate RC point parameters
             for skip in self.get_all_skippers():
-                # Extract the skipper_id
-                skip_id = skip.identifier
-
                 # Obtain the races for the skipper
-                skipper_races = [r for r in self.valid_races() if skip_id in r.race_times]
+                skipper_races = [r for r in self.valid_races() if skip in r.race_times]
 
                 # Obtain the results from each of the finished races and sort
-                point_values = [r.race_results()[skip_id] for r in skipper_races if skip_id in r.race_results()]
+                point_values = [r.race_results()[skip] for r in skipper_races if skip in r.race_results()]
                 point_values.sort()
 
                 # Set the score to None if no point values
@@ -106,18 +136,18 @@ class Series:
                     score = round_score(sum(point_values) / len(point_values))
 
                 # Set the results
-                self._skipper_rc_pts[skip_id] = score
+                self._skipper_rc_pts[skip] = score
 
         # Return points if the skipper is in the list
-        if skipper_id in self._skipper_rc_pts:
-            return self._skipper_rc_pts[skipper_id]
+        if skipper in self._skipper_rc_pts:
+            return self._skipper_rc_pts[skipper]
         else:
             return None
 
-    def skipper_points_list(self, skipper_id: str) -> typing.Union[None, typing.List[typing.Union[int, float]]]:
+    def skipper_points_dict(self, skipper: Skipper) -> typing.Union[None, typing.List[typing.Union[int, float]]]:
         """
         Returns the points used to calculate the resulting score for a series
-        :param skipper_id: the skipper identifier to search for
+        :param skipper: the skipper identifier to search for
         :return: list of points equal to the qualification, or DNQ if no qualification
         """
         if self._points is None:
@@ -126,28 +156,26 @@ class Series:
 
             # Calculate for all skippers
             for skip in self.get_all_skippers():
-                # Extract the skipper identifier
-                skip_id = skip.identifier
-
                 # Obtain the results for a given skipper for all races
                 points_list = list()
 
                 # Ignore if the skipper doesn't qualify
-                if not self.skipper_qualifies(skip_id):
+                if not self.skipper_qualifies(skip):
                     continue
 
                 # Iterate over each race
-                for r in [r for r in self.races if r.valid_for_rc(skip_id)]:
+                for r in [r for r in self.races if r.valid_for_rc(skip)]:
                     # Obtain the results
                     results = r.race_results()
 
                     value_to_add = None
 
                     # Add the results to the list if the skipper has a result
-                    if skip_id in results:
-                        value_to_add = results[skip_id]
-                    elif skip_id in r.race_times and r.race_times[skip_id].is_rc():
-                        value_to_add = self.skipper_rc_points(skip_id)
+                    num_rc_counts = 0
+                    if skip in results:
+                        value_to_add = results[skip]
+                    elif skip in r.race_times and r.race_times[skip].is_rc():
+                        value_to_add = self.skipper_rc_points(skip)
 
                     if value_to_add is not None:
                         points_list.append(value_to_add)
@@ -156,34 +184,34 @@ class Series:
                 points_list.sort()
 
                 if len(points_list) > 0:
-                    points[skip_id] = points_list[:self.qualify_count]
+                    points[skip] = points_list[:self.qualify_count]
 
             # Append the result to the static variable
             self._points = points
 
         # Return the pre-calculated result
-        if skipper_id in self._points:
-            return self._points[skipper_id]
+        if skipper in self._points:
+            return self._points[skipper]
         else:
             return None
 
-    def skipper_points(self, skipper_id: str) -> typing.Union[int, float, None]:
+    def skipper_points(self, skipper: Skipper) -> typing.Union[int, float, None]:
         """
         Returns the number of points found for the given Skipper
-        :param skipper_id: skipper identifier
+        :param skipper: skipper identifier
         :return: Number of points calculated for the given skipper
         """
         # Determine the points list
-        points_list = self.skipper_points_list(skipper_id)
+        points_list = self.skipper_points_dict(skipper)
 
         # Return None if skipper not in the dictionary, otherwise return dictionary value
         if points_list is not None:
             # Calculate the point values and round accordingly
-            return round_score(sum(self._points[skipper_id]))
+            return round_score(sum(self._points[skipper]))
         else:
             return None
 
-    def add_race(self, race: 'Race') -> None:
+    def add_race(self, race: Race) -> None:
         """
         Adds a race to the race list. Races are in the order they are added to the list
         :param race: The race object to add
@@ -235,7 +263,7 @@ class Series:
         """
         # Get all skippers and scores
         skippers = self.get_all_skippers()
-        scores = {s.identifier: self.skipper_points(s.identifier) for s in skippers}
+        scores = {s: self.skipper_points(s) for s in skippers}
 
         # Determine a maximum score value and apply to all skippers that haven't finished to push to the end
         max_score = round(sum([s for s in scores.values() if s is not None]))
@@ -249,7 +277,7 @@ class Series:
 
         # Then, sort by RC points
         def rc_pts_sort(s):
-            rc_pts = self.skipper_rc_points(s.identifier)
+            rc_pts = self.skipper_rc_points(s)
             if rc_pts is None:
                 return 100
             else:
@@ -257,7 +285,7 @@ class Series:
         skippers.sort(key=lambda x: rc_pts_sort(x))
 
         # Next, sort by the score
-        skippers.sort(key=lambda x: scores[x.identifier])
+        skippers.sort(key=lambda x: scores[x])
 
         # Return the result
         return skippers
@@ -322,8 +350,8 @@ class Series:
 
                 for r in self.races:
                     for rt in r.race_times.values():
-                        if rt.skipper.identifier not in skip_boat_dict and rt.skipper.identifier in r.race_results():
-                            skip_boat_dict[rt.skipper.identifier] = rt.boat.code
+                        if rt.skipper not in skip_boat_dict and rt.skipper in r.race_results():
+                            skip_boat_dict[rt.skipper] = rt.boat.code
 
                             if rt.boat.code not in boat_type_dict:
                                 boat_type_dict[rt.boat.code] = 0
@@ -338,7 +366,7 @@ class Series:
 
                 f = plt.figure()
                 ax = plt.gca()
-                ax.pie(sizes, labels=labels, autopct=percent2count, explode=[0.03 for i in combined])
+                ax.pie(sizes, labels=labels, autopct=percent2count, explode=[0.03 for _ in combined])
                 ax.axis('equal')
 
                 img_str = figure_to_base64(f)
@@ -385,7 +413,7 @@ class Series:
             skipper_line = '{:>20s}'.format(skipper.identifier)
 
             for race in self.races:
-                result = race.get_skipper_result(skipper.identifier)
+                result = race.get_skipper_result(skipper)
                 if result is not None:
                     skipper_line += '{:>4s}'.format(str(result))
                 else:
@@ -393,8 +421,8 @@ class Series:
 
             skipper_line += ' |'
 
-            points = self.skipper_points(skipper.identifier)
-            rc_pts = self.skipper_rc_points(skipper.identifier)
+            points = self.skipper_points(skipper)
+            rc_pts = self.skipper_rc_points(skipper)
 
             if rc_pts is not None:
                 skipper_line += '{:6.1f}'.format(rc_pts)

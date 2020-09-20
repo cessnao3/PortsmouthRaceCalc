@@ -41,20 +41,20 @@
             <tr>
                 <td>{{ skipper.identifier }}</td>
                 {% for race in series.races %}
-                    {% set result = race.get_skipper_result(skipper.identifier) %}
+                    {% set result = race.get_skipper_result(skipper) %}
                     {% if result %}
-                    <td>{{ race.get_skipper_result(skipper.identifier) }}</td>
+                    <td>{{ race.get_skipper_result(skipper) }}</td>
                     {% else %}
                     <td>--</td>
                     {% endif %}
                 {% endfor %}
-                {% set points = series.skipper_points(skipper.identifier) %}
+                {% set points = series.skipper_points(skipper) %}
                 {% if points %}
-                <td>{{ series.skipper_rc_points(skipper.identifier) }}</td>
+                <td>{{ series.skipper_rc_points(skipper) }}</td>
                 <td>{{ points }}</td>
                 {% else %}
-                {% if series.skipper_rc_points(skipper.identifier) %}
-                <td>{{ series.skipper_rc_points(skipper.identifier) }}</td>
+                {% if series.skipper_rc_points(skipper) %}
+                <td>{{ series.skipper_rc_points(skipper) }}</td>
                 <td>DNQ</td>
                 {% else %}
                 <td>na</td>

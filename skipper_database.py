@@ -8,26 +8,16 @@ import typing
 
 
 class Skipper:
-    def __init__(self, identifier: str, first: str = None, last: str = None, default_boat: str = None):
+    def __init__(self, identifier: str, first: str = None, last: str = None):
         """
         Defines a skipper object used in the race
         :param identifier: identification string used to match a skipper object with race performance
         :param first: first name of the skipper
         :param last: last name of the skipper
-        :param default_boat: default boat code for the skipper
         """
         self.identifier = identifier
         self.first = first
         self.last = last
-        self.default_boat_code = default_boat
-
-    def __eq__(self, other: 'Skipper') -> bool:
-        """
-        Returns true if this and the other skipper share the same unique identifier
-        :param other: the other Skipper object to compare against
-        :return: True if the identifiers are equal in lower-case
-        """
-        return self.identifier.lower() == other.identifier.lower()
 
     @staticmethod
     def load_from_csv(csv_table: str) -> typing.Dict[str, 'Skipper']:
@@ -40,7 +30,7 @@ class Skipper:
         skippers = dict()
 
         # Define an empty parameter for the header columns
-        expected_header = ['identifier', 'first_name', 'last_name', 'default_boat']
+        expected_header = ['identifier', 'first_name', 'last_name']
 
         # Define a None-if-empty function
         def none_if_empty(s: str) -> typing.Union[None, str]:
@@ -51,7 +41,6 @@ class Skipper:
             identifier = none_if_empty(row_dict['identifier'])
             first = none_if_empty(row_dict['first_name'])
             last = none_if_empty(row_dict['last_name'])
-            default_boat = none_if_empty(row_dict['default_boat'])
 
             if identifier is None:
                 raise ValueError('Cannot add a skipper without an identifier')
@@ -61,8 +50,7 @@ class Skipper:
                 skippers[identifier] = Skipper(
                     identifier=identifier,
                     first=first,
-                    last=last,
-                    default_boat=default_boat)
+                    last=last)
 
         # Load the file
         race_utils.load_from_csv(
@@ -72,3 +60,25 @@ class Skipper:
 
         # Return the skippers
         return skippers
+
+    def __hash__(self) -> int:
+        """
+        Provides the identifier as the primary hash method
+        :return: the hash of the skipper
+        """
+        return hash(self.identifier)
+
+    def __eq__(self, other: typing.Any) -> bool:
+        """
+        Returns true if the other object is a Skipper and if this and the other object share the
+        same parameter values
+        :param other: the other Skipper object to compare against
+        :return: True if the identifiers are equal in lower-case
+        """
+        if isinstance(other, Skipper):
+            return \
+                self.identifier == other.identifier and \
+                self.first == other.first and \
+                self.last == other.last
+        else:
+            return False

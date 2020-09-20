@@ -2,6 +2,7 @@
 Provides a database for use in calculating the corrected times for race parameters and scoring
 """
 
+from boat_database import Fleet, BoatType
 from skipper_database import Skipper
 from race_utils import round_score, get_pyplot, figure_to_base64, format_time
 
@@ -14,27 +15,30 @@ class Race:
     An object to maintain the information for a single race
     """
     def __init__(self,
-                 series: 'Series',
+                 fleet: Fleet,
+                 boat_dict: typing.Dict[Skipper, BoatType],
+                 required_skippers: int,
                  rc: typing.List[Skipper],
                  date: str,
                  wind_bf: int,
-                 notes: str,
-                 boat_overrides: typing.Dict[str, str]):
+                 notes: str):
         """
         Initializes the race object
-        :param series: reference to the series associated with the current race
+        :param fleet: the fleet to use for the boat handicap values
+        :param boat_dict: the boat dictionary to use for finding default skipper boats
+        :param required_skippers: the number of required skippers for the race to be considered valid
         :param rc: a list of the skipper objects participating in the race committee
         :param date: a string containing the date of the race in the format year_mm_dd
         :param wind_bf: the Beaufort wind condition number associated with the race
         :param notes: any additional notes about the race
-        :param boat_overrides: a dict of boat overrides for a given race
         """
         self.race_times = dict()
-        self.series = series
+        self.fleet = fleet
+        self.boat_dict = boat_dict
+        self.required_skippers = required_skippers
         self.date = date
         self.wind_bf = wind_bf
         self.notes = notes
-        self.boat_overrides = boat_overrides
         self._race_index = None
         self._results_dict = None
         self._race_plot = None
@@ -96,22 +100,22 @@ class Race:
 
         # Calculate the starting race times
         starting_race_times = [rt for rt in self.race_times.values() if not rt.is_rc()]
-        num_condition = len(starting_race_times) >= self.series.valid_required_skippers
+        num_condition = len(starting_race_times) >= self.required_skippers
 
         # Return true if all conditions are true
         return bf_condition and num_condition
 
-    def valid_for_rc(self, skipper_id: str) -> bool:
+    def valid_for_rc(self, skipper: Skipper) -> bool:
         """
-        Determines if a race is valid for RC points with a given skipper_id
-        :param skipper_id: the ID of the skipper to check
+        Determines if a race is valid for RC points with a given skipper
+        :param skipper: skipper to check
         :return: True if the race time can be counted for RC points for the skipper, otherwise False
         """
         # Determine if the race was valid
         valid_check = self.valid()
 
         # Determine if the skipper was RC for the race
-        rc_check = skipper_id in self.race_times and self.race_times[skipper_id].is_rc()
+        rc_check = skipper in self.race_times and self.race_times[skipper].is_rc()
 
         # Determine if we can use the race for RC
         return valid_check or rc_check
@@ -121,27 +125,22 @@ class Race:
         Adds a skipper's time to the race results
         :param race_time: race_time object to add to the database
         """
-        # Obtain the skipper's identifier
-        skip_id = race_time.skipper.identifier
-
         # Raise an error if the skipper is already in the list
-        if skip_id in self.race_times:
+        if race_time.skipper in self.race_times:
             raise ValueError(
-                'Cannot add duplicate {:s} race time for {:s}'.format(
-                    self.series.name,
-                    skip_id))
+                'Cannot add duplicate race time for {:s}'.format(race_time.skipper.identifier))
 
-        # Otherwise, add the race_time object to the dictionary keyed by the skipper identifier
+        # Otherwise, add the race_time object to the dictionary keyed by the skipper
         else:
-            self.race_times[skip_id] = race_time
+            self.race_times[race_time.skipper] = race_time
 
         # Call reset
         self.reset()
 
-    def race_results(self) -> typing.Dict[str, float]:
+    def race_results(self) -> typing.Dict[Skipper, float]:
         """
         Provides the scores for each skipper in the race
-        :return: dictionary of the skipper identifier keyed to the resulting point score
+        :return: dictionary of the skipper keyed to the resulting point score
         """
         if self._results_dict is None:
             # Create a variable to hold the current list
@@ -174,15 +173,15 @@ class Race:
                 current_place += num_for_time
 
             # Result Dictionary Creation
-            result_dict = {rt.skipper.identifier: round_score(place_dict[rt.corrected_time_s]) for rt in race_results}
+            result_dict = {rt.skipper: round_score(place_dict[rt.corrected_time_s]) for rt in race_results}
 
             # Add in the finish-in-place values
             for rt in self.fip_results():
-                result_dict[rt.skipper.identifier] = round_score(rt.fip_val)
+                result_dict[rt.skipper] = round_score(rt.fip_val)
 
             # Add in all the other results
             for rt in self.other_results():
-                result_dict[rt.skipper.identifier] = round_score(len(self.race_times) - len(self.rc_skippers()))
+                result_dict[rt.skipper] = round_score(len(self.race_times) - len(self.rc_skippers()))
 
             # Round all race results
             for key in result_dict:
@@ -233,27 +232,27 @@ class Race:
         # Return the joined list
         return '\n'.join(str_list)
 
-    def get_skipper_result(self, skipper_id: str) -> typing.Union[str, int, float, None]:
+    def get_skipper_result(self, skipper: Skipper) -> typing.Union[str, int, float, None]:
         """
         Provides the resulting score text for the skipper ID provided.
-        :param skipper_id: the skipper identifier
+        :param skipper: the skipper identifier
         :return: The score parameter for the given skipper value
         """
         # Check if the skipper is in the race times
-        if skipper_id in self.race_times:
+        if skipper in self.race_times:
             # Obtain the results
             results = self.race_results()
 
             # If the skipper has result points, obtain those
-            if skipper_id in results:
+            if skipper in results:
                 # Extract the result value
-                result_val = results[skipper_id]
+                result_val = results[skipper]
 
                 # Return a rounded value if we are close enough
                 return result_val
             # Otherwise, return the other finish name for printing
             else:
-                return self.race_times[skipper_id].other_finish.name
+                return self.race_times[skipper].other_finish.name
         # Return None if no skipper of this name is provided
         else:
             return None
@@ -300,7 +299,7 @@ class Race:
         race_time_list.extend(self.fip_results())
 
         # Create the resulting dictionary
-        race_result_list = [(scores[rt.skipper.identifier], rt) for rt in race_time_list]
+        race_result_list = [(scores[rt.skipper], rt) for rt in race_time_list]
         race_result_list.sort(key=lambda x: x[0])
 
         # Return the results
@@ -312,7 +311,7 @@ class Race:
         :return: encoded string value for the resulting figure in base64 for embedding, empty on failure
         """
         if self._race_plot is None:
-            # Get the pyplot instance
+            # Get the plot instance
             plt = get_pyplot()
             img_str = ''
 
@@ -381,15 +380,11 @@ class RaceTime:
         # Initialize memoization parameters
         self._corrected_time_s = None
 
-        # Extract the boat ID, from the override (if available), or the default in the skipper database
-        boat_id = self.skipper.default_boat_code
-        if skipper.identifier in race.boat_overrides:
-            boat_id = race.boat_overrides[skipper.identifier]
-        elif skipper.identifier in race.series.boat_overrides:
-            boat_id = race.series.boat_overrides[skipper.identifier]
-
-        # Define the boat type object
-        self.boat = race.series.fleet.get_boat(boat_id)
+        # Extract the boat based on the skipper provided
+        if skipper in race.boat_dict:
+            self.boat = race.boat_dict[skipper]
+        else:
+            raise ValueError('No boat provided for skipper {:s}'.format(skipper.identifier))
 
     def reset(self) -> None:
         """
