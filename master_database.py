@@ -153,15 +153,9 @@ class MasterDatabase:
                 raise ValueError('Fleet {:s} does not exist in fleet structure'.format(fleet_name))
             fleet = self.fleets[fleet_name]
 
-            # Extract boat override parameters
-            if 'boat_dict' in s:
-                series_boat_dict = s['boat_dict']
-            else:
-                series_boat_dict = dict()
-
             # Define the qualify count overrides
-            if 'qualify_count' in s:
-                qualify_count_override = s['qualify_count']
+            if 'qualify_count' in series_data:
+                qualify_count_override = series_data['qualify_count']
             else:
                 qualify_count_override = None
 
@@ -171,6 +165,11 @@ class MasterDatabase:
                 valid_required_skippers=s['valid_required_skippers'],
                 fleet=fleet,
                 qualify_count_override=qualify_count_override)
+
+            # Look for a series offset time
+            series_offset_time = 0
+            if 'offset_time' in s:
+                series_offset_time = s['offset_time']
 
             # Load in the race data YAML object from the provided file
             race_file = self.input_folder / s['race_file']
@@ -221,9 +220,9 @@ class MasterDatabase:
                     time_values = race_dict['times']
 
                     # Define the override time
-                    offset_time = 0.0
-                    if 'offset_time' in race_date_dict:
-                        offset_time = race_date_dict['offset_time']
+                    offset_time = series_offset_time
+                    if 'offset_time' in race_dict:
+                        offset_time = race_dict['offset_time']
 
                     # Set an empty list of no time values are provided
                     if time_values is None:
@@ -232,18 +231,14 @@ class MasterDatabase:
                     # Iterate over each of the skipper time values, creating a race time and adding it to the race
                     for skipper_id in time_values:
                         # Extract the time result
-                        time_result = time_values[skipper_id]
-
-                        # Add the offset time if possible
-                        if type(time_result) is not str:
-                            time_result = time_result - offset_time
+                        input_time_result = time_values[skipper_id]
 
                         # Check for other race types
                         other_result_type = None
                         finish_in_place_val = None
-                        if type(time_result) is str:
+                        if type(input_time_result) is str:
                             # Check for finish in place
-                            tr_str = time_result.strip().upper()
+                            tr_str = input_time_result.strip().upper()
                             fip_name = race_db.RaceTime.RaceFinishOther.FIP.name
 
                             if tr_str[:len(fip_name)] == race_db.RaceTime.RaceFinishOther.FIP.name:
@@ -251,13 +246,14 @@ class MasterDatabase:
                                 tr_str = tr_str[:len(fip_name)]
 
                             other_result_type = race_db.RaceTime.RaceFinishOther[tr_str]
-                            time_result = 0
+                            input_time_result = 0
 
                         # Create and add the race time value
                         race_time = race_db.RaceTime(
                             race=race,
                             skipper=self.skippers[skipper_id],
-                            time_s=time_result,
+                            input_time_s=input_time_result,
+                            offset_time_s=offset_time,
                             other_finish=other_result_type,
                             finish_in_place=finish_in_place_val)
                         race.add_skipper_time(race_time)

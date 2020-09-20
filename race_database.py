@@ -48,7 +48,8 @@ class Race:
             self.add_skipper_time(RaceTime(
                 race=self,
                 skipper=rc_skipper,
-                time_s=0,
+                input_time_s=0,
+                offset_time_s=0,
                 other_finish=RaceTime.RaceFinishOther.RC))
 
     def reset(self) -> None:
@@ -350,14 +351,16 @@ class RaceTime:
     def __init__(self,
                  race: 'Race',
                  skipper: Skipper,
-                 time_s: int,
+                 input_time_s: int,
+                 offset_time_s: int,
                  other_finish: 'RaceFinishOther' = None,
                  finish_in_place: int = None):
         """
         Initializes the race time object with the input parameters
         :param race: race to associate the time with
         :param skipper: skipper to associate the result with
-        :param time_s: raw time, in seconds, of the result, or one of the other RaceFinishOther types
+        :param input_time_s: raw time, in seconds, of the result, or one of the other RaceFinishOther types
+        :param offset_time_s: offset time, in seconds, to subtract from the input time
         :param other_finish: parameter to define a different type of race finish other than a time
         :param finish_in_place: parameter to define a type of finish to assign points
         """
@@ -365,7 +368,8 @@ class RaceTime:
         self.race = race
         self.skipper = skipper
         self.other_finish = other_finish
-        self.time_s = time_s
+        self.input_time_s = input_time_s
+        self.offset_time_s = offset_time_s
 
         if self.other_finish == self.RaceFinishOther.FIP:
             self.fip_val = finish_in_place
@@ -373,9 +377,6 @@ class RaceTime:
             raise ValueError('Cannot have a FIP value without the associated result')
         else:
             self.fip_val = None
-
-        if self.other_finish is not None:
-            self.time_s = 0
 
         # Initialize memoization parameters
         self._corrected_time_s = None
@@ -385,6 +386,17 @@ class RaceTime:
             self.boat = race.boat_dict[skipper]
         else:
             raise ValueError('No boat provided for skipper {:s}'.format(skipper.identifier))
+
+    @property
+    def time_s(self) -> int:
+        """
+        Provides the elapsed time for the skipper's race
+        :return: the time in seconds of the race, not including any offset time
+        """
+        if self.other_finish is not None:
+            return 0
+        else:
+            return self.input_time_s - self.offset_time_s
 
     def reset(self) -> None:
         """
