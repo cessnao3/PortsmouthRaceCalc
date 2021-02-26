@@ -64,9 +64,7 @@ def boat_page(fleet_name, boat_code):
 
 
 if __name__ == '__main__':
-    # Initialize Pyplot
+    # Initialize plotting (if available) and run
     race_utils.get_pyplot()
-
-    # Run the app
     app.run()
 
