@@ -318,6 +318,9 @@ class Series:
                     # Plot results
                     plt.plot([x[0] for x in results_list], [y[1] for y in results_list], 'o--')
 
+                s = f.get_size_inches()
+                f.set_size_inches(w=1.15 * s[0], h=s[1])
+
                 # Assign the legend and axes labels
                 leg = plt.legend(['Race {:d}'.format(r.race_num) for r in self.valid_races()], loc='upper left')
                 leg.get_frame().set_alpha(0.5)

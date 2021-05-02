@@ -328,6 +328,9 @@ class Race:
                 plt.xlabel('Score [points]')
                 plt.ylabel('Corrected Time [min]')
 
+                s = f.get_size_inches()
+                f.set_size_inches(w=1.15*s[0], h=s[1])
+
                 img_str = figure_to_base64(f)
 
             self._race_plot = img_str
