@@ -31,6 +31,7 @@
     <th>Name</th>
     <th>Boat</th>
     <th>Input Time [mm:ss]</th>
+    <th>Input Offset [mm:ss]</th>
     <th>Actual Time [mm:ss]</th>
     <th>Actual Time [s]</th>
     <th>Handicap</th>
@@ -47,9 +48,11 @@
     <td> <a href="{{ url_for('boat_page', fleet_name=series.fleet.name, boat_code=race_time.boat.code) }}">{{ race_time.boat.code.upper() }}</a> </td>
     {% if race_time.other_finish %}
     <td> {{ race_time.other_finish.name }} </td>
+    <td> {{ format_time(race_time.offset_time_s) }} </td>
     <td> {{ race_time.other_finish.name }} </td>
     {% else %}
     <td> {{ format_time(race_time.input_time_s) }} </td>
+    <td> {{ format_time(race_time.offset_time_s) }} </td>
     <td> {{ format_time(race_time.time_s) }} </td>
     {% endif %}
     <td> {{ race_time.time_s | round }} </td>
