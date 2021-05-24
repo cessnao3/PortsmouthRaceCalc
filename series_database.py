@@ -227,7 +227,7 @@ class Series:
         if self.qualify_count_override is not None:
             return self.qualify_count_override
         else:
-            return len(self.races) // 2
+            return len(self.valid_races()) // 2
 
     def valid_races(self) -> typing.List['Race']:
         """
