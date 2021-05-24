@@ -8,6 +8,8 @@ boats:
   Jim_S: SF
   Nick_H: SF
   Ian_O: SF
+  David_Bu: SF
+  Barry_O: HLR14
 races:
   - date: '2021_04_25'
     rc:
@@ -45,3 +47,37 @@ races:
           Mike_F: 28:09
           Nedra_F: 30:57
           Rod_H: 28:53
+  - date: '2021_05_09'
+    rc:
+      - Rod_H
+      - Matt_L
+    races:
+      - notes: No race due to thunderstorms
+        wind_bf: 2
+        times:
+      - notes: No race due to thunderstorms
+        wind_bf: 2
+        times:
+  - date: '2021_05_23'
+    rc:
+      - Bill_P
+      - David_Bu
+    races:
+      - notes: M2 Starboard Rounding
+        wind_bf: 2
+        times:
+          Barry_O: 40:05
+          Mike_F: 36:15
+          Nedra_F: 36:50
+          Ian_O: 37:04
+          Rod_H: 36:22
+          Matt_L: 47:12
+      - notes: M2 Starboard Rounding
+        wind_bf: 2
+        times:
+          Barry_O: 34:31
+          Mike_F: 32:27
+          Nedra_F: 32:30
+          Rod_H: 32:50
+          Ian_O: 34:45
+          Matt_L: 39:07
