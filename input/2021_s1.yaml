@@ -53,10 +53,10 @@ races:
       - Matt_L
     races:
       - notes: No race due to thunderstorms
-        wind_bf: 2
+        wind_bf: 0
         times:
       - notes: No race due to thunderstorms
-        wind_bf: 2
+        wind_bf: 0
         times:
   - date: '2021_05_23'
     rc:
