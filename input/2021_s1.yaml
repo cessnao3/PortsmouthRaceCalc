@@ -65,19 +65,21 @@ races:
     races:
       - notes: M2 Starboard Rounding
         wind_bf: 2
+        offset_time: 300
         times:
-          Barry_O: 40:05
-          Mike_F: 36:15
-          Nedra_F: 36:50
-          Ian_O: 37:04
-          Rod_H: 36:22
-          Matt_L: 47:12
+          Barry_O: 45:05
+          Mike_F: 41:15
+          Nedra_F: 41:50
+          Ian_O: 42:04
+          Rod_H: 41:22
+          Matt_L: 52:12
       - notes: M2 Starboard Rounding
         wind_bf: 2
+        offset_time: 300
         times:
-          Barry_O: 34:31
-          Mike_F: 32:27
-          Nedra_F: 32:30
-          Rod_H: 32:50
-          Ian_O: 34:45
-          Matt_L: 39:07
+          Barry_O: 39:31
+          Mike_F: 37:27
+          Nedra_F: 37:30
+          Rod_H: 37:50
+          Ian_O: 39:45
+          Matt_L: 44:07
