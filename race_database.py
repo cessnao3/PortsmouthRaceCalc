@@ -6,6 +6,7 @@ from boat_database import Fleet, BoatType
 from skipper_database import Skipper
 from race_utils import round_score, get_pyplot, figure_to_base64, format_time
 
+import datetime
 import enum
 import typing
 
@@ -19,7 +20,7 @@ class Race:
                  boat_dict: typing.Dict[Skipper, BoatType],
                  required_skippers: int,
                  rc: typing.List[Skipper],
-                 date: str,
+                 date_string: str,
                  wind_bf: int,
                  notes: str):
         """
@@ -28,7 +29,7 @@ class Race:
         :param boat_dict: the boat dictionary to use for finding default skipper boats
         :param required_skippers: the number of required skippers for the race to be considered valid
         :param rc: a list of the skipper objects participating in the race committee
-        :param date: a string containing the date of the race in the format year_mm_dd
+        :param date_string: a string containing the date of the race in the format year_mm_dd
         :param wind_bf: the Beaufort wind condition number associated with the race
         :param notes: any additional notes about the race
         """
@@ -36,7 +37,7 @@ class Race:
         self.fleet = fleet
         self.boat_dict = boat_dict
         self.required_skippers = required_skippers
-        self.date = date
+        self.date = datetime.datetime.strptime(date_string, '%Y_%m_%d')
         self.wind_bf = wind_bf
         self.notes = notes
         self._race_index = None
@@ -51,6 +52,13 @@ class Race:
                 input_time_s=0,
                 offset_time_s=0,
                 other_finish=RaceTime.RaceFinishOther.RC))
+        
+    def date_string(self) -> str:
+        """
+        Provides the date string for the current race
+        :return: the associated date string
+        """
+        return self.date.strftime('%B %d, %Y')
 
     def reset(self) -> None:
         """

@@ -7,6 +7,7 @@ from skipper_database import Skipper
 from race_database import Race
 from race_utils import capitalize_words, round_score, get_pyplot, figure_to_base64
 
+import datetime
 import typing
 
 
@@ -14,11 +15,12 @@ class Series:
     """
     Defines a series of races, defined by a fleet type and a list of races
     """
-    def __init__(self,
-                 name: str,
-                 valid_required_skippers: int,
-                 fleet: Fleet,
-                 qualify_count_override: typing.Union[int, None] = None):
+    def __init__(
+            self,
+            name: str,
+            valid_required_skippers: int,
+            fleet: Fleet,
+            qualify_count_override: typing.Union[int, None] = None):
         """
         Initializes the series with the input parameters
         :param name: The unique name of the series
@@ -30,13 +32,24 @@ class Series:
         self.qualify_count_override = qualify_count_override
         self.valid_required_skippers = valid_required_skippers
         self.fleet = fleet
-        self.races = list()
+        self.races: typing.List[Race] = list()
         self.boat_dict: typing.Dict[Skipper, BoatType] = dict()
         self._skipper_rc_pts = None
         self._skippers = None
         self._points = None
         self._scatter_plot = None
         self._pie_plot = None
+
+    def latest_race_date(self) -> typing.Union[None, datetime.datetime]:
+        """
+        Provides the latest race date for the given series
+        :return: datetime for the latest race
+        """
+        latest = None
+        for r in self.races:
+            if latest is None or latest < r.date:
+                latest = r.date
+        return latest
 
     def add_skipper_boat(self, skipper: Skipper, boat: BoatType) -> None:
         """

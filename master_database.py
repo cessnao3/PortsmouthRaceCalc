@@ -7,7 +7,9 @@ import skipper_database as skipper_db
 import race_database as race_db
 import series_database as series_db
 
+import datetime
 import pathlib
+import typing
 import yaml
 
 
@@ -64,19 +66,42 @@ class MasterDatabase:
         if series_file is not None:
             self.series_input_name = series_file
 
-        # Initialize the database parameters
-        self.fleets = None
-        self.skippers = None
-        self.series = None
-
         # Load the database
-        self._load_fleets()
-        self._load_skippers()
-        self._load_series()
+        self.fleets = self._load_fleets()
+        self.skippers = self._load_skippers()
+        self.series = self._load_series()
 
-    def _load_fleets(self) -> None:
+    def latest_race_date(self) -> typing.Union[datetime.datetime, None]:
+        """
+        Provides the latest race time
+        :return: the latest race time in all series
+        """
+        latest = None
+
+        for s in self.series.values():
+            series_date = s.latest_race_date()
+            if series_date is None:
+                continue
+            elif latest is None or latest < series_date:
+                latest = series_date
+
+        return latest
+
+    def latest_race_date_string(self) -> str:
+        """
+        Provides a string associated with the latest race date
+        :return: string for the latest race date in the database
+        """
+        date = self.latest_race_date()
+        if date is None:
+            return 'Unknown'
+        else:
+            return date.strftime('%B %d, %Y')
+
+    def _load_fleets(self) -> typing.Dict[str, boat_db.Fleet]:
         """
         Loads the fleet database from the provided files
+        :return: the list of fleets loaded
         """
         # Read the YAML input file
         with self.fleet_file.open('r') as fleet_handle:
@@ -115,19 +140,20 @@ class MasterDatabase:
                 wind_map=wind_map)
 
         # Set the fleet object to the loaded parameters
-        self.fleets = fleets
+        return fleets
 
-    def _load_skippers(self) -> None:
+    def _load_skippers(self) -> typing.Dict[str, skipper_db.Skipper]:
         """
         Loads the skipper database from the provided files
         """
         # Read in the skipper object and load the CSV parameters
         with self.skipper_file.open('r') as skipper_handle:
             skippers = skipper_db.Skipper.load_from_csv(skipper_handle.read())
-        # Set the skipper object to the loaded parameters
-        self.skippers = skippers
 
-    def _load_series(self) -> None:
+        # Set the skipper object to the loaded parameters
+        return skippers
+
+    def _load_series(self) -> typing.Dict[str, series_db.Series]:
         """
         Loads the series database from the provided files
         """
@@ -212,7 +238,7 @@ class MasterDatabase:
                         boat_dict=race_boat_dict,
                         required_skippers=series.valid_required_skippers,
                         rc=race_committee,
-                        date=race_date_dict['date'],
+                        date_string=race_date_dict['date'],
                         wind_bf=race_dict['wind_bf'],
                         notes=race_dict['notes'])
 
@@ -268,4 +294,4 @@ class MasterDatabase:
             series_values[series_name] = series
 
         # Set the series object to the loaded parameters
-        self.series = series_values
+        return series_values
