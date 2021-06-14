@@ -11,6 +11,7 @@ boats:
   David_Bu: SF
   Barry_O: HLR14
   Chris_E: SF
+  Shawn_W: BUT
 races:
   - date: '2021_04_25'
     rc:
@@ -124,3 +125,28 @@ races:
           Chris_E: 27:15
           Lewis_V: 23:54
           David_Bu: 26:02
+  - date: '2021_06_13'
+    rc:
+      - Nick_H
+      - Lewis_V
+    races:
+      - notes: M2 Port Rounding
+        wind_bf: 2
+        times:
+          Bill_P: 34:31
+          David_Bu: 36:28
+          Ian_O: 34:25
+          Mike_F: 33:53
+          Nedra_F: 36:00
+          Rod_H: 32:41
+          Shawn_W: FIP7
+      - notes: M2 Port Rounding
+        wind_bf: 2
+        times:
+          Bill_P: 34:57
+          David_Bu: 34:11
+          Ian_O: 33:59
+          Mike_F: 31:55
+          Nedra_F: 33:20
+          Rod_H: 31:01
+          Shawn_W: DNF
