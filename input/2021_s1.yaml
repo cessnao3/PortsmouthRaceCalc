@@ -85,17 +85,6 @@ races:
           Rod_H: 37:50
           Ian_O: 39:45
           Matt_L: 44:07
-  - date: '2021_05_09'
-    rc:
-      - Rod_H
-      - Matt_L
-    races:
-      - notes: No race due to thunderstorms
-        wind_bf: 0
-        times:
-      - notes: No race due to thunderstorms
-        wind_bf: 0
-        times:
   - date: '2021_06_06'
     rc:
       - Barry_O
