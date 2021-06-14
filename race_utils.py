@@ -69,12 +69,16 @@ def capitalize_words(str_in: str) -> str:
     return ' '.join([s.capitalize() for s in str_in.split(' ')])
 
 
-def round_score(score_in: typing.Union[int, float]) -> typing.Union[int, float]:
+def round_score(score_in: typing.Union[int, float, None]) -> typing.Union[int, float, None]:
     """
     Rounds out the score to provide 0 or 1 decimal places
     :param score_in: Input score
     :return: rounded score
     """
+    # Return None
+    if score_in is None:
+        return score_in
+
     # Add a small bias so that 0.5 and up get rounded up
     score_in += 1e-4
 

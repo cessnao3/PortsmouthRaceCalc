@@ -27,7 +27,7 @@
 
 <table border=1>
 <tr>
-    <th>Rank</th>
+    <th>Rank / Score</th>
     <th>Name</th>
     <th>Boat</th>
     <th>Input Time [mm:ss]</th>
@@ -43,7 +43,11 @@
 {% set score = race_result[0] %}
 {% set race_time = race_result[1] %}
 <tr>
+    {% if score %}
     <td> {{ score }} </td>
+    {% else %}
+    <td>N/A</td>
+    {% endif %}
     <td> {{ race_time.skipper.identifier }} </td>
     <td> <a href="{{ url_for('boat_page', fleet_name=series.fleet.name, boat_code=race_time.boat.code) }}">{{ race_time.boat.code.upper() }}</a> </td>
     {% if race_time.other_finish %}

@@ -190,7 +190,7 @@ class Race:
 
             # Add in all the other results
             for rt in self.other_results():
-                result_dict[rt.skipper] = round_score(len(self.race_times) - len(self.rc_skippers()))
+                result_dict[rt.skipper] = None
 
             # Round all race results
             for key in result_dict:
@@ -228,7 +228,8 @@ class Race:
             actual_time_value = format_time(race_time.time_s)
             if race_time.other_finish is not None:
                 actual_time_value = race_time.other_finish.name
-            str_list.append('{:>11s} {:>6s}   {:5s}   {:4d} / {:0.03f} = {:4d}   {:5s}  {:.2f}'.format(
+
+            str_list.append('{:>11s} {:>6s}   {:5s}   {:4d} / {:0.03f} = {:4d}   {:5s}  {:s}'.format(
                 race_time.skipper.identifier,
                 race_time.boat.code,
                 actual_time_value,
@@ -236,7 +237,7 @@ class Race:
                 race_time.boat.dpn_for_beaufort(self.wind_bf) / 100.0,
                 race_time.corrected_time_s,
                 format_time(race_time.corrected_time_s),
-                score))
+                f'{score:.2f}' if score is not None else 'N/A'))
 
         # Return the joined list
         return '\n'.join(str_list)
@@ -308,8 +309,10 @@ class Race:
         race_time_list.extend(self.fip_results())
 
         # Create the resulting dictionary
-        race_result_list = [(scores[rt.skipper], rt) for rt in race_time_list]
+        all_races = [(scores[rt.skipper], rt) for rt in race_time_list]
+        race_result_list = list(filter(lambda x: x[0] is not None, all_races))
         race_result_list.sort(key=lambda x: x[0])
+        race_result_list.extend(filter(lambda x: x[0] is None, all_races))
 
         # Return the results
         return race_result_list

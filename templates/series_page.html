@@ -43,7 +43,7 @@
                 {% for race in series.races %}
                     {% set result = race.get_skipper_result(skipper) %}
                     {% if result %}
-                    <td>{{ race.get_skipper_result(skipper) }}</td>
+                    <td>{{ result }}</td>
                     {% else %}
                     <td>--</td>
                     {% endif %}

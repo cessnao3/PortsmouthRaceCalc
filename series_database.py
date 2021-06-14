@@ -135,6 +135,7 @@ class Series:
 
                 # Obtain the results from each of the finished races and sort
                 point_values = [r.race_results()[skip] for r in skipper_races if skip in r.race_results()]
+                point_values = [p for p in point_values if p is not None]
                 point_values.sort()
 
                 # Set the score to None if no point values
