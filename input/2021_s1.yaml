@@ -139,3 +139,31 @@ races:
           Nedra_F: 33:20
           Rod_H: 31:01
           Shawn_W: DNF
+  - date: '2021_06_20'
+    rc:
+      - Rod_H
+      - Ian_O
+    races:
+      - notes: M3 Starboard Rounding
+        wind_bf: 2
+        offset_time: 5:00
+        times:
+          Bill_P: 32:48
+          Chris_E: 35:45
+          David_Bu: 37:33
+          Lewis_V: 31:27
+          Matt_L: 37:01
+          Mike_F: 31:35
+          Nedra_F: 34:52
+          Shawn_W: DNF
+      - notes: M4 Starboard Rounding
+        wind_bf: 2
+        offset_time: 5:00
+        times:
+          Bill_P: 47:15
+          Chris_E: 48:47
+          David_Bu: 47:08
+          Lewis_V: 45:20
+          Matt_L: 50:22
+          Mike_F: 45:10
+          Nedra_F: 47:52
