@@ -25,8 +25,8 @@ def index_page():
     return render_template(
         'index.html',
         database=database,
-        series=database.series,
-        fleets=database.fleets)
+        series_list=list(reversed(database.series.values())),
+        fleets_list=list(database.fleets.values()))
 
 
 @app.route('/series/<string:series_name>')
