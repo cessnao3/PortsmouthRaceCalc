@@ -1,0 +1,47 @@
+boats:
+  Mike_F: SF
+  Nedra_F: SF
+  Bill_P: SF
+  Rod_H: LASEM
+  Lewis_V: BCN
+  Matt_L: DLPSR
+  Jim_S: SF
+  Nick_H: SF
+  Ian_O: SF
+  David_Bu: SF
+  Barry_O: HLR14
+  Chris_E: SF
+  Shawn_W: BUT
+  Craig_J: SF
+  Dennis: SF
+races:
+  - date: '2021_07_18'
+    rc:
+      - Lewis_V
+      - Chris_E
+    races:
+      - notes: I2 with Gate
+        wind_bf: 2
+        offset_time: 0
+        times:
+          Mike_F: 25:45
+          Rod_H: 25:25
+          Bill_P: 27:30
+          Ian_O: 28:35
+          Matt_L: 31:59
+          Barry_O: 33:14
+          Nedra_F: 32:33
+          Craig_J: 37:09
+          Dennis: DNF
+      - notes: I2 with Gate
+        wind_bf: 0
+        offset_time: 0
+        times:
+          Bill_P: 16:15
+          Rod_H: 17:35
+          Barry_O: 20:09
+          Mike_F: 18:30
+          Nedra_F: 19:30
+          Matt_L: 22:50
+          Ian_O: 21:45
+          Dennis: 24:05
