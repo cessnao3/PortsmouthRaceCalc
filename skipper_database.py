@@ -33,7 +33,7 @@ class Skipper:
         expected_header = ['identifier', 'first_name', 'last_name']
 
         # Define a None-if-empty function
-        def none_if_empty(s: str) -> typing.Union[None, str]:
+        def none_if_empty(s: str) -> typing.Optional[str]:
             return s if len(s) > 0 else None
 
         # Define the skipper row function

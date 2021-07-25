@@ -6,6 +6,7 @@ import boat_database as boat_db
 import skipper_database as skipper_db
 import race_database as race_db
 import series_database as series_db
+import race_finishes
 
 import datetime
 import pathlib
@@ -71,7 +72,7 @@ class MasterDatabase:
         self.skippers = self._load_skippers()
         self.series = self._load_series()
 
-    def latest_race_date(self) -> typing.Union[datetime.datetime, None]:
+    def latest_race_date(self) -> typing.Optional[datetime.datetime]:
         """
         Provides the latest race time
         :return: the latest race time in all series
@@ -257,32 +258,45 @@ class MasterDatabase:
                     # Iterate over each of the skipper time values, creating a race time and adding it to the race
                     for skipper_id in time_values:
                         # Extract the time result
-                        input_time_result = time_values[skipper_id]
+                        input_finish_result = time_values[skipper_id]
+
+                        # Extract the skipper and boat
+                        skipper = self.skippers[skipper_id]
+
+                        if skipper in race.boat_dict:
+                            boat = race.boat_dict[skipper]
+                        else:
+                            raise ValueError(f'unknown boat provided for skipper {skipper.identifier}')
 
                         # Check for other race types
-                        other_result_type = None
-                        finish_in_place_val = None
-                        if type(input_time_result) is str:
+                        if isinstance(input_finish_result, str):
+                            # Define the lowercase values
+                            input_finish_result = input_finish_result.lower()
+
                             # Check for finish in place
-                            tr_str = input_time_result.strip().upper()
-                            fip_name = race_db.RaceTime.RaceFinishOther.FIP.name
+                            if input_finish_result == 'dnf':
+                                race_finish = race_finishes.RaceFinishDNF(boat=boat, skipper=skipper)
+                            elif input_finish_result == 'dq':
+                                race_finish = race_finishes.RaceFinishDQ(boat=boat, skipper=skipper)
+                            elif input_finish_result[:3] == 'fip':
+                                race_finish = race_finishes.RaceFinishFIP(
+                                    boat=boat,
+                                    skipper=skipper,
+                                    place=int(input_finish_result[3:]))
+                            else:
+                                raise ValueError(f'unknown race finish type "{input_finish_result}"')
+                        elif isinstance(input_finish_result, int):
+                            race_finish = race_finishes.RaceFinishTime(
+                                boat=race.boat_dict[skipper],
+                                skipper=skipper,
+                                wind_bf=race.wind_bf,
+                                input_time_s=input_finish_result,
+                                offset_time_s=offset_time)
+                        else:
+                            raise ValueError('unknown finish time provided')
 
-                            if tr_str[:len(fip_name)] == race_db.RaceTime.RaceFinishOther.FIP.name:
-                                finish_in_place_val = int(tr_str[len(fip_name):])
-                                tr_str = tr_str[:len(fip_name)]
-
-                            other_result_type = race_db.RaceTime.RaceFinishOther[tr_str]
-                            input_time_result = 0
-
-                        # Create and add the race time value
-                        race_time = race_db.RaceTime(
-                            race=race,
-                            skipper=self.skippers[skipper_id],
-                            input_time_s=input_time_result,
-                            offset_time_s=offset_time,
-                            other_finish=other_result_type,
-                            finish_in_place=finish_in_place_val)
-                        race.add_skipper_time(race_time)
+                        # Add the resulting race finish
+                        race.add_skipper_finish(race_finish)
 
                     # Add the race to the series
                     series.add_race(race)

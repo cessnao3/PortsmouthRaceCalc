@@ -124,7 +124,7 @@ class Fleet:
         boat_list.sort(key=lambda x: x.code)
         return boat_list
 
-    def get_boat(self, boat_code: str) -> typing.Union['BoatType', None]:
+    def get_boat(self, boat_code: str) -> typing.Optional['BoatType']:
         """
         Attempts to find the boat associated with the given boat code. Returns None if no boat exists
         :param boat_code: The input string to check for a boat type. This will be lower-cased
@@ -213,7 +213,7 @@ class BoatType:
         return self.dpn_values[dpn_ind]
 
     @staticmethod
-    def load_from_csv(csv_table: str, fleet: typing.Union[None, Fleet]) -> typing.Dict[str, 'BoatType']:
+    def load_from_csv(csv_table: str, fleet: typing.Optional[Fleet]) -> typing.Dict[str, 'BoatType']:
         """
         Reads the Portsmouth pre-calculated table from an input CSV file contents
         :param csv_table: The filename to read

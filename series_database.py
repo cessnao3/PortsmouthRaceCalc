@@ -7,6 +7,8 @@ from skipper_database import Skipper
 from race_database import Race
 from race_utils import capitalize_words, round_score, get_pyplot, figure_to_base64
 
+import race_finishes
+
 import datetime
 import typing
 
@@ -88,7 +90,7 @@ class Series:
         for r in self.races:
             if skipper in r.race_times:
                 res = r.race_times[skipper]
-                if res.finished():
+                if res.finished() and not isinstance(res, race_finishes.RaceFinishRC):
                     count += 1
         return count
 
@@ -101,7 +103,7 @@ class Series:
         for r in self.races:
             if skipper in r.race_times:
                 res = r.race_times[skipper]
-                if res.is_rc():
+                if isinstance(res, race_finishes.RaceFinishRC):
                     count += 1
         return count
 
@@ -185,10 +187,9 @@ class Series:
                     value_to_add = None
 
                     # Add the results to the list if the skipper has a result
-                    num_rc_counts = 0
                     if skip in results:
                         value_to_add = results[skip]
-                    elif skip in r.race_times and r.race_times[skip].is_rc():
+                    elif skip in r.race_times and isinstance(r.race_times[skip], race_finishes.RaceFinishRC):
                         value_to_add = self.skipper_rc_points(skip)
 
                     if value_to_add is not None:
@@ -323,7 +324,7 @@ class Series:
                     # Add each valid item to the scatter plot
                     for skipper, score in race.race_results().items():
                         rt = race.race_times[skipper]
-                        if rt.finished() and rt.fip_val is None:
+                        if isinstance(rt, race_finishes.RaceFinishTime):
                             results_list.append((score, rt.corrected_time_s / race.min_time_s()))
 
                     # Sort the values
