@@ -25,7 +25,7 @@ def index_page():
     return render_template(
         'index.html',
         database=database,
-        series_list=list(reversed(database.series.values())),
+        series_list=list(reversed(list(database.series.values()))),
         fleets_list=list(database.fleets.values()))
 
 
