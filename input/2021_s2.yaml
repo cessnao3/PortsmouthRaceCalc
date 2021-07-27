@@ -45,3 +45,25 @@ races:
           Matt_L: 22:50
           Ian_O: 21:45
           Dennis: 24:05
+  - date: '2021_07_25'
+    rc:
+      - David_Bu
+      - Nick_H
+    races:
+      - notes: M2 Port
+        wind_bf: 0
+        offset_time: 0
+        times:
+          Mike_F: 21:00
+          Bill_P: 21:30
+          Ian_O: 21:46
+          Jim_S: FIP4
+          Dennis: DNF
+      - notes: M2 Port
+        wind_bf: 2
+        offset_time: 0
+        times:
+          Mike_F: 16:22
+          Bill_P: 16:34
+          Ian_O: 16:45
+          Jim_S: 23:04
