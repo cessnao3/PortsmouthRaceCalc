@@ -12,8 +12,9 @@ boats:
   Barry_O: HLR14
   Chris_E: SF
   Shawn_W: BUT
-  Craig_J: SF
-  Dennis: SF
+  Craig_J: GF
+  Dennis_S: SF
+  Ryan_C: SF
 races:
   - date: '2021_07_18'
     rc:
@@ -32,7 +33,7 @@ races:
           Barry_O: 33:14
           Nedra_F: 32:33
           Craig_J: 37:09
-          Dennis: DNF
+          Dennis_S: DNF
       - notes: I2 with Gate
         wind_bf: 0
         offset_time: 0
@@ -44,7 +45,7 @@ races:
           Nedra_F: 19:30
           Matt_L: 22:50
           Ian_O: 21:45
-          Dennis: 24:05
+          Dennis_S: 24:05
   - date: '2021_07_25'
     rc:
       - David_Bu
@@ -58,7 +59,7 @@ races:
           Bill_P: 21:30
           Ian_O: 21:46
           Jim_S: FIP4
-          Dennis: DNF
+          Dennis_S: DNF
       - notes: M2 Port
         wind_bf: 2
         offset_time: 0
@@ -67,3 +68,38 @@ races:
           Bill_P: 16:34
           Ian_O: 16:45
           Jim_S: 23:04
+  - date: '2021_08_01'
+    rc:
+      - Mike_F
+      - Nedra_F
+    races:
+      - notes: M2 Port
+        wind_bf: 2
+        offset_time: 5:00
+        times:
+          Bill_P: 29:18
+          Chris_E: 30:26
+          David_Bu: 30:30
+          Ian_O: 29:38
+          Jim_S: 31:17
+          Lewis_V: 26:27
+          Matt_L: 30:59
+          Rod_H: 29:35
+          Craig_J: 40:55
+          Dennis_S: 37:47
+          Ryan_C: 31:55
+      - notes: M3 Port
+        wind_bf: 2
+        offset_time: 5:00
+        times:
+          Bill_P: 37:53
+          Chris_E: 40:10
+          David_Bu: 40:26
+          Ian_O: 37:39
+          Jim_S: 41:45
+          Lewis_V: 35:10
+          Matt_L: 48:48
+          Rod_H: 35:19
+          Craig_J: 42:50
+          Dennis_S: 52:36
+          Ryan_C: 45:35
