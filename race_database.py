@@ -341,7 +341,7 @@ class Race:
 
             if plt is not None:
                 # Extract the score and time results from finished scores
-                score_results, race_times = zip([
+                score_results, race_times = zip(*[
                     v
                     for v in self.race_times_sorted()
                     if isinstance(v[1], RaceFinishTime)])
