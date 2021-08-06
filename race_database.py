@@ -229,8 +229,8 @@ class Race:
         str_list.append(' Date: {:s}'.format(self.date))
         str_list.append('Notes: {:s}'.format(self.notes))
         str_list.append('                    a_time                        c_time')
-        str_list.append('       Name   Boat   mm:ss   sec  /   hc  =c_sec   mm:ss  Rank')
-        str_list.append('-----------   ----   -----   -------------------   -----  ----')
+        str_list.append('       Name   Boat   mm:ss   sec  /    hc   =  c_sec   mm:ss  Rank')
+        str_list.append('-----------   ----   -----   -----------------------   -----  ----')
 
         # Iterate over each of the race time in the sorted list and add the column value
         for race_result in self.race_times_sorted():
@@ -238,15 +238,23 @@ class Race:
             race_time = race_result[1]
             if isinstance(race_time, RaceFinishTime):
                 actual_time_value = format_time(race_time.time_s)
+                race_time_value = f'{round(race_time.time_s):4d}'
+                handicap_string = f'{race_time.boat.dpn_for_beaufort(self.wind_bf).handicap_string():9s}'
+                corrected_time_string = f'{race_time.corrected_time_s:4d}'
+                formatted_time_string = f'{format_time(race_time.corrected_time_s):5s}'
             else:
                 actual_time_value = race_time.name()
+                race_time_value = 'na'
+                handicap_string = 'na'
+                corrected_time_string = 'na'
+                formatted_time_string = 'na'
 
             score_result = f'{score:.2f}' if score is not None else 'N/A'
             str_list.append(
                 f'{race_time.skipper.identifier:>11s} {race_time.boat.code:>6s}   '
                 f'{actual_time_value:5s}   '
-                f'{round(race_time.time_s):4d} / {race_time.boat.dpn_for_beaufort(self.wind_bf).handicap_string():s} = '
-                f'{race_time.corrected_time_s:4d}   {format_time(race_time.corrected_time_s):5s}  {score_result:s}')
+                f'{race_time_value:4s} / {handicap_string:9s} = '
+                f'{corrected_time_string:4s}   {formatted_time_string:5s}  {score_result:s}')
 
         # Return the joined list
         return '\n'.join(str_list)
