@@ -39,8 +39,10 @@
             </tr>
         </table>
 
+        {% if boat.needs_handicap_note() %}
         <h3>DPN Notes:</h3>
         {% include 'dpn_notes.html' %}
+        {% endif %}
 
         <h2>Fleet Statistics</h2>
 

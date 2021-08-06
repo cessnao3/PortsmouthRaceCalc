@@ -165,6 +165,13 @@ class HandicapNumber:
         """
         return self._surround_with_correct_brackets(f'{self.handicap_number():0.05f}')
 
+    def get_type(self) -> 'HandicapNumber.HandicapType':
+        """
+        Provides the current handicap type
+        :return: the handicap type for the boat
+        """
+        return self._handicap_type
+
     @staticmethod
     def from_string(value: str) -> 'HandicapNumber':
         # Check that the string is valid
@@ -265,7 +272,13 @@ class BoatType:
     Portsmouth Handicap race parameters
     """
 
-    def __init__(self, name: str, boat_class: str, code: str, dpn_values: typing.List[HandicapNumber], fleet: Fleet):
+    def __init__(
+            self,
+            name: str,
+            boat_class: str,
+            code: str,
+            dpn_values: typing.List[HandicapNumber],
+            fleet: Fleet):
         """
         Initializes the boat parameter
         :param name: The name of the boat
@@ -279,6 +292,18 @@ class BoatType:
         self.code = code
         self.dpn_values = dpn_values
         self.fleet = fleet
+
+    def needs_handicap_note(self) -> bool:
+        """
+        Returns true if the note on handicap types is required
+        :return: True if any DPN value is not "standard" and may be suspect
+        """
+        for dpn in self.dpn_values:
+            if dpn is None:
+                continue
+            elif dpn.get_type() != HandicapNumber.HandicapType.STANDARD:
+                return True
+        return False
 
     def dpn_for_beaufort(self, beaufort: int) -> HandicapNumber:
         """
