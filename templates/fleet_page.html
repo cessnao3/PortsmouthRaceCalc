@@ -61,6 +61,16 @@
             {% endfor %}
         </table>
 
+        <h2>Fleet Information</h2>
+
+        <h3>DPN Notes:</h3>
+        {% include 'dpn_notes.html' %}
+
+        {% if fleet.source %}
+        <h3>Fleet Data Source</h3>
+        <a href="{{ fleet.source }}">Source</a>
+        {% endif %}
+
     </body>
 
     {% include 'footer.html' %}

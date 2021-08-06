@@ -138,7 +138,8 @@ class MasterDatabase:
             fleets[fleet_name] = boat_db.Fleet(
                 name=fleet_name,
                 boat_types=boat_db.BoatType.load_from_csv(boat_table, fleet=None),
-                wind_map=wind_map)
+                wind_map=wind_map,
+                source=fleet_dict['source'] if 'source' in fleet_dict else None)
 
         # Set the fleet object to the loaded parameters
         return fleets

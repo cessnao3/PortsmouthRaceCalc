@@ -1,5 +1,6 @@
 portsmouth_2017:
   portsmouth_table: portsmouth_table_2017.csv
+  source: https://www.ussailing.org/wp-content/uploads/2018/01/2017-Portsmouth-Precalculated-Classes.pdf
   wind_map:
     default_index: 0
     map_values:

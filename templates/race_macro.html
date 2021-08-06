@@ -56,7 +56,7 @@
     <td> {{ format_time(race_time.offset_time_s) }} </td>
     <td> {{ format_time(race_time.time_s) }} </td>
     <td> {{ race_time.time_s | round }} </td>
-    <td> {{ '%0.5f' | format(race_time.boat.dpn_for_beaufort(race.wind_bf) / 100.0) }} </td>
+    <td> {{ race_time.boat.dpn_for_beaufort(race.wind_bf).handicap_string() }} </td>
     <td> {{ race_time.corrected_time_s | round }} </td>
     <td> {{ format_time(race_time.corrected_time_s) }} </td>
     {% else %}

@@ -7,7 +7,9 @@ from master_database import MasterDatabase
 from flask import Flask, redirect, url_for, render_template, send_from_directory
 import race_utils
 
-app = Flask(__name__)
+import pathlib
+
+app = Flask(__name__, instance_path=str(pathlib.Path(__file__).parent))
 app.jinja_env.globals.update(format_time=race_utils.format_time)
 
 database = MasterDatabase()

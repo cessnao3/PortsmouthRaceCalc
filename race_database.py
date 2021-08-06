@@ -241,15 +241,12 @@ class Race:
             else:
                 actual_time_value = race_time.name()
 
-            str_list.append('{:>11s} {:>6s}   {:5s}   {:4d} / {:0.03f} = {:4d}   {:5s}  {:s}'.format(
-                race_time.skipper.identifier,
-                race_time.boat.code,
-                actual_time_value,
-                round(race_time.time_s),
-                race_time.boat.dpn_for_beaufort(self.wind_bf) / 100.0,
-                race_time.corrected_time_s,
-                format_time(race_time.corrected_time_s),
-                f'{score:.2f}' if score is not None else 'N/A'))
+            score_result = f'{score:.2f}' if score is not None else 'N/A'
+            str_list.append(
+                f'{race_time.skipper.identifier:>11s} {race_time.boat.code:>6s}   '
+                f'{actual_time_value:5s}   '
+                f'{round(race_time.time_s):4d} / {race_time.boat.dpn_for_beaufort(self.wind_bf).handicap_string():s} = '
+                f'{race_time.corrected_time_s:4d}   {format_time(race_time.corrected_time_s):5s}  {score_result:s}')
 
         # Return the joined list
         return '\n'.join(str_list)

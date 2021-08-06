@@ -250,5 +250,5 @@ class RaceFinishTime(RaceFinishInterface):
         :return: rounded corrected time in seconds with the provided boat and wind speed
         """
         if self._corrected_time_s is None:
-            self._corrected_time_s = round(self.time_s * 100.0 / self.boat.dpn_for_beaufort(self.wind_bf))
+            self._corrected_time_s = round(self.time_s * 100.0 / self.boat.dpn_for_beaufort(self.wind_bf).value())
         return self._corrected_time_s
