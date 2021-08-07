@@ -4,7 +4,7 @@ Provides data inherent to a skipper object
 
 from typing import Any, Dict, Optional
 
-import utils
+from .. import utils
 
 
 class Skipper:

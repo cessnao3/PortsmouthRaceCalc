@@ -4,7 +4,7 @@ Provides a class to maintain an instance of a particular boat within a fleet
 
 from typing import Dict, List
 
-import utils
+from .. import utils
 
 from .handicap import HandicapNumber
 from .wind_map import WindMap

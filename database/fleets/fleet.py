@@ -4,7 +4,7 @@ Provides a class to maintain a particular fleet instance
 
 from typing import Dict, List, Optional
 
-import utils
+from .. import utils
 
 from .boat import BoatType
 from .wind_map import WindMap

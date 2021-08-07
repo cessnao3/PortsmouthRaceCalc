@@ -2,14 +2,13 @@
 Provides a database for use in calculating and scoring a race series
 """
 
-from fleets import Fleet, BoatType
+from ..fleets import Fleet, BoatType
+from ..skippers import Skipper
 
-from skippers import Skipper
-from race_database import Race
-from utils import capitalize_words, round_score, figure_to_base64
-from utils.plotting import get_pyplot
+from ..utils import capitalize_words, round_score, figure_to_base64
+from ..utils.plotting import get_pyplot
 
-import race_finishes
+from . import Race, finishes
 
 import datetime
 import typing
@@ -17,7 +16,7 @@ import typing
 
 class Series:
     """
-    Defines a series of races, defined by a fleet type and a list of races
+    Defines a series of series, defined by a fleet type and a list of series
     """
     def __init__(
             self,
@@ -30,7 +29,7 @@ class Series:
         :param name: The unique name of the series
         :param valid_required_skippers: The number of racers needed to indicate a valid race
         :param fleet: The fleet object to be used to define the corrected scoring parameters
-        :param qualify_count_override: The number of races required to qualify for a scoring place
+        :param qualify_count_override: The number of series required to qualify for a scoring place
         """
         self.name = name
         self.qualify_count_override = qualify_count_override
@@ -86,26 +85,26 @@ class Series:
     def skipper_num_finished(self, skipper: Skipper) -> int:
         """
         :param skipper: the skipper to check
-        :return: the number of races that a skipper has finished with a time
+        :return: the number of series that a skipper has finished with a time
         """
         count = 0
         for r in self.races:
             if skipper in r.race_times:
                 res = r.race_times[skipper]
-                if res.finished() and not isinstance(res, race_finishes.RaceFinishRC):
+                if res.finished() and not isinstance(res, finishes.RaceFinishRC):
                     count += 1
         return count
 
     def skipper_num_rc(self, skipper: Skipper) -> int:
         """
         :param skipper: the skipper to check
-        :return: the number of races that a skipper has been RC for
+        :return: the number of series that a skipper has been RC for
         """
         count = 0
         for r in self.races:
             if skipper in r.race_times:
                 res = r.race_times[skipper]
-                if isinstance(res, race_finishes.RaceFinishRC):
+                if isinstance(res, finishes.RaceFinishRC):
                     count += 1
         return count
 
@@ -115,7 +114,7 @@ class Series:
         :param skipper: The skipper to check
         :return: True if the skipper qualifies, False otherwise
         """
-        # Initialize a count for valid races and valid RC (RC may only be counted twice for qualification)
+        # Initialize a count for valid series and valid RC (RC may only be counted twice for qualification)
         count = self.skipper_num_finished(skipper)
         count_rc = self.skipper_num_rc(skipper)
 
@@ -126,7 +125,7 @@ class Series:
         """
         Returns the number of points associated with RC for a given Skipper
         :param skipper: skipper to get RC points for
-        :return: Number of points estimated for RC races for a given Skipper
+        :return: Number of points estimated for RC series for a given Skipper
         """
         if self._skipper_rc_pts is None:
             # Initialize the dictionary
@@ -134,10 +133,10 @@ class Series:
 
             # Calculate RC point parameters
             for skip in self.get_all_skippers():
-                # Obtain the races for the skipper
+                # Obtain the series for the skipper
                 skipper_races = [r for r in self.valid_races() if skip in r.race_times]
 
-                # Obtain the results from each of the finished races and sort
+                # Obtain the results from each of the finished series and sort
                 point_values = [r.race_results()[skip] for r in skipper_races if skip in r.race_results()]
                 point_values = [p for p in point_values if p is not None]
                 point_values.sort()
@@ -174,7 +173,7 @@ class Series:
 
             # Calculate for all skippers
             for skip in self.get_all_skippers():
-                # Obtain the results for a given skipper for all races
+                # Obtain the results for a given skipper for all series
                 points_list = list()
 
                 # Ignore if the skipper doesn't qualify
@@ -191,7 +190,7 @@ class Series:
                     # Add the results to the list if the skipper has a result
                     if skip in results:
                         value_to_add = results[skip]
-                    elif skip in r.race_times and isinstance(r.race_times[skip], race_finishes.RaceFinishRC):
+                    elif skip in r.race_times and isinstance(r.race_times[skip], finishes.RaceFinishRC):
                         value_to_add = self.skipper_rc_points(skip)
 
                     if value_to_add is not None:
@@ -248,15 +247,15 @@ class Series:
 
     def valid_races(self) -> typing.List['Race']:
         """
-        Returns the number of valid races held
-        :return: count of valid races
+        Returns the number of valid series held
+        :return: count of valid series
         """
         return [r for r in self.races if r.valid()]
 
     def get_all_skippers(self) -> typing.List[Skipper]:
         """
         Provides all skippers in the series
-        :return: list of unique skipper objects between all races
+        :return: list of unique skipper objects between all series
         """
         if self._skippers is None:
             # Define the output list
@@ -276,7 +275,7 @@ class Series:
     def get_all_skippers_sorted(self) -> typing.List[Skipper]:
         """
         Provides all skippers in the series, sorted first by points, and then by alphabet
-        :return: list of unique skipper objects between all races, sorted
+        :return: list of unique skipper objects between all series, sorted
         """
         # Get all skippers and scores
         skippers = self.get_all_skippers()
@@ -326,7 +325,7 @@ class Series:
                     # Add each valid item to the scatter plot
                     for skipper, score in race.race_results().items():
                         rt = race.race_times[skipper]
-                        if isinstance(rt, race_finishes.RaceFinishTime):
+                        if isinstance(rt, finishes.RaceFinishTime):
                             results_list.append((score, rt.corrected_time_s / race.min_time_s()))
 
                     # Sort the values

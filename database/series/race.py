@@ -2,19 +2,14 @@
 Provides a database for use in calculating the corrected times for race parameters and scoring
 """
 
-from fleets import Fleet, BoatType
+from ..fleets import Fleet, BoatType
 
-from skippers import Skipper
+from ..skippers import Skipper
 
-from utils import round_score, figure_to_base64, format_time
-from utils.plotting import get_pyplot
+from ..utils import round_score, figure_to_base64, format_time
+from ..utils.plotting import get_pyplot
 
-from race_finishes import \
-    RaceFinishInterface, \
-    RaceFinishTime, \
-    RaceFinishRC, \
-    RaceFinishFIP, \
-    RaceFinishDNF
+from . import finishes
 
 import datetime
 import typing
@@ -24,6 +19,7 @@ class Race:
     """
     An object to maintain the information for a single race
     """
+
     def __init__(self,
                  fleet: Fleet,
                  boat_dict: typing.Dict[Skipper, BoatType],
@@ -42,7 +38,7 @@ class Race:
         :param wind_bf: the Beaufort wind condition number associated with the race
         :param notes: any additional notes about the race
         """
-        self.race_times: typing.Dict[Skipper, RaceFinishInterface] = dict()
+        self.race_times: typing.Dict[Skipper, finishes.RaceFinishInterface] = dict()
         self.fleet = fleet
         self.boat_dict = boat_dict
         self.required_skippers = required_skippers
@@ -55,10 +51,10 @@ class Race:
 
         # Add the RC skippers to the race times as participating in RC
         for rc_skipper in rc:
-            self.add_skipper_finish(RaceFinishRC(
+            self.add_skipper_finish(finishes.RaceFinishRC(
                 boat=self.boat_dict[rc_skipper],
                 skipper=rc_skipper))
-        
+
     def date_string(self) -> str:
         """
         Provides the date string for the current race
@@ -98,7 +94,10 @@ class Race:
         Returns the minimum completion time
         :return: minimum completion time in seconds
         """
-        valid_race_times = [rt.corrected_time_s for rt in self.race_times.values() if isinstance(rt, RaceFinishTime)]
+        valid_race_times = [
+            rt.corrected_time_s
+            for rt in self.race_times.values()
+            if isinstance(rt, finishes.RaceFinishTime)]
 
         if len(valid_race_times) >= 0:
             return min(valid_race_times)
@@ -114,7 +113,10 @@ class Race:
         bf_condition = self.wind_bf is not None
 
         # Calculate the starting race times
-        starting_race_times = [rt for rt in self.race_times.values() if not isinstance(rt, RaceFinishRC)]
+        starting_race_times = [
+            rt
+            for rt in self.race_times.values()
+            if not isinstance(rt, finishes.RaceFinishRC)]
         num_condition = len(starting_race_times) >= self.required_skippers
 
         # Return true if all conditions are true
@@ -130,12 +132,12 @@ class Race:
         valid_check = self.valid()
 
         # Determine if the skipper was RC for the race
-        rc_check = skipper in self.race_times and isinstance(self.race_times[skipper], RaceFinishRC)
+        rc_check = skipper in self.race_times and isinstance(self.race_times[skipper], finishes.RaceFinishRC)
 
         # Determine if we can use the race for RC
         return valid_check or rc_check
 
-    def add_skipper_finish(self, race_finish: 'RaceFinishInterface') -> None:
+    def add_skipper_finish(self, race_finish: finishes.RaceFinishInterface) -> None:
         """
         Adds a skipper's finish to the race results
         :param race_finish: race finish object to add to the database
@@ -202,7 +204,7 @@ class Race:
 
             # Add in all the other results
             for rt in self.other_results():
-                if isinstance(rt, RaceFinishDNF):
+                if isinstance(rt, finishes.RaceFinishDNF):
                     result_dict[rt.skipper] = remaining_points
                 else:
                     result_dict[rt.skipper] = None
@@ -240,7 +242,7 @@ class Race:
         for race_result in self.race_times_sorted():
             score = race_result[0]
             race_time = race_result[1]
-            if isinstance(race_time, RaceFinishTime):
+            if isinstance(race_time, finishes.RaceFinishTime):
                 actual_time_value = format_time(race_time.time_s)
                 race_time_value = f'{round(race_time.time_s):4d}'
                 handicap_string = f'{race_time.boat.dpn_for_beaufort(self.wind_bf).handicap_string():9s}'
@@ -293,30 +295,30 @@ class Race:
         Provides the skippers participating in the race committee
         :return: list of Skippers in the race committee
         """
-        return [r.skipper for r in self.race_times.values() if isinstance(r, RaceFinishRC)]
+        return [r.skipper for r in self.race_times.values() if isinstance(r, finishes.RaceFinishRC)]
 
-    def other_results(self) -> typing.List['RaceFinishInterface']:
+    def other_results(self) -> typing.List[finishes.RaceFinishInterface]:
         """
         Provides a list of other racers that did not finish the race and were not RC
         :return: list of valid race times that did not finish the race and were not RC
         """
         return [r for r in self.race_times.values() if not r.finished()]
 
-    def fip_results(self) -> typing.List['RaceFinishFIP']:
+    def fip_results(self) -> typing.List[finishes.RaceFinishFIP]:
         """
         Provides a list of the racers that have a Finish-In-Place indication
         :return: list of valid race times for finishing in place
         """
-        return [r for r in self.race_times.values() if isinstance(r, RaceFinishFIP)]
+        return [r for r in self.race_times.values() if isinstance(r, finishes.RaceFinishFIP)]
 
-    def finished_race_times(self) -> typing.List['RaceFinishTime']:
+    def finished_race_times(self) -> typing.List[finishes.RaceFinishTime]:
         """
         Provides a list of the finished race times
         :return: a list of the race times that were completed
         """
-        return [r for r in self.race_times.values() if isinstance(r, RaceFinishTime)]
+        return [r for r in self.race_times.values() if isinstance(r, finishes.RaceFinishTime)]
 
-    def race_times_sorted(self) -> typing.List[typing.Tuple[float, 'RaceFinishInterface']]:
+    def race_times_sorted(self) -> typing.List[typing.Tuple[float, finishes.RaceFinishInterface]]:
         """
         Provides a sorted list of the finished race times by score
         :return: a list of tuples containing the score and the race time object
@@ -325,7 +327,7 @@ class Race:
         scores = self.race_results()
 
         # Obtain the list of skippers who finished the race and sort by the resulting scores obtained above
-        race_time_list: typing.List[RaceFinishInterface] = self.finished_race_times()
+        race_time_list: typing.List[finishes.RaceFinishInterface] = self.finished_race_times()
         race_time_list.extend(self.other_results())
         race_time_list.extend(self.fip_results())
 
@@ -353,7 +355,7 @@ class Race:
                 score_results, race_times = zip(*[
                     v
                     for v in self.race_times_sorted()
-                    if isinstance(v[1], RaceFinishTime)])
+                    if isinstance(v[1], finishes.RaceFinishTime)])
                 time_results = [v.corrected_time_s / 60.0 for v in race_times]
 
                 # Plot the results
@@ -363,7 +365,7 @@ class Race:
                 plt.ylabel('Corrected Time [min]')
 
                 s = f.get_size_inches()
-                f.set_size_inches(w=1.15*s[0], h=s[1])
+                f.set_size_inches(w=1.15 * s[0], h=s[1])
 
                 img_str = figure_to_base64(f)
 

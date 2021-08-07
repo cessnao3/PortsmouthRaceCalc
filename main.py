@@ -2,9 +2,11 @@
 Race Database Console Main Function
 """
 
-from master_database import MasterDatabase
+import pathlib
 
-database = MasterDatabase()
+from database import MasterDatabase
+
+database = MasterDatabase(input_folder=pathlib.Path('input'))
 
 for series in database.series.values():
     race_num = 1

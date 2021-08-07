@@ -2,12 +2,11 @@
 Parses input files into Python object to parse race information
 """
 
-from fleets import Fleet, BoatType, WindMap
-from skippers import Skipper
+from .fleets import Fleet, BoatType, WindMap
+from .skippers import Skipper
 
-import race_database as race_db
-import series_database as series_db
-import race_finishes
+from .series import Race
+from .series import finishes, series as series_db
 
 import datetime
 import pathlib
@@ -19,12 +18,6 @@ class MasterDatabase:
     """
     Master database to keep track of all input parameters
     """
-    input_folder = pathlib.Path('input')
-
-    fleet_input_name = 'fleets.yaml'
-    skipper_input_name = 'skippers.csv'
-    series_input_name = 'series.yaml'
-
     @property
     def fleet_file(self) -> pathlib.Path:
         """
@@ -47,10 +40,10 @@ class MasterDatabase:
         return self.input_folder / self.series_input_name
 
     def __init__(self,
-                 input_folder: pathlib.Path = None,
-                 fleet_file: str = None,
-                 skipper_file: str = None,
-                 series_file: str = None):
+                 input_folder: pathlib.Path,
+                 fleet_file: str = 'fleets.yaml',
+                 skipper_file: str = 'skippers.csv',
+                 series_file: str = 'series.yaml'):
         """
         Initializes the master database with the provided inputs
         :param input_folder: folder where the input files are provided
@@ -58,15 +51,13 @@ class MasterDatabase:
         :param skipper_file: filename to override the skipper input file
         :param series_file: filename to override the series input file
         """
-        # Handle override parameter inputs
-        if input_folder is not None:
-            self.input_folder = input_folder
-        if fleet_file is not None:
-            self.fleet_input_name = fleet_file
-        if skipper_file is not None:
-            self.skipper_input_name = skipper_file
-        if series_file is not None:
-            self.series_input_name = series_file
+        # Define the input folder
+        self.input_folder = input_folder
+
+        # Read in the input names
+        self.fleet_input_name = fleet_file
+        self.skipper_input_name = skipper_file
+        self.series_input_name = series_file
 
         # Load the database
         self.fleets = self._load_fleets()
@@ -246,7 +237,7 @@ class MasterDatabase:
                                 race_boat_dict[skip] = series.fleet.get_boat(boat_code)
 
                     # Create the race object
-                    race = race_db.Race(
+                    race = Race(
                         fleet=series.fleet,
                         boat_dict=race_boat_dict,
                         required_skippers=series.valid_required_skippers,
@@ -287,18 +278,18 @@ class MasterDatabase:
 
                             # Check for finish in place
                             if input_finish_result == 'dnf':
-                                race_finish = race_finishes.RaceFinishDNF(boat=boat, skipper=skipper)
+                                race_finish = finishes.RaceFinishDNF(boat=boat, skipper=skipper)
                             elif input_finish_result == 'dq':
-                                race_finish = race_finishes.RaceFinishDQ(boat=boat, skipper=skipper)
+                                race_finish = finishes.RaceFinishDQ(boat=boat, skipper=skipper)
                             elif input_finish_result[:3] == 'fip':
-                                race_finish = race_finishes.RaceFinishFIP(
+                                race_finish = finishes.RaceFinishFIP(
                                     boat=boat,
                                     skipper=skipper,
                                     place=int(input_finish_result[3:]))
                             else:
                                 raise ValueError(f'unknown race finish type "{input_finish_result}"')
                         elif isinstance(input_finish_result, int):
-                            race_finish = race_finishes.RaceFinishTime(
+                            race_finish = finishes.RaceFinishTime(
                                 boat=race.boat_dict[skipper],
                                 skipper=skipper,
                                 wind_bf=race.wind_bf,

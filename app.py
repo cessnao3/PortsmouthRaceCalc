@@ -2,19 +2,20 @@
 Main entry point for Flask web application
 """
 
-from master_database import MasterDatabase
-
 from flask import Flask, redirect, url_for, render_template, send_from_directory
-
-import utils
-import utils.plotting as plotting
 
 import pathlib
 
-app = Flask(__name__, instance_path=str(pathlib.Path(__file__).parent))
+from database import MasterDatabase
+import database.utils as utils
+import database.utils.plotting as plotting
+
+app = Flask(
+    __name__,
+    instance_path=str(pathlib.Path(__file__).parent))
 app.jinja_env.globals.update(format_time=utils.format_time)
 
-database = MasterDatabase()
+database = MasterDatabase(input_folder=pathlib.Path(__file__).parent / 'input')
 
 
 @app.route('/favicon.ico')
