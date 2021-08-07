@@ -2,9 +2,13 @@
 Provides a database for use in calculating the corrected times for race parameters and scoring
 """
 
-from boat_database import Fleet, BoatType
-from skipper_database import Skipper
-from race_utils import round_score, get_pyplot, figure_to_base64, format_time
+from fleets import Fleet, BoatType
+
+from skippers import Skipper
+
+from utils import round_score, figure_to_base64, format_time
+from utils.plotting import get_pyplot
+
 from race_finishes import \
     RaceFinishInterface, \
     RaceFinishTime, \

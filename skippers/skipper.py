@@ -1,14 +1,18 @@
 """
-Database and type to hold information regarding the boat parameters and handicap values
+Provides data inherent to a skipper object
 """
 
-import race_utils
+from typing import Any, Dict, Optional
 
-import typing
+import utils
 
 
 class Skipper:
-    def __init__(self, identifier: str, first: str = None, last: str = None):
+    def __init__(
+            self,
+            identifier: str,
+            first: str = None,
+            last: str = None):
         """
         Defines a skipper object used in the race
         :param identifier: identification string used to match a skipper object with race performance
@@ -20,7 +24,7 @@ class Skipper:
         self.last = last
 
     @staticmethod
-    def load_from_csv(csv_table: str) -> typing.Dict[str, 'Skipper']:
+    def load_from_csv(csv_table: str) -> Dict[str, 'Skipper']:
         """
         Loads the skippers from a
         :param csv_table: CSV file contents
@@ -33,11 +37,11 @@ class Skipper:
         expected_header = ['identifier', 'first_name', 'last_name']
 
         # Define a None-if-empty function
-        def none_if_empty(s: str) -> typing.Optional[str]:
+        def none_if_empty(s: str) -> Optional[str]:
             return s if len(s) > 0 else None
 
         # Define the skipper row function
-        def skipper_row_func(row_dict: typing.Dict[str, str]) -> None:
+        def skipper_row_func(row_dict: Dict[str, str]) -> None:
             identifier = none_if_empty(row_dict['identifier'])
             first = none_if_empty(row_dict['first_name'])
             last = none_if_empty(row_dict['last_name'])
@@ -53,7 +57,7 @@ class Skipper:
                     last=last)
 
         # Load the file
-        race_utils.load_from_csv(
+        utils.load_from_csv(
             csv_data=csv_table,
             row_func=skipper_row_func,
             expected_header=expected_header)
@@ -68,7 +72,7 @@ class Skipper:
         """
         return hash(self.identifier)
 
-    def __eq__(self, other: typing.Any) -> bool:
+    def __eq__(self, other: Any) -> bool:
         """
         Returns true if the other object is a Skipper and if this and the other object share the
         same parameter values

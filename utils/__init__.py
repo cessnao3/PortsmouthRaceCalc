@@ -90,31 +90,6 @@ def round_score(score_in: typing.Union[int, float, None]) -> typing.Union[int, f
         return round(score_in, 1)
 
 
-def _create_get_pyplot() -> typing.Callable:
-    """
-    Imports matplotlib and provides a function to provide the matplotlib.pyplot instance
-    """
-    try:
-        import matplotlib
-        matplotlib.use('Agg')
-        import matplotlib.pyplot as plt
-    except ImportError:
-        print('Could not import pyplot')
-        matplotlib = None
-        plt = None
-
-    def get_pyplot_inner() -> typing.Union['matplotlib.pyplot', None]:
-        """
-        Returns the pyplot instance
-        """
-        return plt
-
-    return get_pyplot_inner
-
-
-get_pyplot = _create_get_pyplot()
-
-
 def figure_to_base64(figure) -> str:
     """
     Turns a matplotlib figure into a HTML-compatible image source string
@@ -123,7 +98,10 @@ def figure_to_base64(figure) -> str:
     """
     # Save the image to a memory buffer
     buf = io.BytesIO()
-    figure.savefig(buf, format='png', transparent=True)
+    figure.savefig(
+        buf,
+        format='png',
+        transparent=True)
     buf.seek(0)
 
     # Encode the buffer bytes as a string

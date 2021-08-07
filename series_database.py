@@ -2,10 +2,12 @@
 Provides a database for use in calculating and scoring a race series
 """
 
-from boat_database import Fleet, BoatType
-from skipper_database import Skipper
+from fleets import Fleet, BoatType
+
+from skippers import Skipper
 from race_database import Race
-from race_utils import capitalize_words, round_score, get_pyplot, figure_to_base64
+from utils import capitalize_words, round_score, figure_to_base64
+from utils.plotting import get_pyplot
 
 import race_finishes
 

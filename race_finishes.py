@@ -2,8 +2,8 @@
 Provides the interface for race finishing information
 """
 
-from skipper_database import Skipper
-from boat_database import BoatType
+from skippers import Skipper
+from fleets import BoatType
 
 
 class RaceFinishInterface:

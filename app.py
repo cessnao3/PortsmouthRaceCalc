@@ -5,12 +5,14 @@ Main entry point for Flask web application
 from master_database import MasterDatabase
 
 from flask import Flask, redirect, url_for, render_template, send_from_directory
-import race_utils
+
+import utils
+import utils.plotting as plotting
 
 import pathlib
 
 app = Flask(__name__, instance_path=str(pathlib.Path(__file__).parent))
-app.jinja_env.globals.update(format_time=race_utils.format_time)
+app.jinja_env.globals.update(format_time=utils.format_time)
 
 database = MasterDatabase()
 
@@ -79,13 +81,13 @@ def boat_page(fleet_name, boat_code):
                 'boat_page.html',
                 database=database,
                 boat=boat,
-                fleet_name=fleet_name)
+                fleet=fleet)
     else:
         return redirect(url_for('index_page'))
 
 
 if __name__ == '__main__':
     # Initialize plotting (if available) and run
-    race_utils.get_pyplot()
+    plotting.get_pyplot()
     app.run()
 

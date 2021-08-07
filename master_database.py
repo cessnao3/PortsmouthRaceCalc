@@ -2,8 +2,9 @@
 Parses input files into Python object to parse race information
 """
 
-import boat_database as boat_db
-import skipper_database as skipper_db
+from fleets import Fleet, BoatType, WindMap
+from skippers import Skipper
+
 import race_database as race_db
 import series_database as series_db
 import race_finishes
@@ -72,6 +73,14 @@ class MasterDatabase:
         self.skippers = self._load_skippers()
         self.series = self._load_series()
 
+    def series_with_boat(self, boat: BoatType) -> typing.List[series_db.Series]:
+        """
+        Provides a list of series with the given boat
+        :param boat: the boat to search for
+        :return:
+        """
+        pass
+
     def latest_race_date(self) -> typing.Optional[datetime.datetime]:
         """
         Provides the latest race time
@@ -99,7 +108,7 @@ class MasterDatabase:
         else:
             return date.strftime('%B %d, %Y')
 
-    def _load_fleets(self) -> typing.Dict[str, boat_db.Fleet]:
+    def _load_fleets(self) -> typing.Dict[str, Fleet]:
         """
         Loads the fleet database from the provided files
         :return: the list of fleets loaded
@@ -127,7 +136,7 @@ class MasterDatabase:
 
             # Obtain the wind mapping
             wind_map_dict = fleet_dict['wind_map']
-            wind_map = boat_db.WindMap(default_index=wind_map_dict['default_index'])
+            wind_map = WindMap(default_index=wind_map_dict['default_index'])
             for map_val in wind_map_dict['map_values']:
                 wind_map.add_wind_parameters(
                     start_wind=map_val['start_bf'],
@@ -135,22 +144,24 @@ class MasterDatabase:
                     index=map_val['index'])
 
             # Define the fleet object
-            fleets[fleet_name] = boat_db.Fleet(
+            fleets[fleet_name] = Fleet(
                 name=fleet_name,
-                boat_types=boat_db.BoatType.load_from_csv(boat_table, fleet=None),
+                boat_types=BoatType.load_from_csv(
+                    csv_table=boat_table,
+                    wind_map=wind_map),
                 wind_map=wind_map,
                 source=fleet_dict['source'] if 'source' in fleet_dict else None)
 
         # Set the fleet object to the loaded parameters
         return fleets
 
-    def _load_skippers(self) -> typing.Dict[str, skipper_db.Skipper]:
+    def _load_skippers(self) -> typing.Dict[str, Skipper]:
         """
         Loads the skipper database from the provided files
         """
         # Read in the skipper object and load the CSV parameters
         with self.skipper_file.open('r') as skipper_handle:
-            skippers = skipper_db.Skipper.load_from_csv(skipper_handle.read())
+            skippers = Skipper.load_from_csv(skipper_handle.read())
 
         # Set the skipper object to the loaded parameters
         return skippers
