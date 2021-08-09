@@ -15,6 +15,7 @@ boats:
   Craig_J: GF
   Dennis_S: SF
   Ryan_C: SF
+  Matt_F: SF
 races:
   - date: '2021_07_18'
     rc:
@@ -35,7 +36,7 @@ races:
           Craig_J: 37:09
           Dennis_S: DNF
       - notes: I2 with Gate
-        wind_bf: 0
+        wind_bf: 1
         offset_time: 0
         times:
           Bill_P: 16:15
@@ -52,7 +53,7 @@ races:
       - Nick_H
     races:
       - notes: M2 Port
-        wind_bf: 0
+        wind_bf: 1
         offset_time: 0
         times:
           Mike_F: 21:00
@@ -103,3 +104,32 @@ races:
           Craig_J: 42:50
           Dennis_S: 52:36
           Ryan_C: 45:35
+  - date: '2021_08_08'
+    rc:
+      - Bill_P
+      - Ian_O
+    races:
+      - notes: M1 Starboard
+        wind_bf: 1
+        offset_time: 6:00
+        times:
+          Rod_H: 42:09
+          Matt_F: 42:10
+          Mike_F: 42:24
+          Lewis_V: 42:26
+          David_Bu: 42:41
+          Nedra_F: 42:42
+          Matt_L: 44:02
+          Jim_S: 49:31
+      - notes: M3 Starboard
+        wind_bf: 2
+        offset_time: 6:00
+        times:
+          Lewis_V: 47:27
+          Mike_F: 51:55
+          Rod_H: 51:58
+          Matt_F: 52:38
+          David_Bu: 52:47
+          Nedra_F: 53:08
+          Matt_L: 65:04
+          Jim_S: 66:23
