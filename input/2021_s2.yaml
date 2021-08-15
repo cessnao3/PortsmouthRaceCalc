@@ -12,10 +12,11 @@ boats:
   Barry_O: HLR14
   Chris_E: SF
   Shawn_W: BUT
-  Craig_J: GF
+  Craig_J: SF
   Dennis_S: SF
   Ryan_C: SF
   Matt_F: SF
+  Chris_H: LASE
 races:
   - date: '2021_07_18'
     rc:
@@ -133,3 +134,34 @@ races:
           Nedra_F: 53:08
           Matt_L: 65:04
           Jim_S: 66:23
+  - date: '2021_08_05'
+    rc:
+      - Rod_H
+      - Matt_L
+    races:
+      - notes: M3 Starboard
+        wind_bf: 2
+        offset_time: 0
+        times:
+          Bill_P: 33:34
+          Chris_E: 32:51
+          David_Bu: 33:18
+          Ian_O: 33:57
+          Jim_S: 43:03
+          Lewis_V: 29:48
+          Mike_F: 32:19
+          Nedra_F: 33:50
+          Chris_H: 30:33
+      - notes: M3 Starboard
+        wind_bf: 2
+        offset_time: 0
+        times:
+          Bill_P: 40:35
+          Chris_E: 42:15
+          David_Bu: 39:54
+          Ian_O: 39:19
+          Jim_S: 47:50
+          Lewis_V: 31:54
+          Mike_F: 40:10
+          Nedra_F: 41:23
+          Chris_H: 40:53
