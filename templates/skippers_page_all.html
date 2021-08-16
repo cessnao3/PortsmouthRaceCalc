@@ -5,23 +5,32 @@
     </head>
     <body>
         <h1>Skippers</h1>
-        <a href="{{url_for('index_page')}}">Home</a>
+        <a href="{{ url_for('index_page') }}">Home</a>
 
+        <h2>Table</h2>
         <table border=1>
             <tr>
                 <th>Identifier</th>
                 <th>First Name</th>
                 <th>Last Name</th>
             </tr>
-            {% for val in database.skippers %}
+            {% for val in database.skippers.values() %}
             <tr>
-                <td>{{ val.identifier }}</td>
+                <td><a href="{{ url_for('skipper_page_ind', skipper_name=val.identifier) }}">{{ val.identifier }}</a></td>
+                {% if val.first %}
                 <td>{{ val.first }}</td>
+                {% else %}
+                <td>-</td>
+                {% endif %}
+                {% if val.last %}
                 <td>{{ val.last }}</td>
+                {% else %}
+                <td>-</td>
+                {% endif %}
             </tr>
             {% endfor %}
         </table>
-    </body>
 
-    {% include 'footer.html' %}
+        {% include 'footer.html' %}
+    </body>
 </html>

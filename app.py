@@ -86,15 +86,20 @@ def boat_page(fleet_name: str, boat_code: str):
     else:
         return redirect(url_for('index_page'))
 
+
 @app.route('/skippers')
 def skipper_page_all():
     return render_template(
         'skippers_page_all.html',
         database=database)
 
+
 @app.route('/skippers/<string:skipper_name>')
 def skipper_page_ind(skipper_name: str):
-    pass
+    return render_template(
+        'skippers_page_individual.html',
+        database=database,
+        skipper_name=skipper_name)
 
 
 if __name__ == '__main__':
