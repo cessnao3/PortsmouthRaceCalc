@@ -35,7 +35,7 @@ def index_page():
 
 
 @app.route('/series/<string:series_name>')
-def series_page(series_name):
+def series_page(series_name: str):
     if series_name in database.series:
         return render_template(
             'series_page.html',
@@ -46,7 +46,7 @@ def series_page(series_name):
 
 
 @app.route('/series/<string:series_name>/<int:race_index>')
-def race_page(series_name, race_index):
+def race_page(series_name: str, race_index: int):
     if series_name in database.series or race_index > len(database.series[series_name].races):
         return render_template(
             'race_page.html',
@@ -58,7 +58,7 @@ def race_page(series_name, race_index):
 
 
 @app.route('/fleet/<string:fleet_name>')
-def fleet_page(fleet_name):
+def fleet_page(fleet_name: str):
     if fleet_name in database.fleets:
         fleet = database.fleets[fleet_name]
         return render_template(
@@ -70,7 +70,7 @@ def fleet_page(fleet_name):
 
 
 @app.route('/fleet/<string:fleet_name>/boats/<string:boat_code>')
-def boat_page(fleet_name, boat_code):
+def boat_page(fleet_name: str, boat_code: str):
     if fleet_name in database.fleets:
         fleet = database.fleets[fleet_name]
         boat = fleet.get_boat(boat_code)
@@ -86,9 +86,18 @@ def boat_page(fleet_name, boat_code):
     else:
         return redirect(url_for('index_page'))
 
+@app.route('/skippers')
+def skipper_page_all():
+    return render_template(
+        'skippers_page_all.html',
+        database=database)
+
+@app.route('/skippers/<string:skipper_name>')
+def skipper_page_ind(skipper_name: str):
+    pass
+
 
 if __name__ == '__main__':
     # Initialize plotting (if available) and run
     plotting.get_pyplot()
     app.run()
-

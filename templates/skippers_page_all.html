@@ -1,0 +1,27 @@
+<html>
+    <head>
+        <title>PRC - Skippers</title>
+        {% include 'head_items.html' %}
+    </head>
+    <body>
+        <h1>Skippers</h1>
+        <a href="{{url_for('index_page')}}">Home</a>
+
+        <table border=1>
+            <tr>
+                <th>Identifier</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+            </tr>
+            {% for val in database.skippers %}
+            <tr>
+                <td>{{ val.identifier }}</td>
+                <td>{{ val.first }}</td>
+                <td>{{ val.last }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </body>
+
+    {% include 'footer.html' %}
+</html>
