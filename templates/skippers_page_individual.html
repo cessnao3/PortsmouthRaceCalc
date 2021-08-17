@@ -1,4 +1,7 @@
+{%- import "image_macro.html" as img -%}
+
 {%- set skipper = database.skippers[skipper_name] -%}
+{%- set skipper_stats = database.skipper_statistics[skipper_name] -%}
 
 <html>
     <head>
@@ -16,15 +19,18 @@
         <table border=0>
             <tr>
                 <th>First:</th>
-                <td>{% if skipper.first %}{{ skipper.first }}{% endif %}</td>
+                <td>{% if skipper.first %}{{ skipper.first }}{% else %}<i>N/A</i>{% endif %}</td>
             </tr>
             <tr>
                 <th>Last:</th>
-                <td>{% if skipper.last %}{{ skipper.last }}{% endif %}</td>
+                <td>{% if skipper.last %}{{ skipper.last }}{% else %}<i>N/A</i>{% endif %}</td>
             </tr>
         </table>
 
-    {% include 'footer.html' %}
+        <h2>Statistics</h2>
+        {{ img.place(skipper_stats.get_race_plot(), "Statistics") }}
+
+        {% include 'footer.html' %}
 
     </body>
 </html>

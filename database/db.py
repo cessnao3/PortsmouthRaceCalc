@@ -8,10 +8,13 @@ from .skippers import Skipper
 from .series import Race
 from .series import finishes, series as series_db
 
+from .statistics.skipper_statistics import SkipperStatistics
+
 import datetime
 import pathlib
-import typing
 import yaml
+
+from typing import Dict, List, Optional
 
 
 class MasterDatabase:
@@ -64,7 +67,10 @@ class MasterDatabase:
         self.skippers = self._load_skippers()
         self.series = self._load_series()
 
-    def series_with_boat(self, boat: BoatType) -> typing.List[series_db.Series]:
+        # Define the statistics
+        self.skipper_statistics: Dict[str, SkipperStatistics] = dict()
+
+    def series_with_boat(self, boat: BoatType) -> List[series_db.Series]:
         """
         Provides a list of series with the given boat
         :param boat: the boat to search for
@@ -72,7 +78,7 @@ class MasterDatabase:
         """
         pass
 
-    def latest_race_date(self) -> typing.Optional[datetime.datetime]:
+    def latest_race_date(self) -> Optional[datetime.datetime]:
         """
         Provides the latest race time
         :return: the latest race time in all series
@@ -99,7 +105,40 @@ class MasterDatabase:
         else:
             return date.strftime('%B %d, %Y')
 
-    def _load_fleets(self) -> typing.Dict[str, Fleet]:
+    def update_statistics(self) -> None:
+        """
+
+        :return:
+        """
+        # Clear out existing statistics
+        self.skipper_statistics.clear()
+
+        # Define all race results
+        race_results: Dict[Skipper, List[int]] = dict()
+
+        # Check all series, races, and values for results
+        for series in self.series.values():
+            for race in series.races:
+                for skipper, result in race.race_results().items():
+                    if skipper not in race_results:
+                        race_results[skipper] = list()
+                    race_results[skipper].append(int(round(result)))
+
+        # Total the results
+        for skipper in self.skippers.values():
+            skipper_results = dict()
+
+            if skipper in race_results:
+                for result in race_results[skipper]:
+                    if result not in skipper_results:
+                        skipper_results[result] = 0
+                    skipper_results[result] += 1
+
+            self.skipper_statistics[skipper.identifier] = SkipperStatistics(
+                skipper=skipper,
+                race_counts=skipper_results)
+
+    def _load_fleets(self) -> Dict[str, Fleet]:
         """
         Loads the fleet database from the provided files
         :return: the list of fleets loaded
@@ -146,7 +185,7 @@ class MasterDatabase:
         # Set the fleet object to the loaded parameters
         return fleets
 
-    def _load_skippers(self) -> typing.Dict[str, Skipper]:
+    def _load_skippers(self) -> Dict[str, Skipper]:
         """
         Loads the skipper database from the provided files
         """
@@ -157,7 +196,7 @@ class MasterDatabase:
         # Set the skipper object to the loaded parameters
         return skippers
 
-    def _load_series(self) -> typing.Dict[str, series_db.Series]:
+    def _load_series(self) -> Dict[str, series_db.Series]:
         """
         Loads the series database from the provided files
         """

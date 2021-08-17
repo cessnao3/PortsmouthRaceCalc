@@ -16,6 +16,7 @@ app = Flask(
 app.jinja_env.globals.update(format_time=utils.format_time)
 
 database = MasterDatabase(input_folder=pathlib.Path(__file__).parent / 'input')
+database.update_statistics()
 
 
 @app.route('/favicon.ico')

@@ -7,6 +7,7 @@ import pathlib
 from database import MasterDatabase
 
 database = MasterDatabase(input_folder=pathlib.Path('input'))
+database.update_statistics()
 
 for series in database.series.values():
     race_num = 1

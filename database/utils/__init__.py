@@ -3,8 +3,6 @@ Common utilities useful for loading race parameters and performing calculations
 """
 
 import csv
-import io
-import base64
 import typing
 
 
@@ -88,24 +86,6 @@ def round_score(score_in: typing.Union[int, float, None]) -> typing.Union[int, f
     # Otherwise, return a float rounding to first decimal
     else:
         return round(score_in, 1)
-
-
-def figure_to_base64(figure) -> str:
-    """
-    Turns a matplotlib figure into a HTML-compatible image source string
-    :param figure: Matplotlib figure object
-    :return: HTML data encoding of figure
-    """
-    # Save the image to a memory buffer
-    buf = io.BytesIO()
-    figure.savefig(
-        buf,
-        format='png',
-        transparent=True)
-    buf.seek(0)
-
-    # Encode the buffer bytes as a string
-    return 'data:image/png;base64,{:s}'.format(base64.b64encode(buf.read()).decode('utf-8'))
 
 
 def format_time(time_s: int) -> str:

@@ -6,8 +6,8 @@ from ..fleets import Fleet, BoatType
 
 from ..skippers import Skipper
 
-from ..utils import round_score, figure_to_base64, format_time
-from ..utils.plotting import get_pyplot
+from ..utils import round_score, format_time
+from ..utils.plotting import get_pyplot, figure_to_base64
 
 from . import finishes
 

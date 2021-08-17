@@ -5,8 +5,8 @@ Provides a database for use in calculating and scoring a race series
 from ..fleets import Fleet, BoatType
 from ..skippers import Skipper
 
-from ..utils import capitalize_words, round_score, figure_to_base64
-from ..utils.plotting import get_pyplot
+from ..utils import capitalize_words, round_score
+from ..utils.plotting import get_pyplot, figure_to_base64
 
 from . import Race, finishes
 
