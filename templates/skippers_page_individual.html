@@ -12,11 +12,17 @@
         <a href="{{ url_for('skipper_page_all') }}">Skippers</a>
 
         <h2>Name</h2>
-        <p>
-            <b>First:</b> {% if skipper.first %}{{ skipper.first }}{% endif %}
-            <br>
-            <b>Last:</b> {% if skipper.last %}{{ skipper.last }}{% endif %}
-        </p>
+
+        <table border=0>
+            <tr>
+                <th>First:</th>
+                <td>{% if skipper.first %}{{ skipper.first }}{% endif %}</td>
+            </tr>
+            <tr>
+                <th>Last:</th>
+                <td>{% if skipper.last %}{{ skipper.last }}{% endif %}</td>
+            </tr>
+        </table>
 
     {% include 'footer.html' %}
 

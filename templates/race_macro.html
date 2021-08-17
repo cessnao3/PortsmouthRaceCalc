@@ -11,7 +11,7 @@
 </tr>
 <tr>
     <th>RC:</th>
-    <td>{% for skipper in race.rc_skippers() %}{{skipper.identifier}}{% if not loop.last %}, {% endif %}{% endfor %}</td>
+    <td>{% for skipper in race.rc_skippers() %}<a href="{{ url_for('skipper_page_ind', skipper_name=skipper.identifier) }}">{{ skipper.identifier }}</a>{% if not loop.last %}, {% endif %}{% endfor %}</td>
 </tr>
 <tr>
     <th>Date:</th>
@@ -43,13 +43,14 @@
 {% set score = race_result[0] %}
 {% set race_time = race_result[1] %}
 {% set is_time = race_time.name().lower() == "time" %}
+{% set skipper = race_time.skipper %}
 <tr>
     {% if score %}
     <td> {{ score }} </td>
     {% else %}
     <td>N/A</td>
     {% endif %}
-    <td> {{ race_time.skipper.identifier }} </td>
+    <td> <a href="{{ url_for('skipper_page_ind', skipper_name=skipper.identifier) }}">{{ skipper.identifier }}</a> </td>
     <td> <a href="{{ url_for('boat_page', fleet_name=series.fleet.name, boat_code=race_time.boat.code) }}">{{ race_time.boat.code.upper() }}</a> </td>
     {% if is_time %}
     <td> {{ format_time(race_time.input_time_s) }} </td>

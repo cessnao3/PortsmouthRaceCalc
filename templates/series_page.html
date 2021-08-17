@@ -39,7 +39,7 @@
             </tr>
             {% for skipper in series.get_all_skippers_sorted() %}
             <tr>
-                <td>{{ skipper.identifier }}</td>
+                <td><a href="{{ url_for('skipper_page_ind', skipper_name=skipper.identifier) }}">{{ skipper.identifier }}</a></td>
                 {% for race in series.races %}
                     {% set result = race.get_skipper_result(skipper) %}
                     {% if result %}
