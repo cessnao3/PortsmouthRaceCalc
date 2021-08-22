@@ -177,6 +177,7 @@ class MasterDatabase:
             fleets[fleet_name] = Fleet(
                 name=fleet_name,
                 boat_types=BoatType.load_from_csv(
+                    fleet_name=fleet_name,
                     csv_table=boat_table,
                     wind_map=wind_map),
                 wind_map=wind_map,

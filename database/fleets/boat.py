@@ -19,6 +19,7 @@ class BoatType:
     def __init__(
             self,
             name: str,
+            fleet_name: str,
             boat_class: str,
             code: str,
             dpn_values: List[HandicapNumber],
@@ -26,12 +27,14 @@ class BoatType:
         """
         Initializes the boat parameter
         :param name: The name of the boat
+        :param fleet_name: The name of the fleet the boat is associated with
         :param boat_class: The class of the boat
         :param code: The unique identification code for the given boat class
         :param dpn_values: A list of 5 values, identifying [DPN0, DPN1, DPN2, DPN3, DPN4]
         :param wind_map: The wind map to use for obtaining DPN values
         """
         self.name = name
+        self.fleet_name = fleet_name
         self.boat_class = boat_class.lower()
         self.code = code
         self.dpn_values = dpn_values
@@ -90,10 +93,12 @@ class BoatType:
     @staticmethod
     def load_from_csv(
             csv_table: str,
+            fleet_name: str,
             wind_map: WindMap) -> Dict[str, 'BoatType']:
         """
         Reads the Portsmouth pre-calculated table from an input CSV file contents
         :param csv_table: The filename to read
+        :param fleet_name: The fleet name to associate boats with
         :param wind_map: A wind_map to associate the boat type to
         :return: A dictionary of boats, keyed by the type code
         """
@@ -130,6 +135,7 @@ class BoatType:
                 # Create the boat object and set equal to the dictionary for the code
                 boats[boat_code] = BoatType(
                     name=boat_name,
+                    fleet_name=fleet_name,
                     boat_class=boat_class,
                     code=boat_code,
                     dpn_values=dpn_values,
