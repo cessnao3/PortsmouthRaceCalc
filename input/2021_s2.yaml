@@ -17,6 +17,7 @@ boats:
   Ryan_C: SF
   Matt_F: SF
   Chris_H: LASE
+  Jay_H: SWSX
 races:
   - date: '2021_07_18'
     rc:
@@ -165,3 +166,38 @@ races:
           Mike_F: 40:10
           Nedra_F: 41:23
           Chris_H: 40:53
+  - date: '2021_08_22'
+    rc:
+      - Ian_O
+      - Jim_S
+    races:
+      - notes: M3 Starboard
+        wind_bf: 2
+        offset_time: 6:00
+        times:
+          Barry_O: 43:09
+          Bill_P: 38:13
+          David_Bu: 39:17
+          Jay_H: 44:08
+          Lewis_V: 34:40
+          Matt_L: 44:39
+          Mike_F: 37:30
+          Nedra_F: 39:27
+          Dennis_S: DNF
+          Chris_H: 36:50
+          Ryan_C: 48:02
+      - notes: M3 Starboard
+        wind_bf: 2
+        offset_time: 6:00
+        times:
+          Barry_O: 42:28
+          Bill_P: 41:33
+          David_Bu: 41:22
+          Jay_H: 49:36
+          Lewis_V: 37:31
+          Matt_L: 47:43
+          Mike_F: 40:57
+          Nedra_F: 41:42
+          Dennis_S: DNF
+          Chris_H: 38:15
+          Ryan_C: 52:18
