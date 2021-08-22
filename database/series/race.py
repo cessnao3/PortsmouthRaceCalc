@@ -265,7 +265,7 @@ class Race:
         # Return the joined list
         return '\n'.join(str_list)
 
-    def get_skipper_result(self, skipper: Skipper) -> typing.Union[str, int, float, None]:
+    def get_skipper_result_string(self, skipper: Skipper) -> typing.Union[str, int, float, None]:
         """
         Provides the resulting score text for the skipper ID provided.
         :param skipper: the skipper identifier

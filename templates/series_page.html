@@ -20,7 +20,7 @@
         <br>
         <br>
 
-        <table border=1>
+        <table border="1">
             <tr>
                 <th>Skipper</th>
                 {% for race in series.races %}
@@ -41,7 +41,7 @@
             <tr>
                 <td><a href="{{ url_for('skipper_page_ind', skipper_name=skipper.identifier) }}">{{ skipper.identifier }}</a></td>
                 {% for race in series.races %}
-                    {% set result = race.get_skipper_result(skipper) %}
+                    {% set result = race.get_skipper_result_string(skipper) %}
                     {% if result %}
                     <td>{{ result }}</td>
                     {% else %}

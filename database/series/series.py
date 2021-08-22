@@ -432,7 +432,7 @@ class Series:
             skipper_line = '{:>20s}'.format(skipper.identifier)
 
             for race in self.races:
-                result = race.get_skipper_result(skipper)
+                result = race.get_skipper_result_string(skipper)
                 if result is not None:
                     skipper_line += '{:>6s}'.format(str(result))
                 else:
