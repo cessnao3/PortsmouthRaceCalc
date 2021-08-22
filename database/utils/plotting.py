@@ -12,6 +12,9 @@ import io
 __plt = None
 __plt_import = False
 
+# Define Flags
+__COMPRESSION_ENABLED = True
+
 
 def get_pyplot():
     """
@@ -42,7 +45,10 @@ def fig_compress(fig_b64: str) -> bytes:
     :param fig_b64: the figure encoded in Base64
     :return: the associated compressed bytes
     """
-    return gzip.compress(fig_b64.encode('utf-8'))
+    if __COMPRESSION_ENABLED:
+        return gzip.compress(fig_b64.encode('utf-8'))
+    else:
+        return fig_b64.encode('utf-8')
 
 
 def fig_decompress(fig_bytes: bytes) -> str:
@@ -51,7 +57,10 @@ def fig_decompress(fig_bytes: bytes) -> str:
     :param fig_bytes: the figure bytes
     :return: the resulting Base64 string
     """
-    return gzip.decompress(fig_bytes).decode('utf-8')
+    if __COMPRESSION_ENABLED:
+        return gzip.decompress(fig_bytes).decode('utf-8')
+    else:
+        return fig_bytes.decode('utf-8')
 
 
 def figure_to_base64(figure) -> str:
