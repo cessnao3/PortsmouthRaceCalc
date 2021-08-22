@@ -3,6 +3,7 @@ Provides functions to help maintain plotting
 """
 
 import base64
+import gzip
 import importlib
 import io
 
@@ -33,6 +34,24 @@ def get_pyplot():
         __plt_import = True
 
     return __plt
+
+
+def fig_compress(fig_b64: str) -> bytes:
+    """
+    Compresses the given figure to save space
+    :param fig_b64: the figure encoded in Base64
+    :return: the associated compressed bytes
+    """
+    return gzip.compress(fig_b64.encode('utf-8'))
+
+
+def fig_decompress(fig_bytes: bytes) -> str:
+    """
+    Decompresses the given figure to Base64
+    :param fig_bytes: the figure bytes
+    :return: the resulting Base64 string
+    """
+    return gzip.decompress(fig_bytes).decode('utf-8')
 
 
 def figure_to_base64(figure) -> str:

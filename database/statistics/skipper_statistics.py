@@ -2,12 +2,11 @@
 Skipper Statistics provides overall statistics for a given sailor
 """
 
-import gzip
 from typing import Dict, List, Optional, Tuple
 
 from ..fleets import BoatType
 from ..skippers import Skipper
-from ..utils.plotting import get_pyplot, figure_to_base64
+from ..utils.plotting import get_pyplot, figure_to_base64, fig_compress, fig_decompress
 
 
 class SkipperStatistics:
@@ -93,8 +92,8 @@ class SkipperStatistics:
                 f.set_size_inches(w=1.15 * s[0], h=s[1])
 
                 img_str = figure_to_base64(f)
-            self._race_plot = gzip.compress(img_str.encode('utf-8'))
-        return gzip.decompress(self._race_plot).decode('utf-8')
+            self._race_plot = fig_compress(img_str)
+        return fig_decompress(self._race_plot)
 
     def get_boat_plot(self) -> str:
         """
@@ -132,5 +131,5 @@ class SkipperStatistics:
                 f.set_size_inches(w=1.15 * s[0], h=s[1])
 
                 img_str = figure_to_base64(f)
-            self._boat_plot = gzip.compress(img_str.encode('utf-8'))
-        return gzip.decompress(self._boat_plot).decode('utf-8')
+            self._boat_plot = fig_compress(img_str)
+        return fig_decompress(self._boat_plot)

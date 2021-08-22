@@ -6,7 +6,7 @@ from ..fleets import Fleet, BoatType
 from ..skippers import Skipper
 
 from ..utils import capitalize_words, round_score
-from ..utils.plotting import get_pyplot, figure_to_base64
+from ..utils.plotting import get_pyplot, figure_to_base64, fig_compress, fig_decompress
 
 from . import Race, finishes
 
@@ -40,8 +40,8 @@ class Series:
         self._skipper_rc_pts = None
         self._skippers = None
         self._points = None
-        self._scatter_plot = None
-        self._pie_plot = None
+        self._scatter_plot: typing.Optional[bytes] = None
+        self._pie_plot: typing.Optional[bytes] = None
 
     def latest_race_date(self) -> typing.Union[None, datetime.datetime]:
         """
@@ -77,7 +77,7 @@ class Series:
             r.set_index(race_counter)
             race_counter += 1
         self._skipper_rc_pts = None
-        self._skippers = None
+        self._skippers: typing.List[Skipper] = None
         self._points = None
         self._scatter_plot = None
         self._pie_plot = None
@@ -347,10 +347,10 @@ class Series:
                 img_str = figure_to_base64(f)
 
             # Memoize the plot
-            self._scatter_plot = img_str
+            self._scatter_plot = fig_compress(img_str)
 
         # Return the result
-        return self._scatter_plot
+        return fig_decompress(self._scatter_plot)
 
     def boat_pie_chart(self) -> str:
         """
@@ -390,9 +390,9 @@ class Series:
 
                 img_str = figure_to_base64(f)
 
-            self._pie_plot = img_str
+            self._pie_plot = fig_compress(img_str)
 
-        return self._pie_plot
+        return fig_decompress(self._pie_plot)
 
     def fancy_name(self) -> str:
         """

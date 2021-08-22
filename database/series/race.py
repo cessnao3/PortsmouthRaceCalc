@@ -2,17 +2,18 @@
 Provides a database for use in calculating the corrected times for race parameters and scoring
 """
 
+import datetime
+import typing
+
+
 from ..fleets import Fleet, BoatType
 
 from ..skippers import Skipper
 
 from ..utils import round_score, format_time
-from ..utils.plotting import get_pyplot, figure_to_base64
+from ..utils.plotting import get_pyplot, figure_to_base64, fig_compress, fig_decompress
 
 from . import finishes
-
-import datetime
-import typing
 
 
 class Race:
@@ -47,7 +48,7 @@ class Race:
         self.notes = notes
         self._race_index: typing.Optional[int] = None
         self._results_dict: typing.Optional[typing.Dict[Skipper, int]] = None
-        self._race_plot = None
+        self._race_plot: typing.Optional[bytes] = None
 
         # Add the RC skippers to the race times as participating in RC
         for rc_skipper in rc:
@@ -369,6 +370,6 @@ class Race:
 
                 img_str = figure_to_base64(f)
 
-            self._race_plot = img_str
+            self._race_plot = fig_compress(img_str)
 
-        return self._race_plot
+        return fig_decompress(self._race_plot)
