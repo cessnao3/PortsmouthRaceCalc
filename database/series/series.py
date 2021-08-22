@@ -108,6 +108,19 @@ class Series:
                     count += 1
         return count
 
+    def skipper_num_dnf(self, skipper: Skipper) -> int:
+        """
+        :param skipper: the skipper to check
+        :return: the number of races that a skipper has had a DNF finish
+        """
+        count = 0
+        for r in self.races:
+            if skipper in r.race_times:
+                res = r.race_times[skipper]
+                if isinstance(res, finishes.RaceFinishDNF):
+                    count += 1
+        return count
+
     def skipper_qualifies(self, skipper: Skipper) -> bool:
         """
         Returns whether a skipper has met the qualification count for the series
@@ -117,9 +130,10 @@ class Series:
         # Initialize a count for valid series and valid RC (RC may only be counted twice for qualification)
         count = self.skipper_num_finished(skipper)
         count_rc = self.skipper_num_rc(skipper)
+        count_dnf = self.skipper_num_dnf(skipper)
 
         # Return true if the count meets the qualify count threshold
-        return count + min(2, count_rc) >= self.qualify_count
+        return count + min(2, count_rc) + count_dnf >= self.qualify_count
 
     def skipper_rc_points(self, skipper: Skipper) -> typing.Union[int, float, None]:
         """
