@@ -1,27 +1,67 @@
 """
-
+Skipper Statistics provides overall statistics for a given sailor
 """
 
-from typing import Optional, Dict
+import gzip
+from typing import Dict, List, Optional, Tuple
 
+from ..fleets import BoatType
 from ..skippers import Skipper
 from ..utils.plotting import get_pyplot, figure_to_base64
 
 
 class SkipperStatistics:
     """
-
+    Provides statistics for a particular sailor
     """
 
     def __init__(
             self,
             skipper: Skipper,
-            race_counts: Dict[int, int]):
+            race_counts: Dict[int, int],
+            boats_used: Dict[BoatType, int]):
+        """
+        Defines the statistics for a given skipper
+        :param skipper: the skipper the statistics are computed for
+        :param race_counts: a dictionary of the finish places as keys, with number of times finished as values
+        :param boats_used: a dictionary of the boats used as keys, with the number of races finished as values
+        """
         self.skipper = skipper
         self.race_counts = race_counts
-        self._race_plot: Optional[str] = None
+        self.boats_used = boats_used
+        self._race_plot: Optional[bytes] = None
+        self._boat_plot: Optional[bytes] = None
+
+    def get_race_counts_sorted(self) -> List[Tuple[int, int]]:
+        """
+        Provides a sorted list of race results
+        :return: a list of tuples containing the (race result, number of times for race result), sorted from lowest
+        result to highest result
+        """
+        return [
+            (finish, self.race_counts[finish])
+            for finish
+            in sorted(self.race_counts.keys())]
+
+    def get_total_race_counts(self) -> int:
+        """
+        Provides the total number of races in the race result dictionary
+        :return: number of races finished
+        """
+        return sum(self.race_counts.values())
+
+    def get_total_boat_counts(self) -> int:
+        """
+        Provides the total number of boat races in the boat dictionary
+        :return: the total number of boats used
+        """
+        return sum(self.boats_used.values())
 
     def get_race_plot(self) -> str:
+        """
+        Provides the plot string for the race pie chart
+        :return: the base64-encoded string, or empty string if unable to plot
+        """
         if self._race_plot is None:
             # Get the plot instance
             plt = get_pyplot()
@@ -29,24 +69,68 @@ class SkipperStatistics:
 
             if plt is not None:
                 # Determine the total number of races
-                num_races = sum(self.race_counts.values())
+                num_races = self.get_total_race_counts()
 
                 # Determine the race entries (sorted finish values) and resulting percentages
                 race_entries = list(sorted(self.race_counts.keys()))
                 race_percentages = [self.race_counts[i] / num_races for i in race_entries]
 
                 # Calculate the resulting labels
-                race_labels = [f'Place {v} ({self.race_counts[v]}, {self.race_counts[v] / num_races * 100:.0f}%)' for v in race_entries]
+                race_labels = [
+                    f'Place {v} ({self.race_counts[v]}, {self.race_counts[v] / num_races * 100:.0f}%)'
+                    for v
+                    in race_entries]
 
                 # Plot the results
                 f = plt.figure()
                 ax = f.gca()
-                ax.pie(race_percentages, labels=race_labels, explode=[0.05 for _ in race_entries])
+                ax.pie(
+                    race_percentages,
+                    labels=race_labels,
+                    explode=[0.05 for _ in race_entries])
 
                 s = f.get_size_inches()
                 f.set_size_inches(w=1.15 * s[0], h=s[1])
 
                 img_str = figure_to_base64(f)
+            self._race_plot = gzip.compress(img_str.encode('utf-8'))
+        return gzip.decompress(self._race_plot).decode('utf-8')
 
-            self._race_plot = img_str
-        return self._race_plot
+    def get_boat_plot(self) -> str:
+        """
+        Provides the plot string for the boat pie chart
+        :return: the base64-encoded string, or empty string if unable to plot
+        """
+        if self._boat_plot is None:
+            # Get the plot instance
+            plt = get_pyplot()
+            img_str = ''
+
+            if plt is not None:
+                # Determine the total number of boats
+                num_boats = self.get_total_boat_counts()
+
+                # Determine the boats list and the percentage each boat was used
+                boats_list = list(self.boats_used.keys())
+                boat_percentages = [self.boats_used[boat] / num_boats for boat in boats_list]
+
+                # Calculate the resulting labels
+                boat_labels = [
+                    f'{boat.code} ({self.boats_used[boat]}, {self.boats_used[boat] / num_boats * 100:.0f}%)'
+                    for boat
+                    in boats_list]
+
+                # Plot the results
+                f = plt.figure()
+                ax = f.gca()
+                ax.pie(
+                    boat_percentages,
+                    labels=boat_labels,
+                    explode=[0.05 for _ in boats_list])
+
+                s = f.get_size_inches()
+                f.set_size_inches(w=1.15 * s[0], h=s[1])
+
+                img_str = figure_to_base64(f)
+            self._boat_plot = gzip.compress(img_str.encode('utf-8'))
+        return gzip.decompress(self._boat_plot).decode('utf-8')

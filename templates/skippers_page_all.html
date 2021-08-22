@@ -8,13 +8,17 @@
         <a href="{{ url_for('index_page') }}">Home</a>
 
         <h2>Table</h2>
-        <table border=1>
+        <table border="1">
             <tr>
                 <th>Identifier</th>
                 <th>First Name</th>
                 <th>Last Name</th>
+                <th>Score Races</th>
+                <th>Boat Races</th>
+                <th>Boat Types Raced</th>
             </tr>
             {% for val in database.skippers.values() %}
+            {%- set skipper_stats = database.skipper_statistics[val.identifier] -%}
             <tr>
                 <td><a href="{{ url_for('skipper_page_ind', skipper_name=val.identifier) }}">{{ val.identifier }}</a></td>
                 {% if val.first %}
@@ -27,6 +31,9 @@
                 {% else %}
                 <td>-</td>
                 {% endif %}
+                <td>{{ skipper_stats.get_total_race_counts() }}</td>
+                <td>{{ skipper_stats.get_total_boat_counts() }}</td>
+                <td>{{ skipper_stats.boats_used | length }}</td>
             </tr>
             {% endfor %}
         </table>

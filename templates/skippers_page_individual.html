@@ -16,7 +16,7 @@
 
         <h2>Name</h2>
 
-        <table border=0>
+        <table border="0">
             <tr>
                 <th>First:</th>
                 <td>{% if skipper.first %}{{ skipper.first }}{% else %}<i>N/A</i>{% endif %}</td>
@@ -27,8 +27,59 @@
             </tr>
         </table>
 
+        <h2>Boats Used</h2>
+        {{ img.place(skipper_stats.get_boat_plot(), "Statistics") }}
+
+        <table border="1">
+            <tr>
+                <th>Boat</th>
+                <th>Races Used Used</th>
+            </tr>
+            {% for boat, num_used in skipper_stats.boats_used.items() %}
+            <tr>
+                <td>
+                    <a href="{{ url_for('boat_page', fleet_name=boat.fleet_name, boat_code=boat.code) }}">{{ database.fleets[boat.fleet_name].fancy_name() }} - {{ boat.code }}</a>
+                </td>
+                <td>
+                    {{ num_used }}
+                </td>
+            </tr>
+            {% endfor %}
+            <td>
+                <b>Total</b>
+            </td>
+            <td>
+                <b>{{ skipper_stats.get_total_boat_counts() }}</b>
+            </td>
+        </table>
+
         <h2>Statistics</h2>
         {{ img.place(skipper_stats.get_race_plot(), "Statistics") }}
+
+        <table border="1">
+            <tr>
+                <th>Place</th>
+                <th>Number of FInishes</th>
+            </tr>
+            {% for finish, num_finishes in skipper_stats.get_race_counts_sorted() %}
+            <tr>
+                <td>
+                    {{ finish }}
+                </td>
+                <td>
+                    {{ num_finishes }}
+                </td>
+            </tr>
+            {% endfor %}
+            <tr>
+                <td>
+                    <b>Total</b>
+                </td>
+                <td>
+                    <b>{{ skipper_stats.get_total_race_counts() }}</b>
+                </td>
+            </tr>
+        </table>
 
         {% include 'footer.html' %}
 
