@@ -98,18 +98,72 @@ class MasterDatabase:
         else:
             return date.strftime('%B %d, %Y')
 
-    def update_statistics(self) -> None:
+    def __update_statistics_skipper(self) -> None:
         """
-        Updates and recalculates any statistics contained within the database
+        Updates the skipper statistics
         """
         # Clear out existing statistics
         self.skipper_statistics.clear()
+
+        # Define all race results
+        race_results: Dict[Skipper, List[int]] = dict()
+        boat_results: Dict[Skipper, List[BoatType]] = dict()
+
+        # Check all series, races, and values for results
+        for series in self.series.values():
+            for race in series.races:
+                # Iterate over the race results
+                for skipper, race_result in race.race_results().items():
+                    # Define the rounded point result
+                    point_value = int(round(race_result))
+
+                    # Add the point result into the skipper point results
+                    if skipper not in race_results:
+                        race_results[skipper] = list()
+
+                    race_results[skipper].append(point_value)
+
+                # Iterate over the race finishes for which boats were used by each skipper
+                for skipper, race_finish in race.race_finishes.items():
+                    if skipper not in boat_results:
+                        boat_results[skipper] = list()
+
+                    if isinstance(race_finish, finishes.RaceFinishRC):
+                        continue
+                    else:
+                        boat_results[skipper].append(race_finish.boat)
+
+        # Total the results for the skippers
+        for skipper in self.skippers.values():
+            results_skipper: Dict[int, int] = dict()
+            results_boat: Dict[BoatType, int] = dict()
+
+            if skipper in race_results:
+                for race_finish in race_results[skipper]:
+                    if race_finish not in results_skipper:
+                        results_skipper[race_finish] = 0
+                    results_skipper[race_finish] += 1
+
+            if skipper in boat_results:
+                for boat in boat_results[skipper]:
+                    if boat not in results_boat:
+                        results_boat[boat] = 0
+                    results_boat[boat] += 1
+
+            self.skipper_statistics[skipper.identifier] = SkipperStatistics(
+                skipper=skipper,
+                point_counts=results_skipper,
+                boats_used=results_boat)
+
+    def __update_statistics_boat(self) -> None:
+        """
+        Updates the boat statistics
+        """
+        # Clear out existing statistics
         self.boat_statistics.clear()
 
         # Define all race results
-        all_skipper_race_results: Dict[Skipper, List[int]] = dict()
-        all_skipper_boat_results: Dict[Skipper, List[BoatType]] = dict()
-        all_boat_results: Dict[BoatType, List[int]] = dict()
+        boat_results: Dict[BoatType, List[int]] = dict()
         skippers_for_boat: Dict[BoatType, List[Skipper]] = dict()
         series_for_boat: Dict[BoatType, Dict[str, Series]] = dict()
 
@@ -121,64 +175,26 @@ class MasterDatabase:
                     # Define the rounded point result
                     point_value = int(round(race_result))
 
-                    # Add the point result into the skipper point results
-                    if skipper not in all_skipper_race_results:
-                        all_skipper_race_results[skipper] = list()
-
-                    all_skipper_race_results[skipper].append(point_value)
-
                     # Extract the boat used
-                    skipper_boat = race.race_finishes[skipper].boat
+                    boat = race.race_finishes[skipper].boat
 
                     # Add the point result into the boat point results
-                    if skipper_boat not in all_boat_results:
-                        all_boat_results[skipper_boat] = list()
+                    if boat not in boat_results:
+                        boat_results[boat] = list()
 
-                    all_boat_results[skipper_boat].append(point_value)
+                    boat_results[boat].append(point_value)
 
                     # Add the skipper to the boat list
-                    if skipper_boat not in skippers_for_boat:
-                        skippers_for_boat[skipper_boat] = list()
-                    if skipper not in skippers_for_boat[skipper_boat]:
-                        skippers_for_boat[skipper_boat].append(skipper)
+                    if boat not in skippers_for_boat:
+                        skippers_for_boat[boat] = list()
+                    if skipper not in skippers_for_boat[boat]:
+                        skippers_for_boat[boat].append(skipper)
 
                     # Add the series to the boat list
-                    if skipper_boat not in series_for_boat:
-                        series_for_boat[skipper_boat] = dict()
-                    if series.name not in series_for_boat[skipper_boat]:
-                        series_for_boat[skipper_boat][series.name] = series
-
-                # Iterate over the race finishes for which boats were used by each skipper
-                for skipper, race_finish in race.race_finishes.items():
-                    if skipper not in all_skipper_boat_results:
-                        all_skipper_boat_results[skipper] = list()
-
-                    if isinstance(race_finish, finishes.RaceFinishRC):
-                        continue
-                    else:
-                        all_skipper_boat_results[skipper].append(race_finish.boat)
-
-        # Total the results for the skippers
-        for skipper in self.skippers.values():
-            results_skipper: Dict[int, int] = dict()
-            results_boat: Dict[BoatType, int] = dict()
-
-            if skipper in all_skipper_race_results:
-                for race_finish in all_skipper_race_results[skipper]:
-                    if race_finish not in results_skipper:
-                        results_skipper[race_finish] = 0
-                    results_skipper[race_finish] += 1
-
-            if skipper in all_skipper_boat_results:
-                for boat in all_skipper_boat_results[skipper]:
-                    if boat not in results_boat:
-                        results_boat[boat] = 0
-                    results_boat[boat] += 1
-
-            self.skipper_statistics[skipper.identifier] = SkipperStatistics(
-                skipper=skipper,
-                point_counts=results_skipper,
-                boats_used=results_boat)
+                    if boat not in series_for_boat:
+                        series_for_boat[boat] = dict()
+                    if series.name not in series_for_boat[boat]:
+                        series_for_boat[boat][series.name] = series
 
         # Total the results for the fleets and boats
         for fleet in self.fleets.values():
@@ -189,8 +205,8 @@ class MasterDatabase:
                 results_skipper: List[Skipper] = list()
                 results_series: List[Series] = list()
 
-                if boat in all_boat_results:
-                    for result in all_boat_results[boat]:
+                if boat in boat_results:
+                    for result in boat_results[boat]:
                         if result not in results_boat:
                             results_boat[result] = 0
                         results_boat[result] += 1
@@ -211,6 +227,13 @@ class MasterDatabase:
                 boat.code: stats
                 for boat, stats
                 in fleet_results.items()}
+
+    def update_statistics(self) -> None:
+        """
+        Updates and recalculates any statistics contained within the database
+        """
+        self.__update_statistics_skipper()
+        self.__update_statistics_boat()
 
     def _load_fleets(self) -> Dict[str, Fleet]:
         """
