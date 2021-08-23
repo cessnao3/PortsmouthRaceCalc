@@ -38,7 +38,7 @@
             {% for boat, num_used in skipper_stats.boats_used.items() %}
             <tr>
                 <td>
-                    <a href="{{ url_for('boat_page', fleet_name=boat.fleet_name, boat_code=boat.code) }}">{{ database.fleets[boat.fleet_name].fancy_name() }} - {{ boat.code }}</a>
+                    <a href="{{ url_for('boat_page', fleet_name=boat.fleet_name, boat_code=boat.code) }}">{{ database.fleets[boat.fleet_name].fancy_name() }} - {{ boat.name }}</a>
                 </td>
                 <td>
                     {{ num_used }}
