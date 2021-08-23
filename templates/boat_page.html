@@ -47,7 +47,7 @@
         {% include 'dpn_notes.html' %}
         {% endif %}
 
-        <h2>Statistics</h2>
+        <h2>Point Finishes</h2>
         {{ img.place(boat_stats.get_point_plot(), "Finish Points") }}
 
         <table border="1">
@@ -73,6 +73,24 @@
                     <b>{{ boat_stats.get_total_point_counts() }}</b>
                 </td>
             </tr>
+        </table>
+
+        <h2>Series with Boat</h2>
+        <table border="0">
+            {% for series in boat_stats.series %}
+            <tr>
+                <td><a href="{{url_for('series_page', series_name=series.name)}}">{{ series.fancy_name() }}</a></td>
+            </tr>
+            {% endfor %}
+        </table>
+
+        <h2>Skippers with Boat</h2>
+        <table border="0">
+            {% for skipper in boat_stats.skippers %}
+            <tr>
+                <td><a href="{{url_for('skipper_page_ind', skipper_name=skipper.identifier)}}">{{ skipper.identifier }}</a></td>
+            </tr>
+            {% endfor %}
         </table>
 
         {% include 'footer.html' %}

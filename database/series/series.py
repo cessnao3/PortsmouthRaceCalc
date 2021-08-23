@@ -11,7 +11,8 @@ from ..utils.plotting import get_pyplot, figure_to_base64, fig_compress, fig_dec
 from . import Race, finishes
 
 import datetime
-import typing
+
+from typing import Union, List, Dict, Optional
 
 
 class Series:
@@ -23,7 +24,7 @@ class Series:
             name: str,
             valid_required_skippers: int,
             fleet: Fleet,
-            qualify_count_override: typing.Union[int, None] = None):
+            qualify_count_override: Union[int, None] = None):
         """
         Initializes the series with the input parameters
         :param name: The unique name of the series
@@ -35,15 +36,15 @@ class Series:
         self.qualify_count_override = qualify_count_override
         self.valid_required_skippers = valid_required_skippers
         self.fleet = fleet
-        self.races: typing.List[Race] = list()
-        self.boat_dict: typing.Dict[Skipper, BoatType] = dict()
+        self.races: List[Race] = list()
+        self.boat_dict: Dict[Skipper, BoatType] = dict()
         self._skipper_rc_pts = None
         self._skippers = None
         self._points = None
-        self._scatter_plot: typing.Optional[bytes] = None
-        self._pie_plot: typing.Optional[bytes] = None
+        self._scatter_plot: Optional[bytes] = None
+        self._pie_plot: Optional[bytes] = None
 
-    def latest_race_date(self) -> typing.Union[None, datetime.datetime]:
+    def latest_race_date(self) -> Optional[datetime.datetime]:
         """
         Provides the latest race date for the given series
         :return: datetime for the latest race
@@ -77,7 +78,7 @@ class Series:
             r.set_index(race_counter)
             race_counter += 1
         self._skipper_rc_pts = None
-        self._skippers: typing.List[Skipper] = None
+        self._skippers: Optional[List[Skipper]] = None
         self._points = None
         self._scatter_plot = None
         self._pie_plot = None
@@ -135,7 +136,7 @@ class Series:
         # Return true if the count meets the qualify count threshold
         return count + min(2, count_rc) + count_dnf >= self.qualify_count
 
-    def skipper_rc_points(self, skipper: Skipper) -> typing.Union[int, float, None]:
+    def skipper_rc_points(self, skipper: Skipper) -> Optional[Union[int, float]]:
         """
         Returns the number of points associated with RC for a given Skipper
         :param skipper: skipper to get RC points for
@@ -175,7 +176,7 @@ class Series:
         else:
             return None
 
-    def skipper_points_dict(self, skipper: Skipper) -> typing.Union[None, typing.List[typing.Union[int, float]]]:
+    def skipper_points_dict(self, skipper: Skipper) -> Optional[List[Union[int, float]]]:
         """
         Returns the points used to calculate the resulting score for a series
         :param skipper: the skipper identifier to search for
@@ -225,7 +226,7 @@ class Series:
         else:
             return None
 
-    def skipper_points(self, skipper: Skipper) -> typing.Union[int, float, None]:
+    def skipper_points(self, skipper: Skipper) -> Optional[Union[int, float]]:
         """
         Returns the number of points found for the given Skipper
         :param skipper: skipper identifier
@@ -259,14 +260,14 @@ class Series:
         else:
             return len(self.valid_races()) // 2
 
-    def valid_races(self) -> typing.List['Race']:
+    def valid_races(self) -> List[Race]:
         """
         Returns the number of valid series held
         :return: count of valid series
         """
         return [r for r in self.races if r.valid()]
 
-    def get_all_skippers(self) -> typing.List[Skipper]:
+    def get_all_skippers(self) -> List[Skipper]:
         """
         Provides all skippers in the series
         :return: list of unique skipper objects between all series
@@ -286,7 +287,7 @@ class Series:
         # Return the skipper list
         return self._skippers
 
-    def get_all_skippers_sorted(self) -> typing.List[Skipper]:
+    def get_all_skippers_sorted(self) -> List[Skipper]:
         """
         Provides all skippers in the series, sorted first by points, and then by alphabet
         :return: list of unique skipper objects between all series, sorted

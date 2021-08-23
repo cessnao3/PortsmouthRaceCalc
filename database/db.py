@@ -5,9 +5,8 @@ Parses input files into Python object to parse race information
 from .fleets import Fleet, BoatType, WindMap
 from .skippers import Skipper
 
-from .series import Race
-from .series import finishes, series as series_db
-from .series.finishes import RaceFinishRC
+from .series import Race, Series
+from .series import finishes
 
 from .statistics import SkipperStatistics, BoatStatistics
 
@@ -72,14 +71,6 @@ class MasterDatabase:
         self.skipper_statistics: Dict[str, SkipperStatistics] = dict()
         self.boat_statistics: Dict[str, Dict[str, BoatStatistics]] = dict()
 
-    def series_with_boat(self, boat: BoatType) -> List[series_db.Series]:
-        """
-        Provides a list of series with the given boat
-        :param boat: the boat to search for
-        :return:
-        """
-        pass
-
     def latest_race_date(self) -> Optional[datetime.datetime]:
         """
         Provides the latest race time
@@ -119,6 +110,8 @@ class MasterDatabase:
         all_skipper_race_results: Dict[Skipper, List[int]] = dict()
         all_skipper_boat_results: Dict[Skipper, List[BoatType]] = dict()
         all_boat_results: Dict[BoatType, List[int]] = dict()
+        skippers_for_boat: Dict[BoatType, List[Skipper]] = dict()
+        series_for_boat: Dict[BoatType, Dict[str, Series]] = dict()
 
         # Check all series, races, and values for results
         for series in self.series.values():
@@ -143,12 +136,24 @@ class MasterDatabase:
 
                     all_boat_results[skipper_boat].append(point_value)
 
+                    # Add the skipper to the boat list
+                    if skipper_boat not in skippers_for_boat:
+                        skippers_for_boat[skipper_boat] = list()
+                    if skipper not in skippers_for_boat[skipper_boat]:
+                        skippers_for_boat[skipper_boat].append(skipper)
+
+                    # Add the series to the boat list
+                    if skipper_boat not in series_for_boat:
+                        series_for_boat[skipper_boat] = dict()
+                    if series.name not in series_for_boat[skipper_boat]:
+                        series_for_boat[skipper_boat][series.name] = series
+
                 # Iterate over the race finishes for which boats were used by each skipper
                 for skipper, race_finish in race.race_finishes.items():
                     if skipper not in all_skipper_boat_results:
                         all_skipper_boat_results[skipper] = list()
 
-                    if isinstance(race_finish, RaceFinishRC):
+                    if isinstance(race_finish, finishes.RaceFinishRC):
                         continue
                     else:
                         all_skipper_boat_results[skipper].append(race_finish.boat)
@@ -181,6 +186,8 @@ class MasterDatabase:
 
             for boat in fleet.boat_types.values():
                 results_boat: Dict[int, int] = dict()
+                results_skipper: List[Skipper] = list()
+                results_series: List[Series] = list()
 
                 if boat in all_boat_results:
                     for result in all_boat_results[boat]:
@@ -188,15 +195,22 @@ class MasterDatabase:
                             results_boat[result] = 0
                         results_boat[result] += 1
 
+                if boat in skippers_for_boat:
+                    results_skipper.extend(sorted(skippers_for_boat[boat], key=lambda x: x.identifier))
+
+                if boat in series_for_boat:
+                    results_series.extend(reversed(sorted(series_for_boat[boat].values(), key=lambda x: x.name)))
+
                 fleet_results[boat] = BoatStatistics(
                     boat=boat,
-                    point_counts=results_boat)
+                    point_counts=results_boat,
+                    skippers=results_skipper,
+                    series=results_series)
 
             self.boat_statistics[fleet.name] = {
                 boat.code: stats
                 for boat, stats
                 in fleet_results.items()}
-
 
     def _load_fleets(self) -> Dict[str, Fleet]:
         """
@@ -257,7 +271,7 @@ class MasterDatabase:
         # Set the skipper object to the loaded parameters
         return skippers
 
-    def _load_series(self) -> Dict[str, series_db.Series]:
+    def _load_series(self) -> Dict[str, Series]:
         """
         Loads the series database from the provided files
         """
@@ -290,7 +304,7 @@ class MasterDatabase:
                 qualify_count_override = None
 
             # Define the series object
-            series = series_db.Series(
+            series = Series(
                 name=series_name,
                 valid_required_skippers=s['valid_required_skippers'],
                 fleet=fleet,

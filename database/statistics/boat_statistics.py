@@ -4,7 +4,9 @@ Boat Statistics provides overall statistics for a given boat
 
 from typing import Dict, List, Optional, Tuple
 
+from ..skippers import Skipper
 from ..fleets import BoatType
+from ..series import Series
 from ..utils.plotting import get_pyplot, figure_to_base64, fig_compress, fig_decompress
 
 
@@ -16,14 +18,19 @@ class BoatStatistics:
     def __init__(
             self,
             boat: BoatType,
-            point_counts: Dict[int, int]):
+            point_counts: Dict[int, int],
+            skippers: List[Skipper],
+            series: List[Series]):
         """
         Defines the statistics for a given boat type
         :param boat: the boat the statistics are computed for
         :param point_counts: a dictionary of the finish places as keys, with number of times finished as values
+        :param skippers: the list of skippers that have used the boat
         """
         self.boat = boat
         self.point_counts = point_counts
+        self.skippers = skippers
+        self.series = series
         self._point_plot: Optional[bytes] = None
 
     def get_point_counts_sorted(self) -> List[Tuple[int, int]]:
