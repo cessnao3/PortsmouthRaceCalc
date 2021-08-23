@@ -108,8 +108,7 @@ class MasterDatabase:
 
     def update_statistics(self) -> None:
         """
-
-        :return:
+        Updates and recalculates any statistics contained within the database
         """
         # Clear out existing statistics
         self.skipper_statistics.clear()
