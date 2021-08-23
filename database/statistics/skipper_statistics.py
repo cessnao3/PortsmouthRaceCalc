@@ -17,16 +17,16 @@ class SkipperStatistics:
     def __init__(
             self,
             skipper: Skipper,
-            race_counts: Dict[int, int],
+            point_counts: Dict[int, int],
             boats_used: Dict[BoatType, int]):
         """
         Defines the statistics for a given skipper
         :param skipper: the skipper the statistics are computed for
-        :param race_counts: a dictionary of the finish places as keys, with number of times finished as values
+        :param point_counts: a dictionary of the finish places as keys, with number of times finished as values
         :param boats_used: a dictionary of the boats used as keys, with the number of races finished as values
         """
         self.skipper = skipper
-        self.race_counts = race_counts
+        self.race_counts = point_counts
         self.boats_used = boats_used
         self._race_plot: Optional[bytes] = None
         self._boat_plot: Optional[bytes] = None

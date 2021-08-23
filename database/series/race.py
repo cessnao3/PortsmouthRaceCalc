@@ -39,7 +39,7 @@ class Race:
         :param wind_bf: the Beaufort wind condition number associated with the race
         :param notes: any additional notes about the race
         """
-        self.race_times: typing.Dict[Skipper, finishes.RaceFinishInterface] = dict()
+        self.race_finishes: typing.Dict[Skipper, finishes.RaceFinishInterface] = dict()
         self.fleet = fleet
         self.boat_dict = boat_dict
         self.required_skippers = required_skippers
@@ -68,7 +68,7 @@ class Race:
         Resets any stored calculated parameters
         """
         self._race_index = None
-        for rt in self.race_times.values():
+        for rt in self.race_finishes.values():
             rt.reset()
         self._results_dict = None
 
@@ -97,7 +97,7 @@ class Race:
         """
         valid_race_times = [
             rt.corrected_time_s
-            for rt in self.race_times.values()
+            for rt in self.race_finishes.values()
             if isinstance(rt, finishes.RaceFinishTime)]
 
         if len(valid_race_times) >= 0:
@@ -116,7 +116,7 @@ class Race:
         # Calculate the starting race times
         starting_race_times = [
             rt
-            for rt in self.race_times.values()
+            for rt in self.race_finishes.values()
             if not isinstance(rt, finishes.RaceFinishRC)]
         num_condition = len(starting_race_times) >= self.required_skippers
 
@@ -133,7 +133,7 @@ class Race:
         valid_check = self.valid()
 
         # Determine if the skipper was RC for the race
-        rc_check = skipper in self.race_times and isinstance(self.race_times[skipper], finishes.RaceFinishRC)
+        rc_check = skipper in self.race_finishes and isinstance(self.race_finishes[skipper], finishes.RaceFinishRC)
 
         # Determine if we can use the race for RC
         return valid_check or rc_check
@@ -144,13 +144,13 @@ class Race:
         :param race_finish: race finish object to add to the database
         """
         # Raise an error if the skipper is already in the list
-        if race_finish.skipper in self.race_times:
+        if race_finish.skipper in self.race_finishes:
             raise ValueError(
                 'Cannot add duplicate race time for {:s}'.format(race_finish.skipper.identifier))
 
         # Otherwise, add the race_time object to the dictionary keyed by the skipper
         else:
-            self.race_times[race_finish.skipper] = race_finish
+            self.race_finishes[race_finish.skipper] = race_finish
 
         # Call reset
         self.reset()
@@ -273,7 +273,7 @@ class Race:
         :return: The score parameter for the given skipper value
         """
         # Check if the skipper is in the race times
-        if skipper in self.race_times:
+        if skipper in self.race_finishes:
             # Obtain the results
             results = self.race_results()
 
@@ -286,7 +286,7 @@ class Race:
                 return result_val
             # Otherwise, return the other finish name for printing
             else:
-                return self.race_times[skipper].name()
+                return self.race_finishes[skipper].name()
         # Return None if no skipper of this name is provided
         else:
             return None
@@ -296,28 +296,28 @@ class Race:
         Provides the skippers participating in the race committee
         :return: list of Skippers in the race committee
         """
-        return [r.skipper for r in self.race_times.values() if isinstance(r, finishes.RaceFinishRC)]
+        return [r.skipper for r in self.race_finishes.values() if isinstance(r, finishes.RaceFinishRC)]
 
     def other_results(self) -> typing.List[finishes.RaceFinishInterface]:
         """
         Provides a list of other racers that did not finish the race and were not RC
         :return: list of valid race times that did not finish the race and were not RC
         """
-        return [r for r in self.race_times.values() if not r.finished()]
+        return [r for r in self.race_finishes.values() if not r.finished()]
 
     def fip_results(self) -> typing.List[finishes.RaceFinishFIP]:
         """
         Provides a list of the racers that have a Finish-In-Place indication
         :return: list of valid race times for finishing in place
         """
-        return [r for r in self.race_times.values() if isinstance(r, finishes.RaceFinishFIP)]
+        return [r for r in self.race_finishes.values() if isinstance(r, finishes.RaceFinishFIP)]
 
     def finished_race_times(self) -> typing.List[finishes.RaceFinishTime]:
         """
         Provides a list of the finished race times
         :return: a list of the race times that were completed
         """
-        return [r for r in self.race_times.values() if isinstance(r, finishes.RaceFinishTime)]
+        return [r for r in self.race_finishes.values() if isinstance(r, finishes.RaceFinishTime)]
 
     def race_times_sorted(self) -> typing.List[typing.Tuple[float, finishes.RaceFinishInterface]]:
         """

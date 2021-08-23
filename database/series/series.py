@@ -89,8 +89,8 @@ class Series:
         """
         count = 0
         for r in self.races:
-            if skipper in r.race_times:
-                res = r.race_times[skipper]
+            if skipper in r.race_finishes:
+                res = r.race_finishes[skipper]
                 if res.finished() and not isinstance(res, finishes.RaceFinishRC):
                     count += 1
         return count
@@ -102,8 +102,8 @@ class Series:
         """
         count = 0
         for r in self.races:
-            if skipper in r.race_times:
-                res = r.race_times[skipper]
+            if skipper in r.race_finishes:
+                res = r.race_finishes[skipper]
                 if isinstance(res, finishes.RaceFinishRC):
                     count += 1
         return count
@@ -115,8 +115,8 @@ class Series:
         """
         count = 0
         for r in self.races:
-            if skipper in r.race_times:
-                res = r.race_times[skipper]
+            if skipper in r.race_finishes:
+                res = r.race_finishes[skipper]
                 if isinstance(res, finishes.RaceFinishDNF):
                     count += 1
         return count
@@ -148,7 +148,7 @@ class Series:
             # Calculate RC point parameters
             for skip in self.get_all_skippers():
                 # Obtain the series for the skipper
-                skipper_races = [r for r in self.valid_races() if skip in r.race_times]
+                skipper_races = [r for r in self.valid_races() if skip in r.race_finishes]
 
                 # Obtain the results from each of the finished series and sort
                 point_values = [r.race_results()[skip] for r in skipper_races if skip in r.race_results()]
@@ -204,7 +204,7 @@ class Series:
                     # Add the results to the list if the skipper has a result
                     if skip in results:
                         value_to_add = results[skip]
-                    elif skip in r.race_times and isinstance(r.race_times[skip], finishes.RaceFinishRC):
+                    elif skip in r.race_finishes and isinstance(r.race_finishes[skip], finishes.RaceFinishRC):
                         value_to_add = self.skipper_rc_points(skip)
 
                     if value_to_add is not None:
@@ -275,7 +275,7 @@ class Series:
             # Define the output list
             skippers = list()
 
-            all_skipper_instances = [rt.skipper for r in self.races for rt in r.race_times.values()]
+            all_skipper_instances = [rt.skipper for r in self.races for rt in r.race_finishes.values()]
 
             for s in all_skipper_instances:
                 if s not in skippers:
@@ -338,7 +338,7 @@ class Series:
 
                     # Add each valid item to the scatter plot
                     for skipper, score in race.race_results().items():
-                        rt = race.race_times[skipper]
+                        rt = race.race_finishes[skipper]
                         if isinstance(rt, finishes.RaceFinishTime):
                             results_list.append((score, rt.corrected_time_s / race.min_time_s()))
 
@@ -382,7 +382,7 @@ class Series:
                 boat_type_dict = dict()
 
                 for r in self.races:
-                    for rt in r.race_times.values():
+                    for rt in r.race_finishes.values():
                         if rt.skipper not in skip_boat_dict and rt.skipper in r.race_results():
                             skip_boat_dict[rt.skipper] = rt.boat.code
 

@@ -2,7 +2,7 @@
 Provides a class to maintain an instance of a particular boat within a fleet
 """
 
-from typing import Dict, List
+from typing import Dict, List, Tuple
 
 from .. import utils
 
@@ -39,6 +39,7 @@ class BoatType:
         self.code = code
         self.dpn_values = dpn_values
         self.wind_map = wind_map
+        self.__mem_characteristic_tuple = None
 
     def needs_handicap_note(self) -> bool:
         """
@@ -89,6 +90,33 @@ class BoatType:
 
         # Return the DPN value
         return self.dpn_values[dpn_ind]
+
+    def __characteristic_tuple(self) -> Tuple[str, str, str, str]:
+        """
+        Provides a tuple that may be used for internal functions for determining
+        equality and hash results
+        :return: the characteristic tuple of the boat
+        """
+        if self.__mem_characteristic_tuple is None:
+            self.__mem_characteristic_tuple = self.name, self.fleet_name, self.boat_class, self.code
+        return self.__mem_characteristic_tuple
+
+    def __eq__(self, other) -> bool:
+        """
+        Determines whether the provided object is equal to the current boat class object
+        :return: true if the objects are equal
+        """
+        if isinstance(other, 'BoatType'):
+            return self.__characteristic_tuple() == other.__characteristic_tuple()
+        else:
+            return False
+
+    def __hash__(self) -> int:
+        """
+        Provides the hash result for the current boat type
+        :return: the hash result for the boat
+        """
+        return hash(self.__characteristic_tuple())
 
     @staticmethod
     def load_from_csv(

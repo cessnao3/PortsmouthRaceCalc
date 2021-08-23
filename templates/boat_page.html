@@ -1,3 +1,6 @@
+{%- import "image_macro.html" as img -%}
+{%- set boat_stats = database.boat_statistics[fleet.name][boat.code] -%}
+
 <html>
     <head>
         <title>PRC - {{ boat.code.upper() }}</title>
@@ -44,16 +47,33 @@
         {% include 'dpn_notes.html' %}
         {% endif %}
 
-        <h2>Fleet Statistics</h2>
+        <h2>Statistics</h2>
+        {{ img.place(boat_stats.get_point_plot(), "Finish Points") }}
 
-        <p>
-            <b>TODO:</b> Not Finished
-        </p>
-
-        <ul>
-            <li>Percent of Race Times with Boat</li>
-            <li>Percent of Top Finishes (1, 2, 3)</li>
-        </ul>
+        <table border="1">
+            <tr>
+                <th>Points</th>
+                <th>Number of Finishes</th>
+            </tr>
+            {% for point, num_counts in boat_stats.get_point_counts_sorted() %}
+            <tr>
+                <td>
+                    {{ point }}
+                </td>
+                <td>
+                    {{ num_counts }}
+                </td>
+            </tr>
+            {% endfor %}
+            <tr>
+                <td>
+                    <b>Total</b>
+                </td>
+                <td>
+                    <b>{{ boat_stats.get_total_point_counts() }}</b>
+                </td>
+            </tr>
+        </table>
 
         {% include 'footer.html' %}
     </body>
