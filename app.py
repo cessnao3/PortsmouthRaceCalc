@@ -10,9 +10,7 @@ from database import MasterDatabase
 import database.utils as utils
 import database.utils.plotting as plotting
 
-app = Flask(
-    __name__,
-    instance_path=str(pathlib.Path(__file__).parent))
+app = Flask(__name__)
 app.jinja_env.globals.update(format_time=utils.format_time)
 
 database = MasterDatabase(input_folder=pathlib.Path(__file__).parent / 'input')
