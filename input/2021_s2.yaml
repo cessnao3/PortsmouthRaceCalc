@@ -201,3 +201,36 @@ races:
           Dennis_S: DNF
           Chris_H: 38:15
           Ryan_C: 52:18
+  - date: '2021_08_29'
+    rc:
+      - Nick_H
+      - Lewis_V
+    races:
+      - notes: M3 Port
+        wind_bf: 2
+        times:
+          Barry_O: 25:33
+          Bill_P: 25:26
+          David_Bu: 24:50
+          Matt_L: 26:18
+          Mike_F: 23:44
+          Nedra_F: 24:11
+          Chris_H: 23:53
+          Ryan_C: 28:45
+          Ian_O: 25:47
+          Jim_S: 26:55
+          Rod_H: 24:41
+      - notes: M3 Port
+        wind_bf: 2
+        times:
+          Barry_O: 44:55
+          Bill_P: 40:51
+          David_Bu: 43:35
+          Matt_L: 41:25
+          Mike_F: 38:29
+          Nedra_F: 41:54
+          Chris_H: 36:54
+          Ryan_C: 51:43
+          Ian_O: 40:55
+          Jim_S: 49:01
+          Rod_H: 40:07
