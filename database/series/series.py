@@ -488,3 +488,43 @@ class Series:
 
         # Return the results
         return '\n'.join(str_list)
+
+    def get_series_points_plot(self) -> str:
+        """
+        Provides a list of the race scoring over time
+        :return: the resulting plot data
+        """
+        # Define the skipper list
+        skipper_db = {skipper: list() for skipper in self.get_all_skippers() if self.skipper_points(skipper) is not None}
+
+        # Create an inner series object to track point values
+        series = Series(
+            name=self.name,
+            valid_required_skippers=self.valid_required_skippers,
+            fleet=self.fleet,
+            qualify_count_override=self.qualify_count_override)
+
+        # Iterate over each race to return a list of point values
+        xvals = [i + 1 for i in range(len(self.races))]
+        for race in self.races:
+            series.add_race(race)
+            for skipper, list_val in skipper_db.items():
+                list_val.append(series.skipper_points(skipper))
+
+        # Initialize plotting requirements
+        plt = get_pyplot()
+        img_str = ''
+
+        if plt is not None:
+            import matplotlib.pyplot as plt
+            f = plt.figure()
+            for skipper in skipper_db.keys():
+                plt.plot(xvals, skipper_db[skipper], '*--', label=skipper.identifier)
+            plt.xlabel('Race Number')
+            plt.ylabel('Skipper Points')
+            plt.legend()
+
+            img_str = figure_to_base64(f)
+
+        # Return the resulting image string
+        return img_str

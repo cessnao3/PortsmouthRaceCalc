@@ -68,18 +68,23 @@
             {% endfor %}
         </table>
 
-        <h2>Normalized Results</h2>
-        {{ img.place(series.scatter_plot(), "Normalized Results") }}
-
-        <h2>Boats Types in Series</h2>
-        {{ img.place(series.boat_pie_chart(), "Boats in Series") }}
-
         <h2>Races</h2>
 
         {% for race in series.races %}
         <h3>Race {{ race.race_num }}</h3>
         {{ race_desc.display_race(series, race) }}
         {% endfor %}
+
+        <h2>Statistics</h2>
+
+        <h3>Normalized Results</h3>
+        {{ img.place(series.scatter_plot(), "Normalized Results") }}
+
+        <h3>Boats Types in Series</h3>
+        {{ img.place(series.boat_pie_chart(), "Boats in Series") }}
+
+        <h3>Point History</h3>
+        {{ img.place(series.get_series_points_plot(), "Point History") }}
 
         {% include 'footer.html' %}
     </body>
