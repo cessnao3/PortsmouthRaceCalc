@@ -248,13 +248,13 @@ class Series:
 
     def skipper_points_string(self, skipper: Skipper) -> str:
         """
-
-        :param skipper:
-        :return:
+        Provides the resulting points list string for a given skipper
+        :param skipper: the skipper to get the points for
+        :return: comma-separated list of points used in the scoring process
         """
         point_list = self.skipper_points_list(skipper=skipper)
         if point_list is None:
-            return ''
+            return ""
         else:
             return ', '.join([f'{v}' for v in point_list])
 
