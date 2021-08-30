@@ -28,12 +28,14 @@
                 {% endfor %}
                 <th>RC Points</th>
                 <th>Overall Points</th>
+                <th>Points Used</th>
             </tr>
             <tr>
                 <th>Finished Times</th>
                 {% for race in series.races %}
                 <th>{{ race.race_results() | length }}</th>
                 {% endfor %}
+                <th></th>
                 <th></th>
                 <th></th>
             </tr>
@@ -61,6 +63,7 @@
                 <td>na</td>
                 {% endif %}
                 {% endif %}
+                <td>{{ series.skipper_points_string(skipper) }}</td>
             </tr>
             {% endfor %}
         </table>

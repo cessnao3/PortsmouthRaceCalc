@@ -176,7 +176,7 @@ class Series:
         else:
             return None
 
-    def skipper_points_dict(self, skipper: Skipper) -> Optional[List[Union[int, float]]]:
+    def skipper_points_list(self, skipper: Skipper) -> Optional[List[Union[int, float]]]:
         """
         Returns the points used to calculate the resulting score for a series
         :param skipper: the skipper identifier to search for
@@ -237,7 +237,7 @@ class Series:
         :return: Number of points calculated for the given skipper
         """
         # Determine the points list
-        points_list = self.skipper_points_dict(skipper)
+        points_list = self.skipper_points_list(skipper)
 
         # Return None if skipper not in the dictionary, otherwise return dictionary value
         if points_list is not None:
@@ -245,6 +245,18 @@ class Series:
             return round_score(sum(self._points[skipper]))
         else:
             return None
+
+    def skipper_points_string(self, skipper: Skipper) -> str:
+        """
+
+        :param skipper:
+        :return:
+        """
+        point_list = self.skipper_points_list(skipper=skipper)
+        if point_list is None:
+            return ''
+        else:
+            return ', '.join([f'{v}' for v in point_list])
 
     def add_race(self, race: Race) -> None:
         """
