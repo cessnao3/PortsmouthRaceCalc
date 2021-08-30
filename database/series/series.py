@@ -195,6 +195,9 @@ class Series:
                 if not self.skipper_qualifies(skip):
                     continue
 
+                # Define the number of RC points added
+                rc_points_added_count = 0
+
                 # Iterate over each race
                 for r in [r for r in self.races if r.valid_for_rc(skip)]:
                     # Obtain the results
@@ -205,8 +208,9 @@ class Series:
                     # Add the results to the list if the skipper has a result
                     if skip in results:
                         value_to_add = results[skip]
-                    elif skip in r.race_finishes and isinstance(r.race_finishes[skip], finishes.RaceFinishRC):
+                    elif skip in r.race_finishes and isinstance(r.race_finishes[skip], finishes.RaceFinishRC) and rc_points_added_count < 2:
                         value_to_add = self.skipper_rc_points(skip)
+                        rc_points_added_count += 1
 
                     if value_to_add is not None:
                         points_list.append(value_to_add)
