@@ -43,6 +43,7 @@ class Series:
         self._points = None
         self._scatter_plot: Optional[bytes] = None
         self._pie_plot: Optional[bytes] = None
+        self._point_history_plot: Optional[bytes] = None
 
     def latest_race_date(self) -> Optional[datetime.datetime]:
         """
@@ -205,10 +206,14 @@ class Series:
 
                     value_to_add = None
 
+                    # Define flags
+                    can_add_rc = skip in r.race_finishes and isinstance(r.race_finishes[skip], finishes.RaceFinishRC)
+                    can_add_rc = can_add_rc and rc_points_added_count < 2
+
                     # Add the results to the list if the skipper has a result
                     if skip in results:
                         value_to_add = results[skip]
-                    elif skip in r.race_finishes and isinstance(r.race_finishes[skip], finishes.RaceFinishRC) and rc_points_added_count < 2:
+                    elif can_add_rc:
                         value_to_add = self.skipper_rc_points(skip)
                         rc_points_added_count += 1
 
@@ -366,7 +371,9 @@ class Series:
                     plt.plot([x[0] for x in results_list], [y[1] for y in results_list], 'o--')
 
                 s = f.get_size_inches()
-                f.set_size_inches(w=1.15 * s[0], h=s[1])
+                f.set_size_inches(
+                    w=1.15 * s[0],
+                    h=s[1])
 
                 # Assign the legend and axes labels
                 leg = plt.legend(['Race {:d}'.format(r.race_num) for r in self.valid_races()], loc='upper left')
@@ -398,6 +405,7 @@ class Series:
                 skip_boat_dict = dict()
                 boat_type_dict = dict()
 
+                # Iterate over each race to calculate the boat result
                 for r in self.races:
                     for rt in r.race_finishes.values():
                         if rt.skipper not in skip_boat_dict and rt.skipper in r.race_results():
@@ -407,6 +415,7 @@ class Series:
                                 boat_type_dict[rt.boat.code] = 0
                             boat_type_dict[rt.boat.code] += 1
 
+                # Combine values together
                 combined = [(key, val) for key, val in boat_type_dict.items()]
                 labels = [v[0].upper() for v in combined]
                 sizes = [v[1] for v in combined]
@@ -414,16 +423,79 @@ class Series:
                 def percent2count(percent):
                     return '{:1.0f}'.format(round(percent/100.0 * sum(sizes)))
 
+                # Plot
                 f = plt.figure()
                 ax = plt.gca()
-                ax.pie(sizes, labels=labels, autopct=percent2count, explode=[0.03 for _ in combined])
+                ax.pie(
+                    sizes,
+                    labels=labels,
+                    autopct=percent2count,
+                    explode=[0.03 for _ in combined])
                 ax.axis('equal')
 
+                # Save resulting iamge
                 img_str = figure_to_base64(f)
 
+            # Save the memoized result
             self._pie_plot = fig_compress(img_str)
 
+        # Return the resulting figure
         return fig_decompress(self._pie_plot)
+
+    def get_series_points_plot(self) -> str:
+        """
+        Provides a list of the race scoring over time
+        :return: the resulting plot data
+        """
+        if self._point_history_plot is None:
+            # Initialize plotting requirements
+            plt = get_pyplot()
+            img_str = ''
+
+            # Plot if able
+            if plt is not None:
+                # Define the skipper list
+                skipper_db = {skipper: list() for skipper in self.get_all_skippers() if
+                              self.skipper_points(skipper) is not None}
+
+                # Create an inner series object to track point values
+                series = Series(
+                    name=self.name,
+                    valid_required_skippers=self.valid_required_skippers,
+                    fleet=self.fleet,
+                    qualify_count_override=self.qualify_count_override)
+
+                # Iterate over each race to return a list of point values
+                race_vals = [i + 1 for i in range(len(self.races))]
+                for race in self.races:
+                    series.add_race(race)
+                    for skipper, list_val in skipper_db.items():
+                        list_val.append(series.skipper_points(skipper))
+
+                # Define the figure
+                f = plt.figure()
+
+                # Plot each skipper that has finished
+                for skipper in skipper_db.keys():
+                    plt.plot(
+                        race_vals,
+                        skipper_db[skipper],
+                        '*--',
+                        label=skipper.identifier)
+
+                # Label the plot
+                plt.xlabel('Race Number')
+                plt.ylabel('Skipper Points')
+                plt.legend()
+
+                # Save results
+                img_str = figure_to_base64(f)
+
+            # Compress and save the result
+            self._point_history_plot = fig_compress(img_str)
+
+        # Return the resulting image string
+        return fig_decompress(self._point_history_plot)
 
     def fancy_name(self) -> str:
         """
@@ -488,43 +560,3 @@ class Series:
 
         # Return the results
         return '\n'.join(str_list)
-
-    def get_series_points_plot(self) -> str:
-        """
-        Provides a list of the race scoring over time
-        :return: the resulting plot data
-        """
-        # Define the skipper list
-        skipper_db = {skipper: list() for skipper in self.get_all_skippers() if self.skipper_points(skipper) is not None}
-
-        # Create an inner series object to track point values
-        series = Series(
-            name=self.name,
-            valid_required_skippers=self.valid_required_skippers,
-            fleet=self.fleet,
-            qualify_count_override=self.qualify_count_override)
-
-        # Iterate over each race to return a list of point values
-        xvals = [i + 1 for i in range(len(self.races))]
-        for race in self.races:
-            series.add_race(race)
-            for skipper, list_val in skipper_db.items():
-                list_val.append(series.skipper_points(skipper))
-
-        # Initialize plotting requirements
-        plt = get_pyplot()
-        img_str = ''
-
-        if plt is not None:
-            import matplotlib.pyplot as plt
-            f = plt.figure()
-            for skipper in skipper_db.keys():
-                plt.plot(xvals, skipper_db[skipper], '*--', label=skipper.identifier)
-            plt.xlabel('Race Number')
-            plt.ylabel('Skipper Points')
-            plt.legend()
-
-            img_str = figure_to_base64(f)
-
-        # Return the resulting image string
-        return img_str
