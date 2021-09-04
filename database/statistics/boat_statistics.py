@@ -2,7 +2,7 @@
 Boat Statistics provides overall statistics for a given boat
 """
 
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, List, Optional, Tuple, Callable
 
 from ..skippers import Skipper
 from ..fleets import BoatType
@@ -51,11 +51,12 @@ class BoatStatistics:
         """
         return sum(self.point_counts.values())
 
-    def generate_figures(self) -> None:
+    def get_figure_functions(self) -> List[Callable[[], str]]:
         """
-        Generates all figures at once when requested
+        Provides a list of all figure generation values
+        :return: a list of functions to call to generate figures
         """
-        self.get_plot_points()
+        return [self.get_plot_points]
 
     def get_plot_points(self) -> str:
         """

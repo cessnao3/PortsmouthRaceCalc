@@ -3,7 +3,7 @@ Provides a database for use in calculating the corrected times for race paramete
 """
 
 import datetime
-import typing
+from typing import List, Dict, Callable, Optional, Tuple, Union
 
 
 from ..fleets import Fleet, BoatType
@@ -23,9 +23,9 @@ class Race:
 
     def __init__(self,
                  fleet: Fleet,
-                 boat_dict: typing.Dict[Skipper, BoatType],
+                 boat_dict: Dict[Skipper, BoatType],
                  required_skippers: int,
-                 rc: typing.List[Skipper],
+                 rc: List[Skipper],
                  date_string: str,
                  wind_bf: int,
                  notes: str):
@@ -39,16 +39,16 @@ class Race:
         :param wind_bf: the Beaufort wind condition number associated with the race
         :param notes: any additional notes about the race
         """
-        self.race_finishes: typing.Dict[Skipper, finishes.RaceFinishInterface] = dict()
+        self.race_finishes: Dict[Skipper, finishes.RaceFinishInterface] = dict()
         self.fleet = fleet
         self.boat_dict = boat_dict
         self.required_skippers = required_skippers
         self.date = datetime.datetime.strptime(date_string, '%Y_%m_%d')
         self.wind_bf = wind_bf
         self.notes = notes
-        self.__race_index: typing.Optional[int] = None
-        self.__results_dict: typing.Optional[typing.Dict[Skipper, int]] = None
-        self.__plot_race_time: typing.Optional[bytes] = None
+        self.__race_index: Optional[int] = None
+        self.__results_dict: Optional[Dict[Skipper, int]] = None
+        self.__plot_race_time: Optional[bytes] = None
 
         # Add the RC skippers to the race times as participating in RC
         for rc_skipper in rc:
@@ -90,7 +90,7 @@ class Race:
         else:
             return 0
 
-    def min_time_s(self) -> typing.Union[None, int]:
+    def min_time_s(self) -> Union[None, int]:
         """
         Returns the minimum completion time
         :return: minimum completion time in seconds
@@ -155,7 +155,7 @@ class Race:
         # Call reset
         self.reset()
 
-    def race_results(self) -> typing.Dict[Skipper, float]:
+    def race_results(self) -> Dict[Skipper, float]:
         """
         Provides the scores for each skipper in the race
         :return: dictionary of the skipper keyed to the resulting point score
@@ -266,7 +266,7 @@ class Race:
         # Return the joined list
         return '\n'.join(str_list)
 
-    def get_skipper_result_string(self, skipper: Skipper) -> typing.Union[str, int, float, None]:
+    def get_skipper_result_string(self, skipper: Skipper) -> Union[str, int, float, None]:
         """
         Provides the resulting score text for the skipper ID provided.
         :param skipper: the skipper identifier
@@ -291,35 +291,35 @@ class Race:
         else:
             return None
 
-    def rc_skippers(self) -> typing.List[Skipper]:
+    def rc_skippers(self) -> List[Skipper]:
         """
         Provides the skippers participating in the race committee
         :return: list of Skippers in the race committee
         """
         return [r.skipper for r in self.race_finishes.values() if isinstance(r, finishes.RaceFinishRC)]
 
-    def other_results(self) -> typing.List[finishes.RaceFinishInterface]:
+    def other_results(self) -> List[finishes.RaceFinishInterface]:
         """
         Provides a list of other racers that did not finish the race and were not RC
         :return: list of valid race times that did not finish the race and were not RC
         """
         return [r for r in self.race_finishes.values() if not r.finished()]
 
-    def fip_results(self) -> typing.List[finishes.RaceFinishFIP]:
+    def fip_results(self) -> List[finishes.RaceFinishFIP]:
         """
         Provides a list of the racers that have a Finish-In-Place indication
         :return: list of valid race times for finishing in place
         """
         return [r for r in self.race_finishes.values() if isinstance(r, finishes.RaceFinishFIP)]
 
-    def finished_race_times(self) -> typing.List[finishes.RaceFinishTime]:
+    def finished_race_times(self) -> List[finishes.RaceFinishTime]:
         """
         Provides a list of the finished race times
         :return: a list of the race times that were completed
         """
         return [r for r in self.race_finishes.values() if isinstance(r, finishes.RaceFinishTime)]
 
-    def race_times_sorted(self) -> typing.List[typing.Tuple[float, finishes.RaceFinishInterface]]:
+    def race_times_sorted(self) -> List[Tuple[float, finishes.RaceFinishInterface]]:
         """
         Provides a sorted list of the finished race times by score
         :return: a list of tuples containing the score and the race time object
@@ -328,7 +328,7 @@ class Race:
         scores = self.race_results()
 
         # Obtain the list of skippers who finished the race and sort by the resulting scores obtained above
-        race_time_list: typing.List[finishes.RaceFinishInterface] = self.finished_race_times()
+        race_time_list: List[finishes.RaceFinishInterface] = self.finished_race_times()
         race_time_list.extend(self.other_results())
         race_time_list.extend(self.fip_results())
 
@@ -341,11 +341,12 @@ class Race:
         # Return the results
         return race_result_list
 
-    def generate_figures(self) -> None:
+    def get_figure_functions(self) -> List[Callable[[], str]]:
         """
-        Generates all figures at once when requested
+        Provides a list of all figure generation values
+        :return: a list of functions to call to generate figures
         """
-        self.get_plot_race_time_results()
+        return [self.get_plot_race_time_results]
 
     def get_plot_race_time_results(self) -> str:
         """

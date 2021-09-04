@@ -103,8 +103,14 @@ def skipper_page_ind(skipper_name: str):
 
 @app.route('/generate')
 def generate_figures():
-    database.generate_figures()
-    return redirect(url_for('index_page'))
+    def generate():
+        any_values = False
+        for func in database.generate_figures_generator():
+            yield f"{id(func)}\n"
+            any_values = True
+        if not any_values:
+            yield '\n'
+    return app.response_class(generate(), mimetype='text/csv')
 
 
 if __name__ == '__main__':

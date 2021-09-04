@@ -2,7 +2,7 @@
 Skipper Statistics provides overall statistics for a given sailor
 """
 
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, List, Optional, Tuple, Callable
 
 from ..fleets import BoatType
 from ..skippers import Skipper
@@ -56,12 +56,15 @@ class SkipperStatistics:
         """
         return sum(self.boats_used.values())
 
-    def generate_figures(self) -> None:
+    def get_figure_functions(self) -> List[Callable[[], str]]:
         """
-        Generates all figures at once when requested
+        Provides a list of all figure generation values
+        :return: a list of functions to call to generate figures
         """
-        self.get_plot_race_results()
-        self.get_plot_boats()
+        return [
+            self.get_plot_race_results,
+            self.get_plot_boats
+        ]
 
     def get_plot_race_results(self) -> str:
         """

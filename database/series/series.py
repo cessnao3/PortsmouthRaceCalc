@@ -12,7 +12,7 @@ from . import Race, finishes
 
 import datetime
 
-from typing import Union, List, Dict, Optional
+from typing import Union, List, Dict, Optional, Callable
 
 
 class Series:
@@ -390,15 +390,19 @@ class Series:
         # Return the result
         return fig_decompress(self.__scatter_plot)
 
-    def generate_figures(self) -> None:
+    def get_figure_functions(self) -> List[Callable[[], str]]:
         """
-        Generates all figures at once when requested
+        Provides a list of all figure generation values
+        :return: a list of functions to call to generate figures
         """
-        self.get_plot_boat_pie_chart()
-        self.get_plot_series_points()
+        gen_funcs = [
+            self.get_plot_series_points,
+            self.get_plot_boat_pie_chart]
 
         for r in self.races:
-            r.generate_figures()
+            gen_funcs.extend(r.get_figure_functions())
+
+        return gen_funcs
 
     def get_plot_boat_pie_chart(self) -> str:
         """
