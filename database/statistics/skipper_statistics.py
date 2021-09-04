@@ -28,8 +28,8 @@ class SkipperStatistics:
         self.skipper = skipper
         self.race_counts = point_counts
         self.boats_used = boats_used
-        self._race_plot: Optional[bytes] = None
-        self._boat_plot: Optional[bytes] = None
+        self._plot_race_results: Optional[bytes] = None
+        self.__plot_boats_used: Optional[bytes] = None
 
     def get_race_counts_sorted(self) -> List[Tuple[int, int]]:
         """
@@ -56,12 +56,19 @@ class SkipperStatistics:
         """
         return sum(self.boats_used.values())
 
-    def get_race_plot(self) -> str:
+    def generate_figures(self) -> None:
+        """
+        Generates all figures at once when requested
+        """
+        self.get_plot_race_results()
+        self.get_plot_boats()
+
+    def get_plot_race_results(self) -> str:
         """
         Provides the plot string for the race pie chart
         :return: the base64-encoded string, or empty string if unable to plot
         """
-        if self._race_plot is None:
+        if self._plot_race_results is None:
             # Get the plot instance
             plt = get_pyplot()
             img_str = ''
@@ -70,37 +77,42 @@ class SkipperStatistics:
                 # Determine the total number of races
                 num_races = self.get_total_race_counts()
 
-                # Determine the race entries (sorted finish values) and resulting percentages
-                race_entries = list(sorted(self.race_counts.keys()))
-                race_percentages = [self.race_counts[i] / num_races for i in race_entries]
+                # Skip if no races were done
+                if num_races > 0:
+                    # Determine the race entries (sorted finish values) and resulting percentages
+                    race_entries = list(sorted(self.race_counts.keys()))
+                    race_percentages = [self.race_counts[i] / num_races for i in race_entries]
 
-                # Calculate the resulting labels
-                race_labels = [
-                    f'Place {v} ({self.race_counts[v]}, {self.race_counts[v] / num_races * 100:.0f}%)'
-                    for v
-                    in race_entries]
+                    # Calculate the resulting labels
+                    race_labels = [
+                        f'Place {v} ({self.race_counts[v]}, {self.race_counts[v] / num_races * 100:.0f}%)'
+                        for v
+                        in race_entries]
 
-                # Plot the results
-                f = plt.figure()
-                ax = f.gca()
-                ax.pie(
-                    race_percentages,
-                    labels=race_labels,
-                    explode=[0.05 for _ in race_entries])
+                    # Plot the results
+                    f = plt.figure()
+                    ax = f.gca()
+                    ax.pie(
+                        race_percentages,
+                        labels=race_labels,
+                        explode=[0.05 for _ in race_entries],
+                        normalize=True)
 
-                s = f.get_size_inches()
-                f.set_size_inches(w=1.15 * s[0], h=s[1])
+                    s = f.get_size_inches()
+                    f.set_size_inches(w=1.15 * s[0], h=s[1])
 
-                img_str = figure_to_base64(f)
-            self._race_plot = fig_compress(img_str)
-        return fig_decompress(self._race_plot)
+                    img_str = figure_to_base64(f)
+                    plt.close(f)
 
-    def get_boat_plot(self) -> str:
+            self._plot_race_results = fig_compress(img_str)
+        return fig_decompress(self._plot_race_results)
+
+    def get_plot_boats(self) -> str:
         """
         Provides the plot string for the boat pie chart
         :return: the base64-encoded string, or empty string if unable to plot
         """
-        if self._boat_plot is None:
+        if self.__plot_boats_used is None:
             # Get the plot instance
             plt = get_pyplot()
             img_str = ''
@@ -109,27 +121,34 @@ class SkipperStatistics:
                 # Determine the total number of boats
                 num_boats = self.get_total_boat_counts()
 
-                # Determine the boats list and the percentage each boat was used
-                boats_list = list(self.boats_used.keys())
-                boat_percentages = [self.boats_used[boat] / num_boats for boat in boats_list]
+                if num_boats > 0:
+                    # Determine the boats list and the percentage each boat was used
+                    boats_list = list(self.boats_used.keys())
+                    boat_percentages = [self.boats_used[boat] / num_boats for boat in boats_list]
 
-                # Calculate the resulting labels
-                boat_labels = [
-                    f'{boat.code} ({self.boats_used[boat]}, {self.boats_used[boat] / num_boats * 100:.0f}%)'
-                    for boat
-                    in boats_list]
+                    # Calculate the resulting labels
+                    boat_labels = [
+                        f'{boat.code} ({self.boats_used[boat]}, {self.boats_used[boat] / num_boats * 100:.0f}%)'
+                        for boat
+                        in boats_list]
 
-                # Plot the results
-                f = plt.figure()
-                ax = f.gca()
-                ax.pie(
-                    boat_percentages,
-                    labels=boat_labels,
-                    explode=[0.05 for _ in boats_list])
+                    # Plot the results
+                    f = plt.figure()
+                    ax = f.gca()
+                    ax.pie(
+                        boat_percentages,
+                        labels=boat_labels,
+                        explode=[0.05 for _ in boats_list],
+                        normalize=True)
 
-                s = f.get_size_inches()
-                f.set_size_inches(w=1.15 * s[0], h=s[1])
+                    s = f.get_size_inches()
+                    f.set_size_inches(w=1.15 * s[0], h=s[1])
 
-                img_str = figure_to_base64(f)
-            self._boat_plot = fig_compress(img_str)
-        return fig_decompress(self._boat_plot)
+                    img_str = figure_to_base64(f)
+                    plt.close(f)
+
+            # Save the figure
+            self.__plot_boats_used = fig_compress(img_str)
+
+        # Return the resulting value
+        return fig_decompress(self.__plot_boats_used)

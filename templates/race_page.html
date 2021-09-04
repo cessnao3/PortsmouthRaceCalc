@@ -19,7 +19,7 @@
         {{ race_desc.display_race(series, race) }}
 
         <h2>Result Figure</h2>
-        {{ img.place(race.race_plot(), "Race Results") }}
+        {{ img.place(race.get_plot_race_time_results(), "Race Results") }}
 
         {% include 'footer.html' %}
     </body>

@@ -81,10 +81,10 @@
         {{ img.place(series.scatter_plot(), "Normalized Results") }}
 
         <h3>Boats Types in Series</h3>
-        {{ img.place(series.boat_pie_chart(), "Boats in Series") }}
+        {{ img.place(series.get_plot_boat_pie_chart(), "Boats in Series") }}
 
         <h3>Point History</h3>
-        {{ img.place(series.get_series_points_plot(), "Point History") }}
+        {{ img.place(series.get_plot_series_points(), "Point History") }}
 
         {% include 'footer.html' %}
     </body>

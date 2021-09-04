@@ -46,9 +46,9 @@ class Race:
         self.date = datetime.datetime.strptime(date_string, '%Y_%m_%d')
         self.wind_bf = wind_bf
         self.notes = notes
-        self._race_index: typing.Optional[int] = None
-        self._results_dict: typing.Optional[typing.Dict[Skipper, int]] = None
-        self._race_plot: typing.Optional[bytes] = None
+        self.__race_index: typing.Optional[int] = None
+        self.__results_dict: typing.Optional[typing.Dict[Skipper, int]] = None
+        self.__plot_race_time: typing.Optional[bytes] = None
 
         # Add the RC skippers to the race times as participating in RC
         for rc_skipper in rc:
@@ -67,17 +67,17 @@ class Race:
         """
         Resets any stored calculated parameters
         """
-        self._race_index = None
+        self.__race_index = None
         for rt in self.race_finishes.values():
             rt.reset()
-        self._results_dict = None
+        self.__results_dict = None
 
     def set_index(self, i: int) -> None:
         """
         Sets the index to the provided value
         :param i: Value to set the race index to
         """
-        self._race_index = i
+        self.__race_index = i
 
     @property
     def race_num(self) -> int:
@@ -85,8 +85,8 @@ class Race:
         Provides the 1's indexed race number
         :return: race index + 1
         """
-        if self._race_index is not None:
-            return self._race_index + 1
+        if self.__race_index is not None:
+            return self.__race_index + 1
         else:
             return 0
 
@@ -160,7 +160,7 @@ class Race:
         Provides the scores for each skipper in the race
         :return: dictionary of the skipper keyed to the resulting point score
         """
-        if self._results_dict is None:
+        if self.__results_dict is None:
             # Create a variable to hold the current list
             result_times = dict()
 
@@ -217,10 +217,10 @@ class Race:
             # Define override parameters
 
             # Set the memoization value
-            self._results_dict = result_dict
+            self.__results_dict = result_dict
 
         # Return pre-computed results
-        return self._results_dict
+        return self.__results_dict
 
     def get_race_table(self) -> str:
         """
@@ -341,35 +341,45 @@ class Race:
         # Return the results
         return race_result_list
 
-    def race_plot(self) -> str:
+    def generate_figures(self) -> None:
+        """
+        Generates all figures at once when requested
+        """
+        self.get_plot_race_time_results()
+
+    def get_plot_race_time_results(self) -> str:
         """
         Provides a PNG image string in Base 64 providing a plot of result points vs. finishing time
         :return: encoded string value for the resulting figure in base64 for embedding, empty on failure
         """
-        if self._race_plot is None:
+        if self.__plot_race_time is None:
             # Get the plot instance
             plt = get_pyplot()
             img_str = ''
 
             if plt is not None:
                 # Extract the score and time results from finished scores
-                score_results, race_times = zip(*[
+                temp_list = [
                     v
                     for v in self.race_times_sorted()
-                    if isinstance(v[1], finishes.RaceFinishTime)])
-                time_results = [v.corrected_time_s / 60.0 for v in race_times]
+                    if isinstance(v[1], finishes.RaceFinishTime)]
 
-                # Plot the results
-                f = plt.figure()
-                plt.plot(score_results, time_results, 'o--')
-                plt.xlabel('Score [points]')
-                plt.ylabel('Corrected Time [min]')
+                if len(temp_list) > 0:
+                    score_results, race_times = zip(*temp_list)
+                    time_results = [v.corrected_time_s / 60.0 for v in race_times]
 
-                s = f.get_size_inches()
-                f.set_size_inches(w=1.15 * s[0], h=s[1])
+                    # Plot the results
+                    f = plt.figure()
+                    plt.plot(score_results, time_results, 'o--')
+                    plt.xlabel('Score [points]')
+                    plt.ylabel('Corrected Time [min]')
 
-                img_str = figure_to_base64(f)
+                    s = f.get_size_inches()
+                    f.set_size_inches(w=1.15 * s[0], h=s[1])
 
-            self._race_plot = fig_compress(img_str)
+                    img_str = figure_to_base64(f)
+                    plt.close(f)
 
-        return fig_decompress(self._race_plot)
+            self.__plot_race_time = fig_compress(img_str)
+
+        return fig_decompress(self.__plot_race_time)

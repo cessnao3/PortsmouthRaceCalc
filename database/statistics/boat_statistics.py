@@ -31,7 +31,7 @@ class BoatStatistics:
         self.point_counts = point_counts
         self.skippers = skippers
         self.series = series
-        self._point_plot: Optional[bytes] = None
+        self.__plot_points: Optional[bytes] = None
 
     def get_point_counts_sorted(self) -> List[Tuple[int, int]]:
         """
@@ -51,12 +51,18 @@ class BoatStatistics:
         """
         return sum(self.point_counts.values())
 
-    def get_point_plot(self) -> str:
+    def generate_figures(self) -> None:
+        """
+        Generates all figures at once when requested
+        """
+        self.get_plot_points()
+
+    def get_plot_points(self) -> str:
         """
         Provides the plot string for the race pie chart
         :return: the base64-encoded string, or empty string if unable to plot
         """
-        if self._point_plot is None:
+        if self.__plot_points is None:
             # Get the plot instance
             plt = get_pyplot()
             img_str = ''
@@ -65,27 +71,33 @@ class BoatStatistics:
                 # Determine the total number of races
                 num_races = self.get_total_point_counts()
 
-                # Determine the race entries (sorted finish values) and resulting percentages
-                race_entries = list(sorted(self.point_counts.keys()))
-                race_percentages = [self.point_counts[i] / num_races for i in race_entries]
+                # Skip if no races were performed
+                if num_races > 0:
+                    # Determine the race entries (sorted finish values) and resulting percentages
+                    race_entries = list(sorted(self.point_counts.keys()))
+                    race_percentages = [self.point_counts[i] / num_races for i in race_entries]
 
-                # Calculate the resulting labels
-                race_labels = [
-                    f'Place {v} ({self.point_counts[v]}, {self.point_counts[v] / num_races * 100:.0f}%)'
-                    for v
-                    in race_entries]
+                    # Calculate the resulting labels
+                    race_labels = [
+                        f'Place {v} ({self.point_counts[v]}, {self.point_counts[v] / num_races * 100:.0f}%)'
+                        for v
+                        in race_entries]
 
-                # Plot the results
-                f = plt.figure()
-                ax = f.gca()
-                ax.pie(
-                    race_percentages,
-                    labels=race_labels,
-                    explode=[0.05 for _ in race_entries])
+                    # Plot the results
+                    f = plt.figure()
+                    ax = f.gca()
+                    ax.pie(
+                        race_percentages,
+                        labels=race_labels,
+                        explode=[0.05 for _ in race_entries],
+                        normalize=True)
 
-                s = f.get_size_inches()
-                f.set_size_inches(w=1.15 * s[0], h=s[1])
+                    s = f.get_size_inches()
+                    f.set_size_inches(w=1.15 * s[0], h=s[1])
 
-                img_str = figure_to_base64(f)
-            self._point_plot = fig_compress(img_str)
-        return fig_decompress(self._point_plot)
+                    img_str = figure_to_base64(f)
+                    plt.close(f)
+
+            self.__plot_points = fig_compress(img_str)
+
+        return fig_decompress(self.__plot_points)

@@ -101,6 +101,12 @@ def skipper_page_ind(skipper_name: str):
         skipper_name=skipper_name)
 
 
+@app.route('/generate')
+def generate_figures():
+    database.generate_figures()
+    return redirect(url_for('index_page'))
+
+
 if __name__ == '__main__':
     # Initialize plotting (if available) and run
     plotting.get_pyplot()

@@ -71,6 +71,20 @@ class MasterDatabase:
         self.skipper_statistics: Dict[str, SkipperStatistics] = dict()
         self.boat_statistics: Dict[str, Dict[str, BoatStatistics]] = dict()
 
+    def generate_figures(self) -> None:
+        """
+        Generates all figures at once when requested
+        """
+        for skipper_stat in self.skipper_statistics.values():
+            skipper_stat.generate_figures()
+
+        for boat_stat_dict in self.boat_statistics.values():
+            for boat_stat in boat_stat_dict.values():
+                boat_stat.generate_figures()
+
+        for series in self.series.values():
+            series.generate_figures()
+
     def latest_race_date(self) -> Optional[datetime.datetime]:
         """
         Provides the latest race time

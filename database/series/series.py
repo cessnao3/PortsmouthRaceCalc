@@ -38,12 +38,12 @@ class Series:
         self.fleet = fleet
         self.races: List[Race] = list()
         self.boat_dict: Dict[Skipper, BoatType] = dict()
-        self._skipper_rc_pts = None
-        self._skippers = None
-        self._points = None
-        self._scatter_plot: Optional[bytes] = None
-        self._pie_plot: Optional[bytes] = None
-        self._point_history_plot: Optional[bytes] = None
+        self.__skipper_rc_pts = None
+        self.__skippers = None
+        self.__points = None
+        self.__scatter_plot: Optional[bytes] = None
+        self.__plot_boat_pie_chart: Optional[bytes] = None
+        self.__plot_series_point_history: Optional[bytes] = None
 
     def latest_race_date(self) -> Optional[datetime.datetime]:
         """
@@ -78,11 +78,11 @@ class Series:
             r.reset()
             r.set_index(race_counter)
             race_counter += 1
-        self._skipper_rc_pts = None
-        self._skippers: Optional[List[Skipper]] = None
-        self._points = None
-        self._scatter_plot = None
-        self._pie_plot = None
+        self.__skipper_rc_pts = None
+        self.__skippers: Optional[List[Skipper]] = None
+        self.__points = None
+        self.__scatter_plot = None
+        self.__plot_boat_pie_chart = None
 
     def skipper_num_finished(self, skipper: Skipper) -> int:
         """
@@ -143,9 +143,9 @@ class Series:
         :param skipper: skipper to get RC points for
         :return: Number of points estimated for RC series for a given Skipper
         """
-        if self._skipper_rc_pts is None:
+        if self.__skipper_rc_pts is None:
             # Initialize the dictionary
-            self._skipper_rc_pts = dict()
+            self.__skipper_rc_pts = dict()
 
             # Calculate RC point parameters
             for skip in self.get_all_skippers():
@@ -169,11 +169,11 @@ class Series:
                     score = round_score(sum(point_values) / len(point_values))
 
                 # Set the results
-                self._skipper_rc_pts[skip] = score
+                self.__skipper_rc_pts[skip] = score
 
         # Return points if the skipper is in the list
-        if skipper in self._skipper_rc_pts:
-            return self._skipper_rc_pts[skipper]
+        if skipper in self.__skipper_rc_pts:
+            return self.__skipper_rc_pts[skipper]
         else:
             return None
 
@@ -183,7 +183,7 @@ class Series:
         :param skipper: the skipper identifier to search for
         :return: list of points equal to the qualification, or DNQ if no qualification
         """
-        if self._points is None:
+        if self.__points is None:
             # Initialize the dictionary
             points = dict()
 
@@ -227,11 +227,11 @@ class Series:
                     points[skip] = points_list[:self.qualify_count]
 
             # Append the result to the static variable
-            self._points = points
+            self.__points = points
 
         # Return the pre-calculated result
-        if skipper in self._points:
-            return self._points[skipper]
+        if skipper in self.__points:
+            return self.__points[skipper]
         else:
             return None
 
@@ -247,7 +247,7 @@ class Series:
         # Return None if skipper not in the dictionary, otherwise return dictionary value
         if points_list is not None:
             # Calculate the point values and round accordingly
-            return round_score(sum(self._points[skipper]))
+            return round_score(sum(self.__points[skipper]))
         else:
             return None
 
@@ -293,7 +293,7 @@ class Series:
         Provides all skippers in the series
         :return: list of unique skipper objects between all series
         """
-        if self._skippers is None:
+        if self.__skippers is None:
             # Define the output list
             skippers = list()
 
@@ -303,10 +303,10 @@ class Series:
                 if s not in skippers:
                     skippers.append(s)
 
-            self._skippers = skippers
+            self.__skippers = skippers
 
         # Return the skipper list
-        return self._skippers
+        return self.__skippers
 
     def get_all_skippers_sorted(self) -> List[Skipper]:
         """
@@ -347,7 +347,7 @@ class Series:
         Provides a plot of the fraction of corrected / minimum race time as a function of race score
         :return: An encoded base64 HTML source string of figure, empty on failure
         """
-        if self._scatter_plot is None:
+        if self.__scatter_plot is None:
             plt = get_pyplot()
             img_str = ''
 
@@ -385,17 +385,27 @@ class Series:
                 img_str = figure_to_base64(f)
 
             # Memoize the plot
-            self._scatter_plot = fig_compress(img_str)
+            self.__scatter_plot = fig_compress(img_str)
 
         # Return the result
-        return fig_decompress(self._scatter_plot)
+        return fig_decompress(self.__scatter_plot)
 
-    def boat_pie_chart(self) -> str:
+    def generate_figures(self) -> None:
+        """
+        Generates all figures at once when requested
+        """
+        self.get_plot_boat_pie_chart()
+        self.get_plot_series_points()
+
+        for r in self.races:
+            r.generate_figures()
+
+    def get_plot_boat_pie_chart(self) -> str:
         """
         Provides a pie chart for the count for each existing boat in the series
         :return: An encoded base64 HTML source string of figure, empty on failure
         """
-        if self._pie_plot is None:
+        if self.__plot_boat_pie_chart is None:
             # Initialize plotting requirements
             plt = get_pyplot()
             img_str = ''
@@ -433,21 +443,22 @@ class Series:
                     explode=[0.03 for _ in combined])
                 ax.axis('equal')
 
-                # Save resulting iamge
+                # Save resulting image and close
                 img_str = figure_to_base64(f)
+                plt.close(f)
 
             # Save the memoized result
-            self._pie_plot = fig_compress(img_str)
+            self.__plot_boat_pie_chart = fig_compress(img_str)
 
         # Return the resulting figure
-        return fig_decompress(self._pie_plot)
+        return fig_decompress(self.__plot_boat_pie_chart)
 
-    def get_series_points_plot(self) -> str:
+    def get_plot_series_points(self) -> str:
         """
         Provides a list of the race scoring over time
         :return: the resulting plot data
         """
-        if self._point_history_plot is None:
+        if self.__plot_series_point_history is None:
             # Initialize plotting requirements
             plt = get_pyplot()
             img_str = ''
@@ -491,11 +502,14 @@ class Series:
                 # Save results
                 img_str = figure_to_base64(f)
 
+                # Close figure
+                plt.close(f)
+
             # Compress and save the result
-            self._point_history_plot = fig_compress(img_str)
+            self.__plot_series_point_history = fig_compress(img_str)
 
         # Return the resulting image string
-        return fig_decompress(self._point_history_plot)
+        return fig_decompress(self.__plot_series_point_history)
 
     def fancy_name(self) -> str:
         """
