@@ -403,7 +403,7 @@ class Series:
 
         for i, r in enumerate(self.races):
             gen_funcs.extend([
-                (f'{figure_key}_Race{i}_{name}', func)
+                (f'{figure_key}_Race_{i}_{name}', func)
                 for name, func
                 in r.get_figure_functions()
             ])
