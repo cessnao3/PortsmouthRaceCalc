@@ -51,12 +51,24 @@ class BoatStatistics:
         """
         return sum(self.point_counts.values())
 
+    def _can_plot(self) -> bool:
+        """
+        Determines if the plot can be plotted
+        :return: true if a plot can exist
+        """
+        return self.get_total_point_counts() > 0
+
+
     def get_figure_functions(self) -> List[Tuple[str, Callable[[], str]]]:
         """
         Provides a list of all figure generation values
         :return: a list of functions to call to generate figures
         """
-        return [(f'Boat_{self.boat.code}_Points', self.get_plot_points)]
+        # Skip plot if no races provided
+        if self._can_plot():
+            return [(f'Boat_{self.boat.code}_Points', self.get_plot_points)]
+        else:
+            return list()
 
     def get_plot_points(self) -> str:
         """
@@ -69,11 +81,11 @@ class BoatStatistics:
             img_str = ''
 
             if plt is not None:
-                # Determine the total number of races
-                num_races = self.get_total_point_counts()
-
                 # Skip if no races were performed
-                if num_races > 0:
+                if self._can_plot():
+                    # Determine the total number of races
+                    num_races = self.get_total_point_counts()
+
                     # Determine the race entries (sorted finish values) and resulting percentages
                     race_entries = list(sorted(self.point_counts.keys()))
                     race_percentages = [self.point_counts[i] / num_races for i in race_entries]

@@ -56,15 +56,25 @@ class SkipperStatistics:
         """
         return sum(self.boats_used.values())
 
+    def _can_plot(self) -> bool:
+        """
+        Detemrines whether the skipper plotting can be done
+        :return: true if plots can be created
+        """
+        return self.get_total_boat_counts() > 0 and self.get_total_race_counts() > 0
+
     def get_figure_functions(self) -> List[Tuple[str, Callable[[], str]]]:
         """
         Provides a list of all figure generation values
         :return: a list of functions to call to generate figures
         """
-        return [
-            (f'Skipper_{self.skipper.identifier}_RaceResults', self.get_plot_race_results),
-            (f'Skipper_{self.skipper.identifier}_Boats', self.get_plot_boats)
-        ]
+        if self._can_plot():
+            return [
+                (f'Skipper_{self.skipper.identifier}_RaceResults', self.get_plot_race_results),
+                (f'Skipper_{self.skipper.identifier}_Boats', self.get_plot_boats)
+            ]
+        else:
+            return list()
 
     def get_plot_race_results(self) -> str:
         """
@@ -77,11 +87,11 @@ class SkipperStatistics:
             img_str = ''
 
             if plt is not None:
-                # Determine the total number of races
-                num_races = self.get_total_race_counts()
+                # Skip if no races performed
+                if self._can_plot():
+                    # Determine the total number of races
+                    num_races = self.get_total_race_counts()
 
-                # Skip if no races were done
-                if num_races > 0:
                     # Determine the race entries (sorted finish values) and resulting percentages
                     race_entries = list(sorted(self.race_counts.keys()))
                     race_percentages = [self.race_counts[i] / num_races for i in race_entries]
@@ -121,10 +131,10 @@ class SkipperStatistics:
             img_str = ''
 
             if plt is not None:
-                # Determine the total number of boats
-                num_boats = self.get_total_boat_counts()
+                if self._can_plot():
+                    # Determine the total number of boats
+                    num_boats = self.get_total_boat_counts()
 
-                if num_boats > 0:
                     # Determine the boats list and the percentage each boat was used
                     boats_list = list(self.boats_used.keys())
                     boat_percentages = [self.boats_used[boat] / num_boats for boat in boats_list]
