@@ -83,7 +83,7 @@ class MasterDatabase:
         Generates all figures at once when requested
         """
         for name, func in self.__get_figure_functions():
-            if name not in self.__fig_gen_dict:
+            if not self.__fig_gen_dict.get(name, False):
                 self.__fig_gen_dict[name] = True
                 func()
                 yield name
