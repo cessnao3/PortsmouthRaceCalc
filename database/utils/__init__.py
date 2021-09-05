@@ -95,6 +95,5 @@ def format_time(time_s: int) -> str:
     :return: string of formatted time
     """
     s_val = time_s % 60
-    time_c = int((time_s - s_val) / 60)
-    m_val = time_c
-    return '{:02d}:{:02d}'.format(m_val, round(s_val))
+    m_val = int((time_s - s_val) / 60)
+    return f'{m_val:02d}:{round(s_val):02d}'
