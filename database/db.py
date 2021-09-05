@@ -42,11 +42,12 @@ class MasterDatabase:
         """
         return self.input_folder / self.series_input_name
 
-    def __init__(self,
-                 input_folder: pathlib.Path,
-                 fleet_file: str = 'fleets.yaml',
-                 skipper_file: str = 'skippers.csv',
-                 series_file: str = 'series.yaml'):
+    def __init__(
+            self,
+            input_folder: pathlib.Path,
+            fleet_file: str = 'fleets.yaml',
+            skipper_file: str = 'skippers.csv',
+            series_file: str = 'series.yaml'):
         """
         Initializes the master database with the provided inputs
         :param input_folder: folder where the input files are provided
@@ -63,9 +64,9 @@ class MasterDatabase:
         self.series_input_name = series_file
 
         # Load the database
-        self.fleets = self._load_fleets()
-        self.skippers = self._load_skippers()
-        self.series = self._load_series()
+        self.fleets = self.__load_fleets()
+        self.skippers = self.__load_skippers()
+        self.series = self.__load_series()
 
         # Define the statistics
         self.skipper_statistics: Dict[str, SkipperStatistics] = dict()
@@ -74,17 +75,20 @@ class MasterDatabase:
         # Define the figures to generate
         self.__fig_gen_dict: Dict[str, bool] = dict()
 
+        # Update statistics
+        self.update_statistics()
+
     def generate_figures_generator(self) -> Generator[str, None, None]:
         """
         Generates all figures at once when requested
         """
-        for name, func in self.get_figure_functions():
+        for name, func in self.__get_figure_functions():
             if name not in self.__fig_gen_dict:
                 self.__fig_gen_dict[name] = True
                 func()
                 yield name
 
-    def get_figure_functions(self) -> List[Tuple[str, Callable[[], str]]]:
+    def __get_figure_functions(self) -> List[Tuple[str, Callable[[], str]]]:
         """
         Provides a list of all figure generation values
         :return: a list of functions to call to generate figures
@@ -267,7 +271,7 @@ class MasterDatabase:
         self.__update_statistics_skipper()
         self.__update_statistics_boat()
 
-    def _load_fleets(self) -> Dict[str, Fleet]:
+    def __load_fleets(self) -> Dict[str, Fleet]:
         """
         Loads the fleet database from the provided files
         :return: the list of fleets loaded
@@ -315,7 +319,7 @@ class MasterDatabase:
         # Set the fleet object to the loaded parameters
         return fleets
 
-    def _load_skippers(self) -> Dict[str, Skipper]:
+    def __load_skippers(self) -> Dict[str, Skipper]:
         """
         Loads the skipper database from the provided files
         """
@@ -326,7 +330,7 @@ class MasterDatabase:
         # Set the skipper object to the loaded parameters
         return skippers
 
-    def _load_series(self) -> Dict[str, Series]:
+    def __load_series(self) -> Dict[str, Series]:
         """
         Loads the series database from the provided files
         """
