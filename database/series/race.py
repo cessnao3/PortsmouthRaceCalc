@@ -236,7 +236,7 @@ class Race:
         str_list.append('   RC: {:s}'.format(', '.join([s.identifier for s in self.rc_skippers()])))
         str_list.append(' Date: {:s}'.format(self.date_string()))
         str_list.append('Notes: {:s}'.format(self.notes))
-        str_list.append('                    a_time                        c_time')
+        str_list.append('                    a_time                            c_time')
         str_list.append('       Name   Boat   mm:ss   sec  /    hc   =  c_sec   mm:ss  Rank')
         str_list.append('-----------   ----   -----   -----------------------   -----  ----')
 
