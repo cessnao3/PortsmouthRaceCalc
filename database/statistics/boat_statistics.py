@@ -51,12 +51,12 @@ class BoatStatistics:
         """
         return sum(self.point_counts.values())
 
-    def get_figure_functions(self) -> List[Callable[[], str]]:
+    def get_figure_functions(self) -> List[Tuple[str, Callable[[], str]]]:
         """
         Provides a list of all figure generation values
         :return: a list of functions to call to generate figures
         """
-        return [self.get_plot_points]
+        return [(f'Boat_{self.boat.code}_Points', self.get_plot_points)]
 
     def get_plot_points(self) -> str:
         """

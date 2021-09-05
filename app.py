@@ -105,8 +105,8 @@ def skipper_page_ind(skipper_name: str):
 def generate_figures():
     def generate():
         any_values = False
-        for func in database.generate_figures_generator():
-            yield f"{id(func)}\n"
+        for func_name in database.generate_figures_generator():
+            yield f"{func_name}\n"
             any_values = True
         if not any_values:
             yield '\n'

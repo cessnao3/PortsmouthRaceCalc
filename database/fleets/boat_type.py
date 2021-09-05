@@ -106,7 +106,7 @@ class BoatType:
         Determines whether the provided object is equal to the current boat class object
         :return: true if the objects are equal
         """
-        if isinstance(other, 'BoatType'):
+        if isinstance(other, BoatType):
             return self.__characteristic_tuple() == other.__characteristic_tuple()
         else:
             return False

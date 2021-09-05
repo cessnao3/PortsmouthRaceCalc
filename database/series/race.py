@@ -21,14 +21,15 @@ class Race:
     An object to maintain the information for a single race
     """
 
-    def __init__(self,
-                 fleet: Fleet,
-                 boat_dict: Dict[Skipper, BoatType],
-                 required_skippers: int,
-                 rc: List[Skipper],
-                 date_string: str,
-                 wind_bf: int,
-                 notes: str):
+    def __init__(
+            self,
+            fleet: Fleet,
+            boat_dict: Dict[Skipper, BoatType],
+            required_skippers: int,
+            rc: List[Skipper],
+            date_string: str,
+            wind_bf: int,
+            notes: str):
         """
         Initializes the race object
         :param fleet: the fleet to use for the boat handicap values
@@ -341,12 +342,12 @@ class Race:
         # Return the results
         return race_result_list
 
-    def get_figure_functions(self) -> List[Callable[[], str]]:
+    def get_figure_functions(self) -> List[Tuple[str, Callable[[], str]]]:
         """
         Provides a list of all figure generation values
         :return: a list of functions to call to generate figures
         """
-        return [self.get_plot_race_time_results]
+        return [('RaceTimeResults', self.get_plot_race_time_results)]
 
     def get_plot_race_time_results(self) -> str:
         """

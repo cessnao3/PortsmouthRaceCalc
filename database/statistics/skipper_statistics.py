@@ -56,14 +56,14 @@ class SkipperStatistics:
         """
         return sum(self.boats_used.values())
 
-    def get_figure_functions(self) -> List[Callable[[], str]]:
+    def get_figure_functions(self) -> List[Tuple[str, Callable[[], str]]]:
         """
         Provides a list of all figure generation values
         :return: a list of functions to call to generate figures
         """
         return [
-            self.get_plot_race_results,
-            self.get_plot_boats
+            (f'Skipper_{self.skipper.identifier}_RaceResults', self.get_plot_race_results),
+            (f'Skipper_{self.skipper.identifier}_Boats', self.get_plot_boats)
         ]
 
     def get_plot_race_results(self) -> str:

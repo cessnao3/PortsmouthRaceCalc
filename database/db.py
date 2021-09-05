@@ -14,7 +14,7 @@ import datetime
 import pathlib
 import yaml
 
-from typing import Dict, List, Optional, Callable, Generator
+from typing import Dict, List, Optional, Callable, Generator, Tuple
 
 
 class MasterDatabase:
@@ -72,19 +72,19 @@ class MasterDatabase:
         self.boat_statistics: Dict[str, Dict[str, BoatStatistics]] = dict()
 
         # Define the figures to generate
-        self.__fig_gen_dict: Dict[Callable, bool] = dict()
+        self.__fig_gen_dict: Dict[str, bool] = dict()
 
-    def generate_figures_generator(self) -> Generator[Callable[[], str], None, None]:
+    def generate_figures_generator(self) -> Generator[str, None, None]:
         """
         Generates all figures at once when requested
         """
-        for func in self.get_figure_functions():
-            if func not in self.__fig_gen_dict:
-                self.__fig_gen_dict[func] = True
+        for name, func in self.get_figure_functions():
+            if name not in self.__fig_gen_dict:
+                self.__fig_gen_dict[name] = True
                 func()
-                yield func
+                yield name
 
-    def get_figure_functions(self) -> List[Callable[[], str]]:
+    def get_figure_functions(self) -> List[Tuple[str, Callable[[], str]]]:
         """
         Provides a list of all figure generation values
         :return: a list of functions to call to generate figures
