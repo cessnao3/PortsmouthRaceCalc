@@ -16,4 +16,8 @@ The program may be run in two different ways. The `main.py` file runs the race c
 
 For finished times, boats are handicapted based on the [Portsmouth Yardstick](https://www.ussailing.org/wp-content/uploads/2018/01/2017-North-American-Portsmouth-Yardstick-Handbook.pdf) to produce a "comparable" score. This final time is then used to determine the ranking of skippers in a race.
 
-*Todo*
+Notes:
+- Up to two RC instances may be scored
+- DNF instances still count for scoring and for qualifying races
+- RC points are computed based on all scores, minus the worst score, averaged together
+- Scores are rounded to the nearest decimal place
