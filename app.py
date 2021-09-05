@@ -102,14 +102,24 @@ def skipper_page_ind(skipper_name: str):
 
 @app.route('/generate')
 def generate_figures():
+    # Define the text generator
     def generate():
+        # Determine if any values have been provided
         any_values = False
+
+        # Iterate over each figure, yielding the current figure name
         for func_name in database.generate_figures_generator():
             yield f"{func_name}\n"
             any_values = True
+
+        # Print an empty character if no items provided
         if not any_values:
             yield '\n'
-    return app.response_class(generate(), mimetype='text/csv')
+
+    # Return the text results
+    return app.response_class(
+        generate(),
+        mimetype='text/plain')
 
 
 if __name__ == '__main__':
