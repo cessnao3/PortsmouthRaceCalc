@@ -9,14 +9,17 @@ from database import MasterDatabase
 
 def main():
     database = MasterDatabase(input_folder=pathlib.Path('input'))
+    series_list = list(database.series.values())
+    series_list.sort(key=lambda x: x.name)
 
-    for series in database.series.values():
-        race_num = 1
-        for race in series.races:
-            print(' Race: {:d}'.format(race_num))
+    if len(series_list) == 0:
+        print('No series provided')
+    else:
+        series = series_list[-1]
+        for i, race in enumerate(series.races):
+            print(' Race: {:d}'.format(i + 1))
             print(race.get_race_table())
             print()
-            race_num += 1
         print(series.get_series_table())
 
 
