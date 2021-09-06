@@ -497,7 +497,7 @@ class Series:
                 f = plt.figure()
 
                 # Plot each skipper that has finished
-                for skipper in skipper_db.keys():
+                for skipper in sorted(skipper_db.keys(), key=lambda x: self.skipper_points(skipper=x)):
                     plt.plot(
                         race_vals,
                         skipper_db[skipper],
