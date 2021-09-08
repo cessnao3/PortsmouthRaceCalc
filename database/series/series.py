@@ -371,7 +371,7 @@ class Series:
         # Return the result
         return skippers
 
-    def scatter_plot(self) -> str:
+    def get_plot_normalized_race_time_results(self) -> str:
         """
         Provides a plot of the fraction of corrected / minimum race time as a function of race score
         :return: An encoded base64 HTML source string of figure, empty on failure
@@ -492,7 +492,7 @@ class Series:
         # Return the resulting figure
         return fig_decompress(self.__plot_boat_pie_chart)
 
-    def get_plot_series_points(self) -> str:
+    def get_plot_series_rank(self) -> str:
         """
         Provides a list of the race scoring over time
         :return: the resulting plot data
@@ -520,13 +520,13 @@ class Series:
                 for race in self.races:
                     series.add_race(race)
                     for skipper, list_val in skipper_db.items():
-                        list_val.append(series.skipper_points(skipper))
+                        list_val.append(series.get_skipper_rank(skipper))
 
                 # Define the figure
                 f = plt.figure()
 
                 # Plot each skipper that has finished
-                for skipper in sorted(skipper_db.keys(), key=lambda x: self.get_skipper_points(skipper=x)):
+                for skipper in sorted(skipper_db.keys(), key=lambda x: self.get_skipper_rank(skipper=x)):
                     plt.plot(
                         race_vals,
                         skipper_db[skipper],
@@ -536,7 +536,8 @@ class Series:
                 # Label the plot
                 plt.xlabel('Race Number')
                 plt.ylabel('Skipper Points')
-                plt.legend()
+                plt.legend(bbox_to_anchor=(1.04, 1), borderaxespad=0)
+                plt.tight_layout(rect=[0, 0, 1, 1])
 
                 # Save results
                 img_str = figure_to_base64(f)
