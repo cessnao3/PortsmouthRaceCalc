@@ -22,6 +22,7 @@
 
         <table border="1">
             <tr>
+                <th>Rank</th>
                 <th>Skipper</th>
                 {% for race in series.races %}
                 <th><a href="{{url_for('race_page', series_name=series.name, race_index=loop.index-1)}}">{{ '%2d' | format(race.race_num) }}</a></th>
@@ -30,17 +31,14 @@
                 <th>Overall Points</th>
                 <th>Points Used</th>
             </tr>
-            <tr>
-                <th>Finished Times</th>
-                {% for race in series.races %}
-                <th>{{ race.race_results() | length }}</th>
-                {% endfor %}
-                <th></th>
-                <th></th>
-                <th></th>
-            </tr>
             {% for skipper in series.get_all_skippers_sorted() %}
             <tr>
+                {% set rank = series.get_skipper_rank(skipper) %}
+                {% if rank %}
+                <td>{{ rank }}</td>
+                {% else %}
+                <td></td>
+                {% endif %}
                 <td><a href="{{ url_for('skipper_page_ind', skipper_name=skipper.identifier) }}">{{ skipper.identifier }}</a></td>
                 {% for race in series.races %}
                     {% set result = race.get_skipper_result_string(skipper) %}
@@ -50,7 +48,7 @@
                     <td>--</td>
                     {% endif %}
                 {% endfor %}
-                {% set points = series.skipper_points(skipper) %}
+                {% set points = series.get_skipper_points(skipper) %}
                 {% if points %}
                 <td>{{ series.skipper_rc_points(skipper) }}</td>
                 <td>{{ points }}</td>
@@ -59,13 +57,23 @@
                 <td>{{ series.skipper_rc_points(skipper) }}</td>
                 <td>DNQ</td>
                 {% else %}
-                <td>na</td>
-                <td>na</td>
+                <td>N/A</td>
+                <td>N/A</td>
                 {% endif %}
                 {% endif %}
                 <td>{{ series.skipper_points_string(skipper) }}</td>
             </tr>
             {% endfor %}
+            <tr>
+                <th>Race Finishes</th>
+                <th></th>
+                {% for race in series.races %}
+                <th>{{ race.race_results() | length }}</th>
+                {% endfor %}
+                <th></th>
+                <th></th>
+                <th></th>
+            </tr>
         </table>
 
         <h2>Races</h2>
@@ -78,13 +86,13 @@
         <h2>Statistics</h2>
 
         <h3>Normalized Results</h3>
-        {{ img.place(series.scatter_plot(), "Normalized Results") }}
+        {{ img.place(series.get_plot_normalized_race_time_results(), "Normalized Results") }}
 
         <h3>Boats Types in Series</h3>
         {{ img.place(series.get_plot_boat_pie_chart(), "Boats in Series") }}
 
-        <h3>Point History</h3>
-        {{ img.place(series.get_plot_series_points(), "Point History") }}
+        <h3>Rank History</h3>
+        {{ img.place(series.get_plot_series_rank(), "Point History") }}
 
         {% include 'footer.html' %}
     </body>
