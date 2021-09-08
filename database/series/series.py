@@ -405,10 +405,14 @@ class Series:
                     h=s[1])
 
                 # Assign the legend and axes labels
-                leg = plt.legend(['Race {:d}'.format(r.race_num) for r in self.valid_races()], loc='upper left')
-                leg.get_frame().set_alpha(0.5)
+                plt.legend(
+                    ['Race {:d}'.format(r.race_num) for r in self.valid_races()],
+                    loc='upper left',
+                    bbox_to_anchor=(1.04, 1),
+                    borderaxespad=0)
                 plt.xlabel('Score [points]')
                 plt.ylabel('Normalized Finish Time [corrected / shortest]')
+                plt.tight_layout(rect=[0, 0, 1, 1])
 
                 # Encode the image
                 img_str = figure_to_base64(f)
@@ -427,8 +431,9 @@ class Series:
         figure_key = f'Series_{self.name}'
 
         gen_funcs = [
-            (f'{figure_key}_Points', self.get_plot_series_points),
-            (f'{figure_key}_Boats', self.get_plot_boat_pie_chart)]
+            (f'{figure_key}_Points', self.get_plot_series_rank),
+            (f'{figure_key}_Boats', self.get_plot_boat_pie_chart),
+            (f'{figure_key}_NormalizedTimes', self.get_plot_normalized_race_time_results)]
 
         for i, r in enumerate(self.races):
             gen_funcs.extend([
