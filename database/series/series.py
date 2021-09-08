@@ -32,18 +32,40 @@ class Series:
         :param fleet: The fleet object to be used to define the corrected scoring parameters
         :param qualify_count_override: The number of series required to qualify for a scoring place
         """
+        # Save input values and setup for races
         self.name = name
         self.qualify_count_override = qualify_count_override
         self.valid_required_skippers = valid_required_skippers
         self.fleet = fleet
         self.races: List[Race] = list()
         self.boat_dict: Dict[Skipper, BoatType] = dict()
+
+        # Define memoization parameters
         self.__skipper_rc_pts = None
-        self.__skippers = None
-        self.__points = None
+        self.__skippers: Optional[List[Skipper]] = None
+        self.__points: Optional[Dict[Skipper, List[Union[float, int]]]] = None
+        self.__ranks: Optional[Dict[Skipper, int]] = None
         self.__scatter_plot: Optional[bytes] = None
         self.__plot_boat_pie_chart: Optional[bytes] = None
         self.__plot_series_point_history: Optional[bytes] = None
+
+    def reset(self) -> None:
+        """
+        Resets any stored calculated parameters and sets the race index parameter for each race
+        """
+        # Clear all memoization parameters
+        self.__skipper_rc_pts = None
+        self.__skippers = None
+        self.__points = None
+        self.__ranks = None
+        self.__scatter_plot = None
+        self.__plot_boat_pie_chart = None
+        self.__plot_series_point_history = None
+
+        # Clear the race counter and reset all races
+        for i, r in enumerate(self.races):
+            r.reset()
+            r.set_index(i + 1)
 
     def latest_race_date(self) -> Optional[datetime.datetime]:
         """
@@ -68,21 +90,6 @@ class Series:
             raise ValueError('Cannot add duplicate boat entry to series {:s} for {:s}'.format(
                 self.name,
                 skipper.identifier))
-
-    def reset(self) -> None:
-        """
-        Resets any stored calculated parameters and sets the race index parameter for each race
-        """
-        race_counter = 0
-        for r in self.races:
-            r.reset()
-            r.set_index(race_counter)
-            race_counter += 1
-        self.__skipper_rc_pts = None
-        self.__skippers: Optional[List[Skipper]] = None
-        self.__points = None
-        self.__scatter_plot = None
-        self.__plot_boat_pie_chart = None
 
     def skipper_num_finished(self, skipper: Skipper) -> int:
         """
@@ -235,7 +242,7 @@ class Series:
         else:
             return None
 
-    def skipper_points(self, skipper: Skipper) -> Optional[Union[int, float]]:
+    def get_skipper_points(self, skipper: Skipper) -> Optional[Union[int, float]]:
         """
         Returns the number of points found for the given Skipper
         :param skipper: skipper identifier
@@ -297,16 +304,38 @@ class Series:
             # Define the output list
             skippers = list()
 
+            # Check each race for skippers
             all_skipper_instances = [rt.skipper for r in self.races for rt in r.race_finishes.values()]
 
+            # Iterate over all skipper values
             for s in all_skipper_instances:
                 if s not in skippers:
                     skippers.append(s)
 
+            # Save the resulting skipper dictionary
             self.__skippers = skippers
 
         # Return the skipper list
         return self.__skippers
+
+    def get_skipper_rank(self, skipper: Skipper) -> Optional[int]:
+        """
+        Provides the rank in the series for the given skipper
+        :param skipper: the skipper to check
+        :return: the resulting rank, or None if skipper does not qualify
+        """
+        # Construct the ranks if needed
+        if self.__ranks is None:
+            self.__ranks = dict()
+            for i, skip_point in enumerate(self.get_all_skippers_sorted()):
+                if self.skipper_qualifies(skipper=skip_point):
+                    self.__ranks[skip_point] = i + 1
+
+        # Return the resulting rank
+        if skipper in self.__ranks:
+            return self.__ranks[skipper]
+        else:
+            return None
 
     def get_all_skippers_sorted(self) -> List[Skipper]:
         """
@@ -315,7 +344,7 @@ class Series:
         """
         # Get all skippers and scores
         skippers = self.get_all_skippers()
-        scores = {s: self.skipper_points(s) for s in skippers}
+        scores = {s: self.get_skipper_points(s) for s in skippers}
 
         # Determine a maximum score value and apply to all skippers that haven't finished to push to the end
         max_score = round(sum([s for s in scores.values() if s is not None]))
@@ -477,7 +506,7 @@ class Series:
             if plt is not None:
                 # Define the skipper list
                 skipper_db = {skipper: list() for skipper in self.get_all_skippers() if
-                              self.skipper_points(skipper) is not None}
+                              self.get_skipper_points(skipper) is not None}
 
                 # Create an inner series object to track point values
                 series = Series(
@@ -497,7 +526,7 @@ class Series:
                 f = plt.figure()
 
                 # Plot each skipper that has finished
-                for skipper in sorted(skipper_db.keys(), key=lambda x: self.skipper_points(skipper=x)):
+                for skipper in sorted(skipper_db.keys(), key=lambda x: self.get_skipper_points(skipper=x)):
                     plt.plot(
                         race_vals,
                         skipper_db[skipper],
@@ -567,7 +596,7 @@ class Series:
 
             skipper_line += ' |'
 
-            points = self.skipper_points(skipper)
+            points = self.get_skipper_points(skipper)
             rc_pts = self.skipper_rc_points(skipper)
 
             if rc_pts is not None:
