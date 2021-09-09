@@ -47,6 +47,7 @@ class Series:
         self.__ranks: Optional[Dict[Skipper, int]] = None
         self.__scatter_plot: Optional[bytes] = None
         self.__plot_boat_pie_chart: Optional[bytes] = None
+        self.__plot_series_rank_history: Optional[bytes] = None
         self.__plot_series_point_history: Optional[bytes] = None
 
     def reset(self) -> None:
@@ -60,6 +61,7 @@ class Series:
         self.__ranks = None
         self.__scatter_plot = None
         self.__plot_boat_pie_chart = None
+        self.__plot_series_rank_history = None
         self.__plot_series_point_history = None
 
         # Clear the race counter and reset all races
@@ -431,7 +433,8 @@ class Series:
         figure_key = f'Series_{self.name}'
 
         gen_funcs = [
-            (f'{figure_key}_Points', self.get_plot_series_rank),
+            (f'{figure_key}_Points', self.get_plot_series_points),
+            (f'{figure_key}_Rank', self.get_plot_series_rank),
             (f'{figure_key}_Boats', self.get_plot_boat_pie_chart),
             (f'{figure_key}_NormalizedTimes', self.get_plot_normalized_race_time_results)]
 
@@ -497,36 +500,39 @@ class Series:
         # Return the resulting figure
         return fig_decompress(self.__plot_boat_pie_chart)
 
-    def get_plot_series_rank(self) -> str:
+    def _setup_point_rank_plots(self) -> None:
         """
-        Provides a list of the race scoring over time
-        :return: the resulting plot data
+        Generates the plots for the rank and point histories
+        :return:
         """
-        if self.__plot_series_point_history is None:
-            # Initialize plotting requirements
-            plt = get_pyplot()
-            img_str = ''
+        # Initialize plotting requirements
+        plt = get_pyplot()
+        img_types = ['Rank', 'Points']
+        img_vals = ['' for _ in range(len(img_types))]
 
-            # Plot if able
-            if plt is not None:
-                # Define the skipper list
-                skipper_db = {skipper: list() for skipper in self.get_all_skippers() if
-                              self.get_skipper_points(skipper) is not None}
+        # Plot if able
+        if plt is not None:
+            # Define the skipper list
+            skipper_db = {skipper: (list(), list()) for skipper in self.get_all_skippers() if
+                          self.get_skipper_points(skipper) is not None}
 
-                # Create an inner series object to track point values
-                series = Series(
-                    name=self.name,
-                    valid_required_skippers=self.valid_required_skippers,
-                    fleet=self.fleet,
-                    qualify_count_override=self.qualify_count_override)
+            # Create an inner series object to track point values
+            series = Series(
+                name=self.name,
+                valid_required_skippers=self.valid_required_skippers,
+                fleet=self.fleet,
+                qualify_count_override=self.qualify_count_override)
 
-                # Iterate over each race to return a list of point values
-                race_vals = [i + 1 for i in range(len(self.races))]
-                for race in self.races:
-                    series.add_race(race)
-                    for skipper, list_val in skipper_db.items():
-                        list_val.append(series.get_skipper_rank(skipper))
+            # Iterate over each race to return a list of point values
+            race_vals = [i + 1 for i in range(len(self.races))]
+            for race in self.races:
+                series.add_race(race)
+                for skipper, (list_val_rank, list_val_points) in skipper_db.items():
+                    list_val_rank.append(series.get_skipper_rank(skipper))
+                    list_val_points.append(series.get_skipper_points(skipper))
 
+            # Iterate for each figure
+            for i in range(len(img_vals)):
                 # Define the figure
                 f = plt.figure()
 
@@ -534,27 +540,45 @@ class Series:
                 for skipper in sorted(skipper_db.keys(), key=lambda x: self.get_skipper_rank(skipper=x)):
                     plt.plot(
                         race_vals,
-                        skipper_db[skipper],
+                        skipper_db[skipper][i],
                         '*--',
                         label=skipper.identifier)
 
                 # Label the plot
                 plt.xlabel('Race Number')
-                plt.ylabel('Skipper Points')
+                plt.ylabel(f'Skipper {img_types[i]}')
                 plt.legend(bbox_to_anchor=(1.04, 1), borderaxespad=0)
                 plt.tight_layout(rect=[0, 0, 1, 1])
 
                 # Save results
-                img_str = figure_to_base64(f)
+                img_vals[i] = figure_to_base64(f)
 
                 # Close figure
                 plt.close(f)
 
-            # Compress and save the result
-            self.__plot_series_point_history = fig_compress(img_str)
+        # Compress and save the result
+        self.__plot_series_rank_history = fig_compress(img_vals[0])
+        self.__plot_series_point_history = fig_compress(img_vals[1])
 
-        # Return the resulting image string
+    def get_plot_series_points(self) -> str:
+        """
+        Provides a plot of skipper point values over time for those that qualified at the end of the series
+        :return: the resulting figure
+        """
+        if self.__plot_series_point_history is None:
+            self._setup_point_rank_plots()
+
         return fig_decompress(self.__plot_series_point_history)
+
+    def get_plot_series_rank(self) -> str:
+        """
+        Provides a plot of skipper rank values over time for those that qualified at the end of the series
+        :return: the resulting figure
+        """
+        if self.__plot_series_rank_history is None:
+            self._setup_point_rank_plots()
+
+        return fig_decompress(self.__plot_series_rank_history)
 
     def fancy_name(self) -> str:
         """

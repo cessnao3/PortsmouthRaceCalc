@@ -92,7 +92,9 @@
         {{ img.place(series.get_plot_boat_pie_chart(), "Boats in Series") }}
 
         <h3>Rank History</h3>
-        {{ img.place(series.get_plot_series_rank(), "Point History") }}
+        {{ img.place(series.get_plot_series_rank(), "Rank History") }}
+        <br>
+        {{ img.place(series.get_plot_series_points(), "Point History") }}
 
         {% include 'footer.html' %}
     </body>
