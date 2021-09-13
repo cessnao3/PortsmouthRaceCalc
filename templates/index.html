@@ -7,6 +7,9 @@
         <h1>Portsmouth Race Calculator</h1>
 
         <h2>Race Series</h2>
+        <ul>
+            <li><a href="{{ url_for('series_page', series_name=series_list[0].name) }}">Latest</a></li>
+        </ul>
          <ul>
             {% for series in series_list %}
             <li><a href="{{ url_for('series_page', series_name=series.name) }}">{{ series.fancy_name() }}</a></li>
