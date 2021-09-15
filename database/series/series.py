@@ -67,7 +67,7 @@ class Series:
         # Clear the race counter and reset all races
         for i, r in enumerate(self.races):
             r.reset()
-            r.set_index(i + 1)
+            r.set_index(i)
 
     def latest_race_date(self) -> Optional[datetime.datetime]:
         """
