@@ -12,7 +12,7 @@
         <br>
         <a href="{{url_for('fleet_page', fleet_name=series.fleet.name)}}">Fleet: {{ series.fleet.fancy_name() }}</a>
 
-        <h2>Overall Results</h2>
+        <h2><a id="top">Overall Results</a></h2>
 
         <b>Valid Races Held:</b> {{ series.valid_races() | length }}
         <br>
@@ -85,6 +85,9 @@
         </p>
         <p>
             {{ img.place(race.get_plot_race_time_results(), "Race Results") }}
+        </p>
+        <p>
+            <a href="#top">Top</a>
         </p>
         {% endfor %}
 
