@@ -365,11 +365,20 @@ class MasterDatabase:
             with race_file.open('r') as f:
                 all_race_data = yaml.safe_load(f)
 
+            # Define a function for getting skipper values
+            def get_skipper(skip_id_val: str) -> Skipper:
+                if skip_id_val in self.skippers:
+                    return self.skippers[skip_id_val]
+                else:
+                    return Skipper(
+                        identifier=skip_id_val,
+                        series_identifier=series_name)
+
             # Extract the boat data and set default boats for each skipper
             boat_list = all_race_data['boats']
             for skipper_id, boat_code in boat_list.items():
                 series.add_skipper_boat(
-                    skipper=self.skippers[skipper_id],
+                    skipper=get_skipper(skipper_id),
                     boat=series.fleet.get_boat(boat_code))
 
             # Extract the race data
@@ -382,7 +391,7 @@ class MasterDatabase:
                 if rc_racers is None:
                     rc_racers = dict()
 
-                race_committee = [self.skippers[person] for person in rc_racers]
+                race_committee = [get_skipper(person) for person in rc_racers]
 
                 # Iterate over each race
                 for race_dict in race_date_dict['races']:
@@ -395,7 +404,7 @@ class MasterDatabase:
 
                         # Update the values based on the skipper identifiers provided
                         for skipper_id, boat_code in race_boat_overrides.items():
-                            skip = self.skippers[skipper_id]
+                            skip = get_skipper(skipper_id)
                             if skip in race_boat_dict:
                                 race_boat_dict[skip] = series.fleet.get_boat(boat_code)
 
@@ -427,7 +436,7 @@ class MasterDatabase:
                         input_finish_result = time_values[skipper_id]
 
                         # Extract the skipper and boat
-                        skipper = self.skippers[skipper_id]
+                        skipper = get_skipper(skipper_id)
 
                         if skipper in race.boat_dict:
                             boat = race.boat_dict[skipper]
@@ -442,7 +451,7 @@ class MasterDatabase:
                             # Check for finish in place
                             if input_finish_result == 'dnf':
                                 race_finish = finishes.RaceFinishDNF(boat=boat, skipper=skipper)
-                            elif input_finish_result == 'dq':
+                            elif input_finish_result == 'dsq':
                                 race_finish = finishes.RaceFinishDQ(boat=boat, skipper=skipper)
                             elif input_finish_result[:3] == 'fip':
                                 race_finish = finishes.RaceFinishFIP(

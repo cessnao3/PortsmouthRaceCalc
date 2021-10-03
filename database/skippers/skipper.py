@@ -10,12 +10,16 @@ from .. import utils
 class Skipper:
     def __init__(
             self,
-            identifier: str):
+            identifier: str,
+            series_identifier: Optional[str] = None):
         """
         Defines a skipper object used in the race
         :param identifier: identification string used to match a skipper object with race performance
+        :param series_identifier: determines if the skipper is scoped to a single file and should not be equal to a skipper in
+        other files
         """
         self.identifier = identifier
+        self.series_identifier = series_identifier
 
     @staticmethod
     def load_from_csv(csv_table: str) -> Dict[str, 'Skipper']:
@@ -69,6 +73,11 @@ class Skipper:
         :return: True if the identifiers are equal in lower-case
         """
         if isinstance(other, Skipper):
-            return self.identifier == other.identifier
+            if self.series_identifier is None:
+                identifier_match = other.series_identifier is None
+            else:
+                identifier_match = self.series_identifier == other.series_identifier
+
+            return self.identifier == other.identifier and identifier_match
         else:
             return False

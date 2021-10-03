@@ -17,6 +17,8 @@
         <br>
         <br>
 
+        {% import 'skipper_link_macro.html' as skiputils %}
+
         <table border="1">
             <tr>
                 <th>Rank</th>
@@ -36,7 +38,7 @@
                 {% else %}
                 <td></td>
                 {% endif %}
-                <td><a href="{{ url_for('skipper_page_ind', skipper_name=skipper.identifier) }}">{{ skipper.identifier }}</a></td>
+                <td>{{ skiputils.skip_link(skipper) }}</td>
                 {% for race in series.races %}
                     {% set result = race.get_skipper_result_string(skipper) %}
                     {% if result %}

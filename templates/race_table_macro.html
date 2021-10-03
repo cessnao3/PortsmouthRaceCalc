@@ -1,4 +1,7 @@
 {% macro race_table(race) -%}
+
+{% import 'skipper_link_macro.html' as skiputils %}
+
 <table border="0">
     <tr>
         <th>Wind:</th>
@@ -10,7 +13,7 @@
     </tr>
     <tr>
         <th>RC:</th>
-        <td>{% for skipper in race.rc_skippers() %}<a href="{{ url_for('skipper_page_ind', skipper_name=skipper.identifier) }}">{{ skipper.identifier }}</a>{% if not loop.last %}, {% endif %}{% endfor %}</td>
+        <td>{% for skipper in race.rc_skippers() %}{{ skiputils.skip_link(skipper) }}{% if not loop.last %}, {% endif %}{% endfor %}</td>
     </tr>
     <tr>
         <th>Date:</th>
@@ -49,8 +52,8 @@
         {% else %}
         <td>N/A</td>
         {% endif %}
-        <td> <a href="{{ url_for('skipper_page_ind', skipper_name=skipper.identifier) }}">{{ skipper.identifier }}</a> </td>
-        <td> <a href="{{ url_for('boat_page', fleet_name=race.fleet.name, boat_code=race_time.boat.code) }}">{{ race_time.boat.display_code.upper() }}</a> </td>
+        <td>{{ skiputils.skip_link(skipper) }}</td>
+        <td><a href="{{ url_for('boat_page', fleet_name=race.fleet.name, boat_code=race_time.boat.code) }}">{{ race_time.boat.display_code.upper() }}</a></td>
         {% if is_time %}
         <td>{{ format_time(race_time.input_time_s) }}</td>
         <td>{{ format_time(race_time.offset_time_s) }}</td>
