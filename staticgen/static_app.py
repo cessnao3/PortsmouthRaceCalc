@@ -4,6 +4,7 @@ Similar in functionality to a basic Flask application
 """
 
 import copy
+import datetime
 from pathlib import Path
 from os import PathLike
 import re
@@ -53,9 +54,14 @@ class StaticApplication:
         # Define the Jinja2 environment
         self.jinja_env = jinja2.Environment(loader=jinja2.FileSystemLoader(base_path / "templates"))
         self.jinja_env.globals.update(url_for=self.url_for)
+        self.jinja_env.globals.update(get_build_time=self.get_build_time)
 
         # Define the iterable lists used to generate pages
         self.iter_lists = dict()
+
+        # Define the build start time
+        dt = datetime.datetime.utcnow()
+        self.build_time_string = dt.strftime('%B %d, %Y at %H:%M:%S UTC')
 
         # Define a function to help with relative URL parameters
         self._url_for_relative: Optional[Path] = None
@@ -75,6 +81,13 @@ class StaticApplication:
             self.iter_lists[name] = {k: list(v) for k, v in values.items()}
         else:
             raise TypeError("unknown input type for values detected")
+
+    def get_build_time(self) -> str:
+        """
+        Provides the build time for the site
+        :return: the resulting timestring
+        """
+        return self.build_time_string
 
     def route(self, path: str) -> Callable:
         """

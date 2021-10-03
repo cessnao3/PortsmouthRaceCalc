@@ -1,10 +1,15 @@
 <p>
     <b>Application Notes:</b>
-    <br>
-    Latest Race: {{ database.latest_race_date_string() }}
-    <br>
-    All race results are unofficial
-    <br>
-    <br>
-    View source code at <a href="https://github.com/cessnao3/portsmouthracecalc/">https://github.com/cessnao3/portsmouthracecalc/</a>
+    <p>
+        Latest Race: {{ database.latest_race_date_string() }}
+    </p>
+    <p>
+        All race results are unofficial
+    </p>
+    <p>
+        Compiled on: {{ get_build_time() }}
+    </p>
+    <p>
+        View source code at <a href="https://github.com/cessnao3/portsmouthracecalc/">https://github.com/cessnao3/portsmouthracecalc/</a>
+    </p>
 </p>
