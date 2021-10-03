@@ -46,7 +46,7 @@
             </tr>
             {% for boat in fleet.boat_types_sorted() %}
             <tr>
-                <td><a href="{{url_for('boat_page', boat_code=boat.code, fleet_name=fleet.name)}}">{{boat.code.upper()}}</a></td>
+                <td><a href="{{url_for('boat_page', boat_code=boat.code, fleet_name=fleet.name)}}">{{boat.display_code.upper()}}</a></td>
                 <td>{{boat.name}}</td>
                 <td>{{boat.boat_class.capitalize()}}</td>
 

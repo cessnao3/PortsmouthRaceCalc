@@ -14,7 +14,7 @@ import datetime
 import pathlib
 import yaml
 
-from typing import Dict, List, Optional, Callable, Generator, Tuple
+from typing import Dict, List, Optional
 
 
 class MasterDatabase:
@@ -77,35 +77,6 @@ class MasterDatabase:
 
         # Update statistics
         self.update_statistics()
-
-    def generate_figures_generator(self) -> Generator[str, None, None]:
-        """
-        Generates all figures at once when requested
-        """
-        for name, func in self.__get_figure_functions():
-            if not self.__fig_gen_dict.get(name, False):
-                self.__fig_gen_dict[name] = True
-                func()
-                yield name
-
-    def __get_figure_functions(self) -> List[Tuple[str, Callable[[], str]]]:
-        """
-        Provides a list of all figure generation values
-        :return: a list of functions to call to generate figures
-        """
-        gen_funcs = list()
-
-        for skipper_stat in self.skipper_statistics.values():
-            gen_funcs += skipper_stat.get_figure_functions()
-
-        for boat_stat_dict in self.boat_statistics.values():
-            for boat_stat in boat_stat_dict.values():
-                gen_funcs += boat_stat.get_figure_functions()
-
-        for series in self.series.values():
-            gen_funcs += series.get_figure_functions()
-
-        return gen_funcs
 
     def latest_race_date(self) -> Optional[datetime.datetime]:
         """

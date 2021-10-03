@@ -2,12 +2,14 @@
 Boat Statistics provides overall statistics for a given boat
 """
 
-from typing import Dict, List, Optional, Tuple, Callable
+from typing import Dict, List, Tuple
 
 from ..skippers import Skipper
 from ..fleets import BoatType
 from ..series import Series
-from ..utils.plotting import get_pyplot, figure_to_base64, fig_compress, fig_decompress
+from ..utils.plotting import figure_to_data
+
+import matplotlib.pyplot as plt
 
 
 class BoatStatistics:
@@ -31,7 +33,6 @@ class BoatStatistics:
         self.point_counts = point_counts
         self.skippers = skippers
         self.series = series
-        self.__plot_points: Optional[bytes] = None
 
     def get_point_counts_sorted(self) -> List[Tuple[int, int]]:
         """
@@ -51,66 +52,42 @@ class BoatStatistics:
         """
         return sum(self.point_counts.values())
 
-    def _can_plot(self) -> bool:
-        """
-        Determines if the plot can be plotted
-        :return: true if a plot can exist
-        """
-        return self.get_total_point_counts() > 0
-
-
-    def get_figure_functions(self) -> List[Tuple[str, Callable[[], str]]]:
-        """
-        Provides a list of all figure generation values
-        :return: a list of functions to call to generate figures
-        """
-        # Skip plot if no races provided
-        if self._can_plot():
-            return [(f'Boat_{self.boat.code}_Points', self.get_plot_points)]
-        else:
-            return list()
-
-    def get_plot_points(self) -> str:
+    def get_plot_points(self) -> bytes:
         """
         Provides the plot string for the race pie chart
         :return: the base64-encoded string, or empty string if unable to plot
         """
-        if self.__plot_points is None:
-            # Get the plot instance
-            plt = get_pyplot()
-            img_str = ''
+        # Determine the total number of races
+        num_races = self.get_total_point_counts()
 
-            if plt is not None:
-                # Skip if no races were performed
-                if self._can_plot():
-                    # Determine the total number of races
-                    num_races = self.get_total_point_counts()
+        # Determine the race entries (sorted finish values) and resulting percentages
+        race_entries = list(sorted(self.point_counts.keys()))
+        race_percentages = [self.point_counts[i] / num_races for i in race_entries]
 
-                    # Determine the race entries (sorted finish values) and resulting percentages
-                    race_entries = list(sorted(self.point_counts.keys()))
-                    race_percentages = [self.point_counts[i] / num_races for i in race_entries]
+        # Calculate the resulting labels
+        race_labels = [
+            f'Place {v} ({self.point_counts[v]}, {self.point_counts[v] / num_races * 100:.0f}%)'
+            for v
+            in race_entries]
 
-                    # Calculate the resulting labels
-                    race_labels = [
-                        f'Place {v} ({self.point_counts[v]}, {self.point_counts[v] / num_races * 100:.0f}%)'
-                        for v
-                        in race_entries]
+        # Plot the results
+        f = plt.figure()
+        ax = f.gca()
+        if self.get_total_point_counts() > 0:
+            ax.pie(
+                race_percentages,
+                labels=race_labels,
+                explode=[0.05 for _ in race_entries],
+                normalize=True)
+        else:
+            ax.pie(
+                [1],
+                labels=['None'],
+                normalize=True)
 
-                    # Plot the results
-                    f = plt.figure()
-                    ax = f.gca()
-                    ax.pie(
-                        race_percentages,
-                        labels=race_labels,
-                        explode=[0.05 for _ in race_entries],
-                        normalize=True)
+        s = f.get_size_inches()
+        f.set_size_inches(w=1.15 * s[0], h=s[1])
 
-                    s = f.get_size_inches()
-                    f.set_size_inches(w=1.15 * s[0], h=s[1])
-
-                    img_str = figure_to_base64(f)
-                    plt.close(f)
-
-            self.__plot_points = fig_compress(img_str)
-
-        return fig_decompress(self.__plot_points)
+        img_data = figure_to_data(f)
+        plt.close(f)
+        return img_data

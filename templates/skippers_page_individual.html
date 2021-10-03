@@ -1,5 +1,3 @@
-{%- import "image_macro.html" as img -%}
-
 {%- set skipper = database.skippers[skipper_name] -%}
 {%- set skipper_stats = database.skipper_statistics[skipper_name] -%}
 
@@ -28,7 +26,7 @@
         </table>
 
         <h2>Boats Used</h2>
-        {{ img.place(skipper_stats.get_plot_boats(), "Statistics") }}
+        <img src="{{ url_for('skipper_page_boats_used_plot', skipper_name=skipper_name) }}" alt="Statistics">
 
         <table border="1">
             <tr>
@@ -54,7 +52,7 @@
         </table>
 
         <h2>Race Finishes</h2>
-        {{ img.place(skipper_stats.get_plot_race_results(), "Race Finishes") }}
+        <img src="{{ url_for('skipper_page_race_results_plot', skipper_name=skipper_name) }}" alt="Race Finishes">
 
         <table border="1">
             <tr>

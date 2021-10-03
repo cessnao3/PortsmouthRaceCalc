@@ -1,13 +1,12 @@
-{%- import "image_macro.html" as img -%}
 {%- set boat_stats = database.boat_statistics[fleet.name][boat.code] -%}
 
 <html>
     <head>
-        <title>PRC - {{ boat.code.upper() }}</title>
+        <title>PRC - {{ boat.display_code.upper() }}</title>
         {% include 'head_items.html' %}
     </head>
     <body>
-        <h1>Boat - {{ boat.code.upper() }}</h1>
+        <h1>Boat - {{ boat.display_code.upper() }}</h1>
         <a href="{{url_for('index_page')}}">Home</a>
         <br>
         <a href="{{url_for('fleet_page', fleet_name=fleet.name)}}">Fleet: {{ fleet.fancy_name() }}</a>
@@ -48,7 +47,7 @@
         {% endif %}
 
         <h2>Point Finishes</h2>
-        {{ img.place(boat_stats.get_plot_points(), "Point Finishes") }}
+        <img src="{{ url_for('boat_page_points_plot', fleet_name=fleet.name, boat_code=boat.code) }}" alt="Point Finishes">
 
         <table border="1">
             <tr>

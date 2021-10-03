@@ -46,7 +46,7 @@ class Fleet:
         boat_list.sort(key=lambda x: x.code)
         return boat_list
 
-    def get_boat(self, boat_code: str) -> Optional[BoatType]:
+    def get_boat(self, boat_code: str) -> BoatType:
         """
         Attempts to find the boat associated with the given boat code. Returns None if no boat exists
         :param boat_code: The input string to check for a boat type. This will be lower-cased
@@ -55,7 +55,7 @@ class Fleet:
         if boat_code.lower() in self.boat_types:
             return self.boat_types[boat_code.lower()]
         else:
-            return None
+            raise ValueError(f'{boat_code} does not exist in {self.name} fleet data')
 
     def dpn_len(self) -> int:
         """

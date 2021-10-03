@@ -3,7 +3,7 @@ Provides a database for use in calculating the corrected times for race paramete
 """
 
 import datetime
-from typing import List, Dict, Callable, Optional, Tuple, Union
+from typing import List, Dict, Optional, Tuple, Union
 
 
 from ..fleets import Fleet, BoatType
@@ -11,7 +11,9 @@ from ..fleets import Fleet, BoatType
 from ..skippers import Skipper
 
 from ..utils import round_score, format_time
-from ..utils.plotting import get_pyplot, figure_to_base64, fig_compress, fig_decompress
+from ..utils.plotting import figure_to_data
+
+import matplotlib.pyplot as plt
 
 from . import finishes
 
@@ -342,46 +344,33 @@ class Race:
         # Return the results
         return race_result_list
 
-    def get_figure_functions(self) -> List[Tuple[str, Callable[[], str]]]:
-        """
-        Provides a list of all figure generation values
-        :return: a list of functions to call to generate figures
-        """
-        return [('RaceTimeResults', self.get_plot_race_time_results)]
-
-    def get_plot_race_time_results(self) -> str:
+    def get_plot_race_time_results(self) -> bytes:
         """
         Provides a PNG image string in Base 64 providing a plot of result points vs. finishing time
         :return: encoded string value for the resulting figure in base64 for embedding, empty on failure
         """
-        if self.__plot_race_time is None:
-            # Get the plot instance
-            plt = get_pyplot()
-            img_str = ''
+        # Extract the score and time results from finished scores
+        temp_list = [
+            v
+            for v in self.race_times_sorted()
+            if isinstance(v[1], finishes.RaceFinishTime)]
 
-            if plt is not None:
-                # Extract the score and time results from finished scores
-                temp_list = [
-                    v
-                    for v in self.race_times_sorted()
-                    if isinstance(v[1], finishes.RaceFinishTime)]
+        if len(temp_list) > 0:
+            score_results, race_times = zip(*temp_list)
+            time_results = [v.corrected_time_s / 60.0 for v in race_times]
 
-                if len(temp_list) > 0:
-                    score_results, race_times = zip(*temp_list)
-                    time_results = [v.corrected_time_s / 60.0 for v in race_times]
+            # Plot the results
+            plt.ioff()
+            f = plt.figure()
+            plt.plot(score_results, time_results, 'o--')
+            plt.xlabel('Score [points]')
+            plt.ylabel('Corrected Time [min]')
 
-                    # Plot the results
-                    f = plt.figure()
-                    plt.plot(score_results, time_results, 'o--')
-                    plt.xlabel('Score [points]')
-                    plt.ylabel('Corrected Time [min]')
+            s = f.get_size_inches()
+            f.set_size_inches(w=1.15 * s[0], h=s[1])
 
-                    s = f.get_size_inches()
-                    f.set_size_inches(w=1.15 * s[0], h=s[1])
-
-                    img_str = figure_to_base64(f)
-                    plt.close(f)
-
-            self.__plot_race_time = fig_compress(img_str)
-
-        return fig_decompress(self.__plot_race_time)
+            img_data = figure_to_data(f)
+            plt.close(f)
+            return img_data
+        else:
+            return bytes()

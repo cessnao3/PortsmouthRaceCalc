@@ -22,6 +22,7 @@ class BoatType:
             fleet_name: str,
             boat_class: str,
             code: str,
+            display_code: str,
             dpn_values: List[HandicapNumber],
             wind_map: WindMap):
         """
@@ -30,6 +31,7 @@ class BoatType:
         :param fleet_name: The name of the fleet the boat is associated with
         :param boat_class: The class of the boat
         :param code: The unique identification code for the given boat class
+        :param display_code: Defines the display version of the boat code results
         :param dpn_values: A list of 5 values, identifying [DPN0, DPN1, DPN2, DPN3, DPN4]
         :param wind_map: The wind map to use for obtaining DPN values
         """
@@ -37,6 +39,7 @@ class BoatType:
         self.fleet_name = fleet_name
         self.boat_class = boat_class.lower()
         self.code = code
+        self.display_code = display_code
         self.dpn_values = dpn_values
         self.wind_map = wind_map
         self.__mem_characteristic_tuple = None
@@ -143,7 +146,8 @@ class BoatType:
 
             # Extract the name and code
             boat_name = row_dict['boat']
-            boat_code = row_dict['code'].lower()
+            boat_code = row_dict['code'].lower().replace('/', '_')
+            boat_display_code = row_dict['code']
 
             # Extract the boat class from the input parameters
             boat_class = row_dict['class'].lower()
@@ -166,6 +170,7 @@ class BoatType:
                     fleet_name=fleet_name,
                     boat_class=boat_class,
                     code=boat_code,
+                    display_code=boat_display_code,
                     dpn_values=dpn_values,
                     wind_map=wind_map)
 

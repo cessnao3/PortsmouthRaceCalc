@@ -6,13 +6,15 @@ from ..fleets import Fleet, BoatType
 from ..skippers import Skipper
 
 from ..utils import capitalize_words, round_score
-from ..utils.plotting import get_pyplot, figure_to_base64, fig_compress, fig_decompress
+from ..utils.plotting import figure_to_data
+
+import matplotlib.pyplot as plt
 
 from . import Race, finishes
 
 import datetime
 
-from typing import Union, List, Dict, Optional, Callable, Tuple
+from typing import Union, List, Dict, Optional
 
 
 class Series:
@@ -45,7 +47,7 @@ class Series:
         self.__skippers: Optional[List[Skipper]] = None
         self.__points: Optional[Dict[Skipper, List[Union[float, int]]]] = None
         self.__ranks: Optional[Dict[Skipper, int]] = None
-        self.__scatter_plot: Optional[bytes] = None
+        self.__plot_scatter_results: Optional[bytes] = None
         self.__plot_boat_pie_chart: Optional[bytes] = None
         self.__plot_series_rank_history: Optional[bytes] = None
         self.__plot_series_point_history: Optional[bytes] = None
@@ -59,7 +61,7 @@ class Series:
         self.__skippers = None
         self.__points = None
         self.__ranks = None
-        self.__scatter_plot = None
+        self.__plot_scatter_results = None
         self.__plot_boat_pie_chart = None
         self.__plot_series_rank_history = None
         self.__plot_series_point_history = None
@@ -373,132 +375,92 @@ class Series:
         # Return the result
         return skippers
 
-    def get_plot_normalized_race_time_results(self) -> str:
+    def get_plot_normalized_race_time_results(self) -> bytes:
         """
         Provides a plot of the fraction of corrected / minimum race time as a function of race score
         :return: An encoded base64 HTML source string of figure, empty on failure
         """
-        if self.__scatter_plot is None:
-            plt = get_pyplot()
-            img_str = ''
+        plt.ioff()
+        f = plt.figure()
 
-            if plt is not None:
-                f = plt.figure()
+        for race in self.valid_races():
+            # Define the result list for the scatter plot
+            results_list = list()
 
-                for race in self.valid_races():
-                    # Define the result list for the scatter plot
-                    results_list = list()
+            # Add each valid item to the scatter plot
+            for skipper, score in race.race_results().items():
+                rt = race.race_finishes[skipper]
+                if isinstance(rt, finishes.RaceFinishTime):
+                    results_list.append((score, rt.corrected_time_s / race.min_time_s()))
 
-                    # Add each valid item to the scatter plot
-                    for skipper, score in race.race_results().items():
-                        rt = race.race_finishes[skipper]
-                        if isinstance(rt, finishes.RaceFinishTime):
-                            results_list.append((score, rt.corrected_time_s / race.min_time_s()))
+            # Sort the values
+            results_list.sort(key=lambda x: x[0])
 
-                    # Sort the values
-                    results_list.sort(key=lambda x: x[0])
+            # Plot results
+            plt.plot([x[0] for x in results_list], [y[1] for y in results_list], 'o--')
 
-                    # Plot results
-                    plt.plot([x[0] for x in results_list], [y[1] for y in results_list], 'o--')
+        s = f.get_size_inches()
+        f.set_size_inches(
+            w=1.15 * s[0],
+            h=s[1])
 
-                s = f.get_size_inches()
-                f.set_size_inches(
-                    w=1.15 * s[0],
-                    h=s[1])
+        # Assign the legend and axes labels
+        plt.legend(
+            ['Race {:d}'.format(r.race_num) for r in self.valid_races()],
+            loc='upper left',
+            bbox_to_anchor=(1.04, 1),
+            borderaxespad=0)
+        plt.xlabel('Score [points]')
+        plt.ylabel('Normalized Finish Time [corrected / shortest]')
+        plt.tight_layout(rect=(0, 0, 1, 1))
 
-                # Assign the legend and axes labels
-                plt.legend(
-                    ['Race {:d}'.format(r.race_num) for r in self.valid_races()],
-                    loc='upper left',
-                    bbox_to_anchor=(1.04, 1),
-                    borderaxespad=0)
-                plt.xlabel('Score [points]')
-                plt.ylabel('Normalized Finish Time [corrected / shortest]')
-                plt.tight_layout(rect=[0, 0, 1, 1])
+        # Encode the image
+        img_val = figure_to_data(f)
+        plt.close(f)
+        return img_val
 
-                # Encode the image
-                img_str = figure_to_base64(f)
-
-            # Memoize the plot
-            self.__scatter_plot = fig_compress(img_str)
-
-        # Return the result
-        return fig_decompress(self.__scatter_plot)
-
-    def get_figure_functions(self) -> List[Tuple[str, Callable[[], str]]]:
-        """
-        Provides a list of all figure generation values
-        :return: a list of functions to call to generate figures
-        """
-        figure_key = f'Series_{self.name}'
-
-        gen_funcs = [
-            (f'{figure_key}_Points', self.get_plot_series_points),
-            (f'{figure_key}_Rank', self.get_plot_series_rank),
-            (f'{figure_key}_Boats', self.get_plot_boat_pie_chart),
-            (f'{figure_key}_NormalizedTimes', self.get_plot_normalized_race_time_results)]
-
-        for i, r in enumerate(self.races):
-            gen_funcs.extend([
-                (f'{figure_key}_Race_{i}_{name}', func)
-                for name, func
-                in r.get_figure_functions()
-            ])
-
-        return gen_funcs
-
-    def get_plot_boat_pie_chart(self) -> str:
+    def get_plot_boat_pie_chart(self) -> bytes:
         """
         Provides a pie chart for the count for each existing boat in the series
         :return: An encoded base64 HTML source string of figure, empty on failure
         """
-        if self.__plot_boat_pie_chart is None:
-            # Initialize plotting requirements
-            plt = get_pyplot()
-            img_str = ''
+        # Obtain the boats for each skipper
+        skip_boat_dict = dict()
+        boat_type_dict = dict()
 
-            if plt is not None:
-                # Obtain the boats for each skipper
-                skip_boat_dict = dict()
-                boat_type_dict = dict()
+        # Iterate over each race to calculate the boat result
+        for r in self.races:
+            for rt in r.race_finishes.values():
+                if rt.skipper not in skip_boat_dict and rt.skipper in r.race_results():
+                    skip_boat_dict[rt.skipper] = rt.boat.code
 
-                # Iterate over each race to calculate the boat result
-                for r in self.races:
-                    for rt in r.race_finishes.values():
-                        if rt.skipper not in skip_boat_dict and rt.skipper in r.race_results():
-                            skip_boat_dict[rt.skipper] = rt.boat.code
+                    if rt.boat.code not in boat_type_dict:
+                        boat_type_dict[rt.boat.code] = 0
+                    boat_type_dict[rt.boat.code] += 1
 
-                            if rt.boat.code not in boat_type_dict:
-                                boat_type_dict[rt.boat.code] = 0
-                            boat_type_dict[rt.boat.code] += 1
+        # Combine values together
+        combined = [(key, val) for key, val in boat_type_dict.items()]
+        labels = [v[0].upper() for v in combined]
+        sizes = [v[1] for v in combined]
 
-                # Combine values together
-                combined = [(key, val) for key, val in boat_type_dict.items()]
-                labels = [v[0].upper() for v in combined]
-                sizes = [v[1] for v in combined]
+        def percent2count(percent):
+            return '{:1.0f}'.format(round(percent/100.0 * sum(sizes)))
 
-                def percent2count(percent):
-                    return '{:1.0f}'.format(round(percent/100.0 * sum(sizes)))
+        # Plot
+        plt.ioff()
+        f = plt.figure()
+        ax = plt.gca()
+        ax.pie(
+            sizes,
+            labels=labels,
+            autopct=percent2count,
+            explode=[0.03 for _ in combined])
+        ax.axis('equal')
 
-                # Plot
-                f = plt.figure()
-                ax = plt.gca()
-                ax.pie(
-                    sizes,
-                    labels=labels,
-                    autopct=percent2count,
-                    explode=[0.03 for _ in combined])
-                ax.axis('equal')
-
-                # Save resulting image and close
-                img_str = figure_to_base64(f)
-                plt.close(f)
-
-            # Save the memoized result
-            self.__plot_boat_pie_chart = fig_compress(img_str)
-
-        # Return the resulting figure
-        return fig_decompress(self.__plot_boat_pie_chart)
+        # Save resulting image and close
+        byte_val = figure_to_data(f)
+        plt.close(f)
+        return byte_val
 
     def _setup_point_rank_plots(self) -> None:
         """
@@ -506,9 +468,8 @@ class Series:
         :return:
         """
         # Initialize plotting requirements
-        plt = get_pyplot()
         img_types = ['Rank', 'Points']
-        img_vals = ['' for _ in range(len(img_types))]
+        img_vals = [bytes() for _ in range(len(img_types))]
 
         # Plot if able
         if plt is not None:
@@ -534,6 +495,7 @@ class Series:
             # Iterate for each figure
             for i in range(len(img_vals)):
                 # Define the figure
+                plt.ioff()
                 f = plt.figure()
 
                 # Plot each skipper that has finished
@@ -548,19 +510,19 @@ class Series:
                 plt.xlabel('Race Number')
                 plt.ylabel(f'Skipper {img_types[i]}')
                 plt.legend(bbox_to_anchor=(1.04, 1), borderaxespad=0)
-                plt.tight_layout(rect=[0, 0, 1, 1])
+                plt.tight_layout(rect=(0, 0, 1, 1))
 
                 # Save results
-                img_vals[i] = figure_to_base64(f)
+                img_vals[i] = figure_to_data(f)
 
                 # Close figure
                 plt.close(f)
 
         # Compress and save the result
-        self.__plot_series_rank_history = fig_compress(img_vals[0])
-        self.__plot_series_point_history = fig_compress(img_vals[1])
+        self.__plot_series_rank_history = img_vals[0]
+        self.__plot_series_point_history = img_vals[1]
 
-    def get_plot_series_points(self) -> str:
+    def get_plot_series_points(self) -> bytes:
         """
         Provides a plot of skipper point values over time for those that qualified at the end of the series
         :return: the resulting figure
@@ -568,9 +530,9 @@ class Series:
         if self.__plot_series_point_history is None:
             self._setup_point_rank_plots()
 
-        return fig_decompress(self.__plot_series_point_history)
+        return self.__plot_series_point_history
 
-    def get_plot_series_rank(self) -> str:
+    def get_plot_series_rank(self) -> bytes:
         """
         Provides a plot of skipper rank values over time for those that qualified at the end of the series
         :return: the resulting figure
@@ -578,7 +540,7 @@ class Series:
         if self.__plot_series_rank_history is None:
             self._setup_point_rank_plots()
 
-        return fig_decompress(self.__plot_series_rank_history)
+        return self.__plot_series_rank_history
 
     def fancy_name(self) -> str:
         """

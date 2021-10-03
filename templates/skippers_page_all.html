@@ -17,7 +17,7 @@
                 <th>Boat Races</th>
                 <th>Boat Types Raced</th>
             </tr>
-            {% for val in database.skippers.values() %}
+            {% for val in database.skippers.values() | sort(attribute='identifier') %}
             {%- set skipper_stats = database.skipper_statistics[val.identifier] -%}
             <tr>
                 <td><a href="{{ url_for('skipper_page_ind', skipper_name=val.identifier) }}">{{ val.identifier }}</a></td>
