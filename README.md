@@ -10,7 +10,7 @@ The default fleet input is based on the Portsmouth Yardstick 2017 precalculated 
 
 ## Running the Program
 
-The program may be run in two different ways. The `main.py` file runs the race calculations and provides a text output to the console. The `app.py` file runs a Flask application such that the race information and series scoring is output in a web browser. This also allows for plots and other graphical representations of the scoring to be performed.
+The program may be run in two different ways. The `main.py` file runs the race calculations and provides a text output to the console. The `build.py` file generates static HTML such that the race information and series scoring can be viewed in a web browser. This also allows for plots and other graphical representations of the scoring to be performed.
 
 ## Scoring Methodology
 
