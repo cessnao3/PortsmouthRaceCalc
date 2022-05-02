@@ -485,9 +485,14 @@ class Series:
                 qualify_count_override=self.qualify_count_override)
 
             # Iterate over each race to return a list of point values
-            race_vals = [i + 1 for i in range(len(self.races))]
-            for race in self.races:
+            race_vals = list()
+            for i, race in enumerate(self.races):
                 series.add_race(race)
+
+                if len(series.valid_races()) == 0:
+                    continue
+
+                race_vals.append(i + 1)
                 for skipper, (list_val_rank, list_val_points) in skipper_db.items():
                     list_val_rank.append(series.get_skipper_rank(skipper))
                     list_val_points.append(series.get_skipper_points(skipper))
