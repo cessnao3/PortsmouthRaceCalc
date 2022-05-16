@@ -31,3 +31,14 @@ races:
           Jim_S: DNF
           Lewis_V: 34:42
           Rod_H: 35:16
+  - date: '2022_05_15'
+    rc:
+      - Rod_H
+      - Jim_S
+    races:
+      - notes: Cancelled due to weather
+        wind_bf: 0
+        times:
+      - notes: Cancelled due to weather
+        wind_bf: 0
+        times:
