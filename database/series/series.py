@@ -290,7 +290,8 @@ class Series:
         if self.qualify_count_override is not None:
             return self.qualify_count_override
         else:
-            return len(self.valid_races()) // 2
+            qualify_count = len(self.valid_races()) // 2
+            return 1 if qualify_count == 0 else qualify_count
 
     def valid_races(self) -> List[Race]:
         """
