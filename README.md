@@ -30,4 +30,5 @@ st
 10. Series Ties will be handled by Appendix A paragraph 8 of the Racing Rules of sailing summarized below. If there is a series-score tie between two or more boats, each boat’s race scores shall be listed in order of best to worst, and at the first point(s) where there is a difference the tie shall be broken in favor of the boat(s) with the best score(s). No excluded scores shall be used. If a tie remains between two or more boats, they shall be ranked in order of their scores in the last race. Any remaining ties shall be broken by using the tied boats’ scores in the next-to-last race and so on until all ties are broken. These scores shall be used even if some of them are excluded scores.
 
 Notes:
-- Scores are rounded to the nearest tenth decimal place
+- Scores are rounded to the nearest tenth decimal place.
+- There may be errors or unimplemented features in the scoring as it currently stands - please verify the output against the above rules to ensure that races are computed correctly.
