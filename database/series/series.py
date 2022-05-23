@@ -146,7 +146,7 @@ class Series:
         count_rc = self.skipper_num_rc(skipper)
         count_dnf = self.skipper_num_dnf(skipper)
 
-        # Return true if the count meets the qualify count threshold
+        # Return true if the count meets the qualify-count threshold
         return count + min(2, count_rc) + count_dnf >= self.qualify_count
 
     def skipper_rc_points(self, skipper: Skipper) -> Optional[Union[int, float]]:
