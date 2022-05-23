@@ -149,7 +149,7 @@ class Series:
         # Return true if the count meets the qualify-count threshold
         return count + min(2, count_rc) + count_dnf >= self.qualify_count
 
-    def skipper_rc_points(self, skipper: Skipper) -> Optional[Union[int, float]]:
+    def skipper_rc_points(self, skipper: Skipper) -> Optional[float]:
         """
         Returns the number of points associated with RC for a given Skipper
         :param skipper: skipper to get RC points for

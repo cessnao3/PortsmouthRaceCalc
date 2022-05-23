@@ -210,6 +210,8 @@ class Race:
             for rt in self.other_results():
                 if isinstance(rt, finishes.RaceFinishDNF):
                     result_dict[rt.skipper] = remaining_points
+                elif isinstance(rt, finishes.RaceFinishDQ):
+                    result_dict[rt.skipper] = remaining_points + 2
                 else:
                     result_dict[rt.skipper] = None
 
