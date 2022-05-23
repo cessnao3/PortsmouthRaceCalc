@@ -6,6 +6,10 @@ boats:
   David_Bu: SF
   Mike_S: US-1
   Ian_O: SF
+  Barry_O: HLR14
+  Steve_S: SF
+  Matt_L: F5
+  Nick_H: SF
 races:
   - date: '2022_04_24'
     rc:
@@ -42,3 +46,26 @@ races:
       - notes: Cancelled due to weather
         wind_bf: 0
         times:
+  - date: '2022_05_22'
+    rc:
+      - Nick_H
+      - Lewis_V
+    races:
+      - notes: M Port
+        wind_bf: 2
+        times:
+          Barry_O: 40:29
+          Bill_P: 37:22
+          Jim_S: 49:39
+          Matt_L: 37:48
+          Rod_H: 34:42
+          Steve_S: DNF
+      - notes: M Port
+        wind_bf: 2
+        times:
+          Barry_O: DNF
+          Bill_P: 32:01
+          Jim_S: 39:26
+          Matt_L: 32:26
+          Rod_H: 24:58
+          Steve_S: DNF
