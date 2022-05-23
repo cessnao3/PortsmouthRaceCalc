@@ -13,6 +13,7 @@ import matplotlib.pyplot as plt
 from . import Race, finishes
 
 import datetime
+import math
 
 from typing import Union, List, Dict, Optional
 
@@ -290,8 +291,8 @@ class Series:
         if self.qualify_count_override is not None:
             return self.qualify_count_override
         else:
-            qualify_count = len(self.valid_races()) // 2
-            return 1 if qualify_count == 0 else qualify_count
+            qualify_count = int(math.ceil(len(self.valid_races()) / 2))
+            return qualify_count
 
     def valid_races(self) -> List[Race]:
         """
