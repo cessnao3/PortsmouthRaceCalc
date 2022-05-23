@@ -78,7 +78,7 @@ def round_score(score_in: typing.Union[int, float, None]) -> typing.Union[int, f
         return score_in
 
     # Add a small bias so that 0.5 and up get rounded up
-    score_in += 1e-4
+    score_in += 1e-3
 
     # If the score is very close to an integer, return an integer rounding
     if abs(round(score_in) - round(score_in, 1)) < 0.01:
