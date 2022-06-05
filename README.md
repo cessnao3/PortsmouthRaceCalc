@@ -16,7 +16,7 @@ The program may be run in two different ways. The `main.py` file runs the race c
 
 For finished times, boats are handicapped based on the [Portsmouth Yardstick](https://www.ussailing.org/wp-content/uploads/2018/01/2017-North-American-Portsmouth-Yardstick-Handbook.pdf) to produce a "comparable" score. This final time is then used to determine the ranking of skippers in a race.
 
-The exerpts from the JCSS rulebook relating to the scoring of the 
+The excerpts from the JCSS rulebook relating to the scoring of the 
 1. The Low Point System of Appendix A of the racing rules will apply.
 st
 2. 1 place 1 point; second place, 2 points; third place, 3 points, etc.
