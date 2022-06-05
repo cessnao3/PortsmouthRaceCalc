@@ -10,6 +10,7 @@ boats:
   Steve_S: SF
   Matt_L: F5
   Nick_H: SF
+  Chris_E: SF
 races:
   - date: '2022_04_24'
     rc:
@@ -69,3 +70,28 @@ races:
           Matt_L: 32:26
           Rod_H: 24:58
           Steve_S: DNF
+  - date: '2022_06_05'
+    rc:
+      - Matt_L
+      - Barry_O
+    races:
+      - notes: M3 Starboard
+        wind_bf: 2
+        offset_time: 5:00
+        times:
+          Lewis_V: 33:00
+          Rod_H: 33:28
+          Chris_E: 34:45
+          David_Bu: 35:19
+          Ian_O: 36:25
+          Bill_P: 37:50
+      - notes: M3 Starboard
+        wind_bf: 2
+        offset_time: 5:00
+        times:
+          Lewis_V: 32:49
+          Rod_H: 34:41
+          Chris_E: 34:57
+          David_Bu: 35:15
+          Ian_O: 34:37
+          Bill_P: 35:19
