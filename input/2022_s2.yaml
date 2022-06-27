@@ -1,0 +1,42 @@
+boats:
+  Bill_P: SF
+  Rod_H: LASEM
+  Lewis_V: BCN
+  Jim_S: SF
+  David_Bu: SF
+  Mike_S: US-1
+  Ian_O: SF
+  Barry_O: HLR14
+  Steve_S: SF
+  Matt_L: F5
+  Nick_H: SF
+  Chris_E: SF
+  Ryan_C: SF
+races:
+  - date: '2022_06_26'
+    rc:
+      - Chris_E
+      - Ian_O
+    races:
+      - notes: M3 Port Roundings
+        wind_bf: 2
+        offset_time: 5:00
+        times:
+          Barry_O: 42:37
+          David_Bu: 38:40
+          Jim_S: 49:41
+          Matt_L: 40:51
+          Rod_H: 35:29
+          Ryan_C: 47:20
+          Steve_S: 43:58
+      - notes: M3 Port Roundings
+        wind_bf: 2
+        offset_time: 5:00
+        times:
+          Barry_O: 39:42
+          David_Bu: 37:31
+          Jim_S: 45:46
+          Matt_L: 40:10
+          Rod_H: 36:54
+          Ryan_C: fip7
+          Steve_S: 46:09
