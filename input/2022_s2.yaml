@@ -7,11 +7,13 @@ boats:
   Mike_S: US-1
   Ian_O: SF
   Barry_O: HLR14
+  Nedra_F: SF
   Steve_S: SF
   Matt_L: F5
   Nick_H: SF
   Chris_E: SF
   Ryan_C: SF
+  Student: SF
 races:
   - date: '2022_06_26'
     rc:
@@ -40,3 +42,24 @@ races:
           Rod_H: 36:54
           Ryan_C: fip7
           Steve_S: 46:09
+  - date: '2022_07_17'
+    rc:
+      - Rod_H
+      - Barry_O
+    races:
+      - notes: M2 Port Rounding - Student as 4th Starter
+        wind_bf: 2
+        offset_time: 5:00
+        times:
+          Lewis_V: 29:26
+          Nedra_F: 33:38
+          Ian_O: 33:07
+          Student: dnf
+      - notes: F3 Port Rounding - Student as 4th Starter
+        wind_bf: 2
+        offset_time: 5:00
+        times:
+          Lewis_V: dnf
+          Nedra_F: dnf
+          Ian_O: fip1
+          Student: dnf
