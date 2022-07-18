@@ -8,7 +8,7 @@
 
         <h2>Race Series</h2>
         <ul>
-            <li><a href="{{ url_for('series_page', series_name=series_list[0].name) }}">Latest</a></li>
+            <li><a href="{{ url_for('series_page', series_name=series_list[0].name) }}">Latest ({{ database.latest_race_date_string() }})</a></li>
         </ul>
          <ul>
             {% for series in series_list %}
@@ -27,6 +27,11 @@
         <ul>
             <li><a href="{{ url_for('skipper_page_all')}}">Skippers</a></li>
         </ul>
+
+        <h2>Notes</h2>
+        <p>
+            Compiled on: {{ get_build_time() }}
+        </p>
 
         {% include 'footer.html' %}
     </body>
