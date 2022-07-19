@@ -352,9 +352,20 @@ class Series:
         # Construct the ranks if needed
         if self.__ranks is None:
             self.__ranks = dict()
+            last_rank = None
+            last_score = None
             for i, skip_point in enumerate(self.get_all_skippers_sorted()):
-                if self.skipper_qualifies(skipper=skip_point):
-                    self.__ranks[skip_point] = i + 1
+                pts = self.skipper_points_list(skipper=skip_point)
+                if pts is not None:
+                    current_rank = i + 1
+                    if pts.score != last_score:
+                        r = current_rank
+                    else:
+                        r = last_rank
+
+                    self.__ranks[skip_point] = r
+                    last_rank = r
+                    last_score = pts.score
 
         # Return the resulting rank
         if skipper in self.__ranks:
