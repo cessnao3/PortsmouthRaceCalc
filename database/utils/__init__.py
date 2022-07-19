@@ -3,10 +3,12 @@ Common utilities useful for loading race parameters and performing calculations
 """
 
 import csv
-import typing
+from typing import Any, Callable, Dict, List
+
+import decimal
 
 
-def load_from_csv(csv_data: str, row_func: typing.Callable, expected_header: typing.List[str] = None) -> None:
+def load_from_csv(csv_data: str, row_func: Callable[[Dict], Any], expected_header: List[str] = None) -> None:
     """
     Reads the input CSV files, checking the headers if applicable. Each of the rows are parsed into a dictionary
     to be input into the row_func function for local calculations
@@ -26,29 +28,24 @@ def load_from_csv(csv_data: str, row_func: typing.Callable, expected_header: typ
         row = [v.strip() for v in row]
 
         # If the header columns are None (first row), set the header columns to the string values
-        # and continue so as to not extract a boat from these
+        # and continue to not extract a boat from these
         if header_cols is None:
             header_cols = [v.lower().strip() for v in row]
 
             if expected_header is not None:
                 if len(header_cols) != len(expected_header):
                     raise ValueError(
-                        'Header columns {:d} don\'t match the expected number {:d}'.format(
-                            len(header_cols),
-                            len(expected_header)))
+                        f"Header columns {len(header_cols)} don't match the expected number {len(expected_header)}")
                 for i in range(len(expected_header)):
                     if header_cols[i] != expected_header[i]:
                         raise ValueError(
-                            'Header column {:d} has {:s}, expected {:s}'.format(
-                                i,
-                                header_cols[i],
-                                expected_header[i]))
+                            f"Header column {i} has {header_cols[i]}, expected {expected_header[i]}")
 
         # Otherwise, parse a normal row
         else:
             # Otherwise, print error if the row lengths don't match up with the header
             if len(row) != len(header_cols):
-                print('ERROR! {:s}'.format(', '.join(row)))
+                print(f"ERROR! {', '.join(row)}")
                 continue
 
             # Create a dictionary for the row based on the header columns and current values
@@ -67,25 +64,17 @@ def capitalize_words(str_in: str) -> str:
     return ' '.join([s.capitalize() for s in str_in.split(' ')])
 
 
-def round_score(score_in: typing.Union[int, float, None]) -> typing.Union[int, float, None]:
+def round_score(score_in: decimal.Decimal) -> decimal.Decimal:
     """
     Rounds out the score to provide 0 or 1 decimal places
     :param score_in: Input score
     :return: rounded score
     """
-    # Return None
-    if score_in is None:
-        return score_in
+    assert isinstance(score_in, decimal.Decimal)
 
-    # Add a small bias so that 0.5 and up get rounded up
-    score_in += 1e-3
-
-    # If the score is very close to an integer, return an integer rounding
-    if abs(round(score_in) - round(score_in, 1)) < 0.01:
-        return round(score_in)
-    # Otherwise, return a float rounding to first decimal
-    else:
-        return round(score_in, 1)
+    with decimal.localcontext(ctx=None) as ctx:
+        ctx.rounding = decimal.ROUND_HALF_UP
+        return decimal.Decimal(round(score_in * 10)) / 10
 
 
 def format_time(time_s: int) -> str:
@@ -96,4 +85,4 @@ def format_time(time_s: int) -> str:
     """
     s_val = time_s % 60
     m_val = int((time_s - s_val) / 60)
-    return f'{m_val:02d}:{round(s_val):02d}'
+    return f"{m_val:02d}:{round(s_val):02d}"

@@ -3,13 +3,11 @@ Provides a database for use in calculating the corrected times for race paramete
 """
 
 import datetime
+import decimal
 from typing import List, Dict, Optional, Tuple, Union
 
-
 from ..fleets import Fleet, BoatType
-
 from ..skippers import Skipper
-
 from ..utils import round_score, format_time
 from ..utils.plotting import figure_to_data
 
@@ -158,7 +156,7 @@ class Race:
         # Call reset
         self.reset()
 
-    def race_results(self) -> Dict[Skipper, float]:
+    def race_results(self) -> Dict[Skipper, decimal.Decimal]:
         """
         Provides the scores for each skipper in the race
         :return: dictionary of the skipper keyed to the resulting point score
@@ -190,19 +188,23 @@ class Race:
                 #       (2 + 3) / 2 = 2.5
                 # For a tie between 4, 5, and 6 places, we would get
                 #       (4 + 5 + 6) / 3 = 5
-                place_dict[time_s] = sum(range(current_place, current_place + num_for_time)) / num_for_time
+                place_dict[time_s] = decimal.Decimal(
+                    sum(range(current_place, current_place + num_for_time)) / num_for_time)
                 current_place += num_for_time
 
             # Result Dictionary Creation
-            result_dict = {rt.skipper: round_score(place_dict[rt.corrected_time_s]) for rt in race_results}
+            result_dict: Dict[Skipper, Optional[decimal.Decimal]] = {
+                rt.skipper: round_score(place_dict[rt.corrected_time_s])
+                for rt
+                in race_results}
 
             # Add in the finish-in-place values
             for rt in self.fip_results():
-                result_dict[rt.skipper] = round_score(rt.place)
+                result_dict[rt.skipper] = round_score(decimal.Decimal(rt.place))
 
             # Define the remaining number of points
             if len(result_dict) > 0:
-                remaining_points = max(result_dict.values()) + 1
+                remaining_points = decimal.Decimal(max(result_dict.values()) + 1)
             else:
                 remaining_points = None
 
@@ -216,10 +218,9 @@ class Race:
                     result_dict[rt.skipper] = None
 
             # Round all race results
-            for key in result_dict:
-                result_dict[key] = round_score(result_dict[key])
-
-            # Define override parameters
+            for key, val in result_dict.items():
+                if val is not None:
+                    result_dict[key] = round_score(val)
 
             # Set the memoization value
             self.__results_dict = result_dict
@@ -271,7 +272,7 @@ class Race:
         # Return the joined list
         return '\n'.join(str_list)
 
-    def get_skipper_result_string(self, skipper: Skipper) -> Union[str, int, float, None]:
+    def get_skipper_result_string(self, skipper: Skipper) -> Optional[Union[str, decimal.Decimal]]:
         """
         Provides the resulting score text for the skipper ID provided.
         :param skipper: the skipper identifier
@@ -324,7 +325,7 @@ class Race:
         """
         return [r for r in self.race_finishes.values() if isinstance(r, finishes.RaceFinishTime)]
 
-    def race_times_sorted(self) -> List[Tuple[float, finishes.RaceFinishInterface]]:
+    def race_times_sorted(self) -> List[Tuple[decimal.Decimal, finishes.RaceFinishInterface]]:
         """
         Provides a sorted list of the finished race times by score
         :return: a list of tuples containing the score and the race time object

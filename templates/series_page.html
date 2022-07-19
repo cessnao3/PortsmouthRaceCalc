@@ -45,10 +45,10 @@
                     <td>--</td>
                     {% endif %}
                 {% endfor %}
-                {% set points = series.get_skipper_points(skipper) %}
+                {% set points = series.skipper_points_list(skipper) %}
                 {% if points %}
                 <td>{{ series.skipper_rc_points(skipper) }}</td>
-                <td>{{ points }}</td>
+                <td>{{ points.score }}</td>
                 {% else %}
                 {% if series.skipper_rc_points(skipper) %}
                 <td>{{ series.skipper_rc_points(skipper) }}</td>
