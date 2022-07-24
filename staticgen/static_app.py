@@ -5,6 +5,7 @@ Similar in functionality to a basic Flask application
 
 import copy
 import datetime
+import typing
 from pathlib import Path
 from os import PathLike
 import re
@@ -43,7 +44,7 @@ class StaticApplication:
         self.name = name
 
         # Define maps to link path values to variable names and rendering functions
-        self.path_name_map: Dict[str, Callable] = dict()
+        self.path_name_map: Dict[str, Callable[[typing.Any], Optional[Union[str, bytes]]]] = dict()
         self.path_function_map: Dict[str, str] = dict()
 
         # Define path parameters
@@ -214,7 +215,7 @@ class StaticApplication:
 
         # Return a dynamic parameter
         else:
-            # Obtian the path from the path list
+            # Obtain the path from the path list
             url_val = self.path_function_map[function_name]
 
             # Attempt to replace all variable values as necessary
@@ -282,7 +283,7 @@ class StaticApplication:
         """
         # Check file name validity
         if len(url) == 0:
-            raise ValueError('path cannot be empty')
+            raise ValueError("path cannot be empty")
         elif url[0] != '/':
             raise ValueError("path must start with /")
 
@@ -310,7 +311,7 @@ class StaticApplication:
 
     def __clear_build_dir(self) -> None:
         """
-        Createes the build directory if necessary and clears out
+        Creates the build directory if necessary and clears out
         and existing files or directories in the build path
         """
         if self.build_path.exists():
@@ -362,8 +363,13 @@ class StaticApplication:
                 elif isinstance(parse_result, bytes):
                     with resulting_path.open('wb') as f:
                         f.write(parse_result)
+                elif parse_result is None:
+                    pass
                 else:
-                    raise ValueError('unexpected file result provided')
+                    raise ValueError("unexpected file result provided")
 
                 # Write the result
-                print(f'Wrote {str(resulting_path)}')
+                if parse_result is not None:
+                    print(f"Wrote {str(resulting_path)}")
+                else:
+                    print(f"Skipping {str(resulting_path)}")

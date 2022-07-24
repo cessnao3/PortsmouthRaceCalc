@@ -2,7 +2,7 @@
 Boat Statistics provides overall statistics for a given boat
 """
 
-from typing import Dict, List, Tuple
+from typing import Dict, List, Optional, Tuple
 
 from ..skippers import Skipper
 from ..fleets import BoatType
@@ -52,13 +52,24 @@ class BoatStatistics:
         """
         return sum(self.point_counts.values())
 
-    def get_plot_points(self) -> bytes:
+    def has_nonzero_races(self) -> bool:
+        """
+        Returns true if the race has a nonzero race count
+        :return: True if the boat has been in one or more series entries
+        """
+        return self.get_total_point_counts() > 0
+
+    def get_plot_points(self) -> Optional[bytes]:
         """
         Provides the plot string for the race pie chart
         :return: the base64-encoded string, or empty string if unable to plot
         """
         # Determine the total number of races
         num_races = self.get_total_point_counts()
+
+        # Return if no entries are provided
+        if num_races == 0:
+            return None
 
         # Determine the race entries (sorted finish values) and resulting percentages
         race_entries = list(sorted(self.point_counts.keys()))

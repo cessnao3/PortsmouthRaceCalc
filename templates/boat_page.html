@@ -46,6 +46,8 @@
         {% include 'dpn_notes.html' %}
         {% endif %}
 
+        {% if boat_stats.has_nonzero_races() %}
+
         <h2>Point Finishes</h2>
         <img src="{{ url_for('boat_page_points_plot', fleet_name=fleet.name, boat_code=boat.code) }}" alt="Point Finishes">
 
@@ -91,6 +93,8 @@
             </tr>
             {% endfor %}
         </table>
+
+        {% endif %}
 
         {% include 'footer.html' %}
     </body>
