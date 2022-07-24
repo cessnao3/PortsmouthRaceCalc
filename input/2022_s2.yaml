@@ -82,7 +82,7 @@ races:
           Rod_H: 25:05
       - notes: M3 Port Rounding
         wind_bf: 2
-        offset_time: 0
+        offset_time: 5:00
         times:
           Bill_P: 36:35
           Ryan_C: 44:29
