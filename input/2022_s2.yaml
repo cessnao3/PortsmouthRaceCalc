@@ -14,6 +14,7 @@ boats:
   Chris_E: SF
   Ryan_C: SF
   Student: SF
+  Sail_54941: SF
 races:
   - date: '2022_06_26'
     rc:
@@ -63,3 +64,30 @@ races:
           Nedra_F: dnf
           Ian_O: fip1
           Student: dnf
+  - date: '2022_07_24'
+    rc:
+      - Nick_H
+      - Lewis_V
+    races:
+      - notes: M2 Port Rounding
+        wind_bf: 2
+        offset_time: 0
+        times:
+          Bill_P: 25:55
+          Ryan_C: 31:48
+          Ian_O: 25:51
+          Barry_O: 29:26
+          Matt_L: 25:49
+          Sail_54941: 30:28
+          Rod_H: 25:05
+      - notes: M3 Port Rounding
+        wind_bf: 2
+        offset_time: 0
+        times:
+          Bill_P: 36:35
+          Ryan_C: 44:29
+          Ian_O: 36:54
+          Barry_O: 37:25
+          Matt_L: 35:41
+          Sail_54941: 38:13
+          Rod_H: 32:53
