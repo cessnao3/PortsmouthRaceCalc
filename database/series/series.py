@@ -656,63 +656,6 @@ class Series:
         """
         return capitalize_words(self.name.replace('_', ' '))
 
-    def get_series_table(self) -> str:
-        """
-        Calculates the resulting scores, sorts, and prints out in a table
-        :return: a string table of the race results that can be printed to the console
-        """
-        # Initialize the string list
-        str_list = list()
-
-        # Append header parameters
-        str_list.append('{:>24s}: {:d}'.format('Races Held', len(self.races)))
-        str_list.append('{:>24s}: {:d}'.format('Races Needed to Qualify', self.qualify_count))
-        str_list.append(('{:>20s}{:>' + '{:d}'.format(6 * len(self.races)) + 's}{:>8s}{:>8s}').format(
-            'Name / Boat',
-            'Races',
-            'RC Pts',
-            'Points'))
-
-        tmp_str = ''.join([' '] * 20)
-        tmp_str_1 = tmp_str
-        tmp_str_2 = tmp_str
-        for i in range(len(self.races)):
-            tmp_str_1 += '{:6d}'.format(i + 1)
-            tmp_str_2 += '{:>6s}'.format('----')
-
-        str_list.append(tmp_str_1)
-        str_list.append(tmp_str_2)
-
-        for skipper in self.get_all_skippers_sorted():
-            skipper_line = '{:>20s}'.format(skipper.identifier)
-
-            for race in self.races:
-                result = race.get_skipper_result_string(skipper)
-                if result is not None:
-                    skipper_line += '{:>6s}'.format(str(result))
-                else:
-                    skipper_line += '{:>6s}'.format('-')
-
-            skipper_line += ' |'
-
-            points = self.skipper_points_list(skipper).points_scored
-            rc_pts = self.skipper_rc_points(skipper)
-
-            if rc_pts is not None:
-                skipper_line += f'{rc_pts:6.1f}'
-            else:
-                skipper_line += f'{"na":>6s}'
-
-            if points is not None:
-                skipper_line += f'{points:8.1f}'
-            else:
-                skipper_line += f'{"DNQ":>8s}'
-
-            str_list.append(skipper_line)
-
-        # Return the results
-        return '\n'.join(str_list)
-
     def perl_yaml_output(self) -> str:
         """
         Provides Perl YAML output for compatibility with the previous scoring program
