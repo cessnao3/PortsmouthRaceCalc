@@ -65,7 +65,7 @@
                 <th>Race Finishes</th>
                 <th></th>
                 {% for race in series.races %}
-                <th>{{ race.race_results() | length }}</th>
+                <th>{{ race.skipper_race_points() | length }}</th>
                 {% endfor %}
                 <th></th>
                 <th></th>

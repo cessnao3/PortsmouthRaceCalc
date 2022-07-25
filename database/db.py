@@ -120,7 +120,7 @@ class MasterDatabase:
         for series in self.series.values():
             for race in series.races:
                 # Iterate over the race results
-                for skipper, race_result in race.race_results().items():
+                for skipper, race_result in race.skipper_race_points().items():
                     # Define the rounded point result
                     point_value = int(round(race_result))
 
@@ -131,7 +131,7 @@ class MasterDatabase:
                     race_results[skipper].append(point_value)
 
                 # Iterate over the race finishes for which boats were used by each skipper
-                for skipper, race_finish in race.race_finishes.items():
+                for skipper, race_finish in race._race_finishes.items():
                     if skipper not in boat_results:
                         boat_results[skipper] = list()
 
@@ -178,12 +178,12 @@ class MasterDatabase:
         for series in self.series.values():
             for race in series.races:
                 # Iterate over the race results
-                for skipper, race_result in race.race_results().items():
+                for skipper, race_result in race.skipper_race_points().items():
                     # Define the rounded point result
                     point_value = int(round(race_result))
 
                     # Extract the boat used
-                    boat = race.race_finishes[skipper].boat
+                    boat = race._race_finishes[skipper].boat
 
                     # Add the point result into the boat point results
                     if boat not in boat_results:
