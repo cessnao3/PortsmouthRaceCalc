@@ -12,19 +12,6 @@
         <br>
         <a href="{{ url_for('skipper_page_all') }}">Skippers</a>
 
-        <h2>Name</h2>
-
-        <table border="0">
-            <tr>
-                <th>First:</th>
-                <td>{% if skipper.first %}{{ skipper.first }}{% else %}<i>N/A</i>{% endif %}</td>
-            </tr>
-            <tr>
-                <th>Last:</th>
-                <td>{% if skipper.last %}{{ skipper.last }}{% else %}<i>N/A</i>{% endif %}</td>
-            </tr>
-        </table>
-
         <h2>Boats Used</h2>
         <img src="{{ url_for('skipper_page_boats_used_plot', skipper_name=skipper_name) }}" alt="Statistics">
 

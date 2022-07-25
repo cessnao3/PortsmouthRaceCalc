@@ -35,7 +35,7 @@ class SkipperStatistics:
         """
         Provides a sorted list of race results
         :return: a list of tuples containing the (race result, number of times for race result), sorted from lowest
-        result to highest result
+        result to the highest result
         """
         return [
             (finish, self.race_counts[finish])

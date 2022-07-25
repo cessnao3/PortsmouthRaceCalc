@@ -10,18 +10,12 @@ from .. import utils
 class Skipper:
     def __init__(
             self,
-            identifier: str,
-            first: str = None,
-            last: str = None):
+            identifier: str):
         """
         Defines a skipper object used in the race
         :param identifier: identification string used to match a skipper object with race performance
-        :param first: first name of the skipper
-        :param last: last name of the skipper
         """
         self.identifier = identifier
-        self.first = first
-        self.last = last
 
     @staticmethod
     def load_from_csv(csv_table: str) -> Dict[str, 'Skipper']:
@@ -34,7 +28,7 @@ class Skipper:
         skippers = dict()
 
         # Define an empty parameter for the header columns
-        expected_header = ['identifier', 'first_name', 'last_name']
+        expected_header = ['identifier']
 
         # Define a None-if-empty function
         def none_if_empty(s: str) -> Optional[str]:
@@ -43,18 +37,13 @@ class Skipper:
         # Define the skipper row function
         def skipper_row_func(row_dict: Dict[str, str]) -> None:
             identifier = none_if_empty(row_dict['identifier'])
-            first = none_if_empty(row_dict['first_name'])
-            last = none_if_empty(row_dict['last_name'])
 
             if identifier is None:
                 raise ValueError('Cannot add a skipper without an identifier')
             elif identifier in skippers:
                 raise ValueError('Skipper {:s} cannot be added twice in the database'.format(identifier))
             else:
-                skippers[identifier] = Skipper(
-                    identifier=identifier,
-                    first=first,
-                    last=last)
+                skippers[identifier] = Skipper(identifier=identifier)
 
         # Load the file
         utils.load_from_csv(
@@ -80,9 +69,6 @@ class Skipper:
         :return: True if the identifiers are equal in lower-case
         """
         if isinstance(other, Skipper):
-            return \
-                self.identifier == other.identifier and \
-                self.first == other.first and \
-                self.last == other.last
+            return self.identifier == other.identifier
         else:
             return False
