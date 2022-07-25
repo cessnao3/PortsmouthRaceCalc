@@ -16,7 +16,7 @@ matplotlib.use('Agg')
 
 # Construct the database instance
 database = MasterDatabase(input_folder=pathlib.Path(__file__).parent / 'input')
-
+database.trim_fleets_lists()
 
 # Define the application
 app = StaticApplication(__name__)

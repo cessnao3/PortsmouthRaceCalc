@@ -78,6 +78,21 @@ class MasterDatabase:
         # Update statistics
         self.update_statistics()
 
+    def trim_fleets_lists(self) -> None:
+        """
+        Trims the fleet lists to only contain boats that exist in a series
+        """
+        # Remove any boat that has zero races tied to it
+        for fleet_name, fleet in self.fleets.items():
+            fleet_stats = self.boat_statistics[fleet_name]
+
+            for boat_name, stats in fleet_stats.items():
+                if not stats.has_nonzero_races():
+                    fleet.boat_types.pop(boat_name)
+
+        # Update statistics
+        self.update_statistics()
+
     def latest_race_date(self) -> Optional[datetime.datetime]:
         """
         Provides the latest race time
