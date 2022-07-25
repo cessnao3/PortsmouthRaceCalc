@@ -7,6 +7,8 @@ from ...fleets import BoatType
 
 from .interface import RaceFinishInterface
 
+from typing import Union
+
 
 class RaceFinishDNF(RaceFinishInterface):
     """
@@ -39,3 +41,9 @@ class RaceFinishDNF(RaceFinishInterface):
         :return: True if the race can be considered finished
         """
         return False
+
+    def perl_entry(self) -> Union[int, str]:
+        """
+        Provides the resulting finish value for a given finish
+        """
+        return f"DNF"

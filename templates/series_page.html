@@ -172,6 +172,11 @@
         <br>
         <img src="{{ url_for('series_point_history_plot', series_name=series.name) }}" alt="Point History">
 
+        <h3>Previous Input FIle</h3>
+        <p>
+            Previous input file for <a href="https://github.com/rodinski/sailing">https://github.com/rodinski/sailing</a>: <a href="{{ url_for('series_previous_input_file', series_name=series.name) }}">previous_input.yaml</a>
+        </p>
+
         {% include 'footer.html' %}
     </body>
 </html>

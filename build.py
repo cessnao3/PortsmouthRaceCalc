@@ -88,6 +88,11 @@ def series_individual_race_results_plot(series_name: str, series_race_index: int
     return database.series[series_name].races[series_race_index].get_plot_race_time_results()
 
 
+@app.route('/series/<string:series_name>/previous_input.yaml')
+def series_previous_input_file(series_name: str):
+    return database.series[series_name].perl_yaml_output()
+
+
 @app.route('/fleet/<string:fleet_name>/index.html')
 def fleet_page(fleet_name: str):
     if fleet_name in database.fleets:

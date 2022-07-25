@@ -7,6 +7,8 @@ from ...fleets import BoatType
 
 from .interface import RaceFinishInterface
 
+from typing import Union
+
 
 class RaceFinishTime(RaceFinishInterface):
     """
@@ -80,3 +82,15 @@ class RaceFinishTime(RaceFinishInterface):
         if self._corrected_time_s is None:
             self._corrected_time_s = round(self.time_s * 100.0 / self.boat.dpn_for_beaufort(self.wind_bf).value())
         return self._corrected_time_s
+
+    def perl_entry(self) -> Union[int, str]:
+        """
+        Provides the resulting finish value for a given finish
+        """
+        min_val = self.time_s // 60
+        sec_val = self.time_s % 60
+
+        if min_val > 0 or sec_val > 0:
+            return f"{min_val:02d}:{sec_val:02d}"
+        else:
+            return 0

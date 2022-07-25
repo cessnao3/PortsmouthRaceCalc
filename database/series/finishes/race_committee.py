@@ -7,6 +7,8 @@ from ...fleets import BoatType
 
 from .interface import RaceFinishInterface
 
+from typing import Union
+
 
 class RaceFinishRC(RaceFinishInterface):
     """
@@ -39,3 +41,9 @@ class RaceFinishRC(RaceFinishInterface):
         :return: True if the race can be considered finished
         """
         return True
+
+    def perl_entry(self) -> Union[int, str]:
+        """
+        Provides the resulting finish value for a given finish
+        """
+        raise RuntimeError("RC does not have a Perl equivalent")

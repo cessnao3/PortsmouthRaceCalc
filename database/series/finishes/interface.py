@@ -5,6 +5,8 @@ Provides the interface for race finishing information
 from ...skippers import Skipper
 from ...fleets import BoatType
 
+from typing import Union
+
 
 class RaceFinishInterface:
     """
@@ -43,3 +45,9 @@ class RaceFinishInterface:
         Resets any stored parameters associated with the current race interface
         """
         pass
+
+    def perl_entry(self) -> Union[int, str]:
+        """
+        Provides the resulting finish value for a given finish
+        """
+        raise NotImplementedError()

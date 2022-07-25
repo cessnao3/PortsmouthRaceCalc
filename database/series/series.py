@@ -20,6 +20,8 @@ import matplotlib.pyplot as plt
 
 from . import Race, finishes
 
+import yaml
+
 
 @dataclass
 class ScoreList:
@@ -710,3 +712,35 @@ class Series:
 
         # Return the results
         return '\n'.join(str_list)
+
+    def perl_yaml_output(self) -> str:
+        """
+        Provides Perl YAML output for compatibility with the previous scoring program
+        """
+        race_dict = dict()
+
+        for i, r in enumerate(self.races):
+            if r.wind_bf is not None:
+                wind_map_node = r.fleet.wind_map.get_wind_map_for_beaufort(r.wind_bf)
+                if wind_map_node.start_bf != wind_map_node.end_bf:
+                    wind_val = f"{wind_map_node.start_bf}-{wind_map_node.end_bf}"
+                else:
+                    wind_val = f"{wind_map_node.start_bf}"
+            else:
+                wind_val = "?"
+
+            race_dict[i + 1] = {
+                "wind": wind_val,
+                "date": r.date.strftime("%Y_%m_%d"),
+                "RC": [s.identifier for s in r.rc_skippers()],
+                "notes": r.notes,
+                "skip": {
+                    rr.skipper.identifier: {
+                        "time": rr.perl_entry(),
+                        "boat": rr.boat.code.upper()
+                    }
+                    for rr in r.starting_boat_results()
+                }
+            }
+
+        return yaml.safe_dump({"race": race_dict})

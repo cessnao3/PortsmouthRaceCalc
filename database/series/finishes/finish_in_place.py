@@ -7,6 +7,8 @@ from ...fleets import BoatType
 
 from .interface import RaceFinishInterface
 
+from typing import Union
+
 
 class RaceFinishFIP(RaceFinishInterface):
     """
@@ -34,7 +36,7 @@ class RaceFinishFIP(RaceFinishInterface):
         Provides the string-name of the finish
         :return: the FIP string of the form FIP_<place>
         """
-        return f'FIP_{self.place}'
+        return f"FIP_{self.place}"
 
     def finished(self) -> bool:
         """
@@ -42,3 +44,9 @@ class RaceFinishFIP(RaceFinishInterface):
         :return: True if the race can be considered finished
         """
         return True
+
+    def perl_entry(self) -> Union[int, str]:
+        """
+        Provides the resulting finish value for a given finish
+        """
+        return f"FIP_{self.place}"

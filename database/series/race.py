@@ -156,7 +156,7 @@ class Race:
         # Call reset
         self.reset()
 
-    def _starting_finish_results(self) -> List[finishes.RaceFinishInterface]:
+    def starting_boat_results(self) -> List[finishes.RaceFinishInterface]:
         """
         Provides a list of race result values for boats that start
         :return: the list of starting skippers
@@ -211,7 +211,7 @@ class Race:
 
             # Define the remaining number of points
             if len(result_dict) > 0:
-                starting_skippers_count = decimal.Decimal(len(self._starting_finish_results()))
+                starting_skippers_count = decimal.Decimal(len(self.starting_boat_results()))
             else:
                 starting_skippers_count = None
 
