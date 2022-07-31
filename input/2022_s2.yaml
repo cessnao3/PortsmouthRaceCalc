@@ -15,6 +15,7 @@ boats:
   Ryan_C: SF
   Student: SF
   Sail_54941: SF
+  Matt_T: SF
 races:
   - date: '2022_06_26'
     rc:
@@ -91,3 +92,26 @@ races:
           Matt_L: 35:41
           Sail_54941: 38:13
           Rod_H: 32:53
+  - date: '2022_07_31'
+    rc:
+      - David_Bu
+      - Matt_L
+    races:
+      - notes: M2 Starboard Rounding
+        wind_bf: 2
+        offset_time: 5:00
+        times:
+          Bill_P: 49:04
+          Chris_E: DNF
+          Ian_O: 55:31
+          Lewis_V: 47:50
+          Rod_H: 47:16
+          Matt_T: DNF
+      - notes: I1 Port Rounding
+        wind_bf: 2
+        offset_time: 0
+        times:
+          Bill_P: 24:19
+          Ian_O: 25:25
+          Lewis_V: 20:32
+          Rod_H: 20:44
