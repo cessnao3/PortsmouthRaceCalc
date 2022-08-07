@@ -16,6 +16,8 @@ boats:
   Student: SF
   Sail_54941: SF
   Matt_T: SF
+  Riz_J: SF
+  Nanette_V: SF
 races:
   - date: '2022_06_26'
     rc:
@@ -115,3 +117,24 @@ races:
           Ian_O: 25:25
           Lewis_V: 20:32
           Rod_H: 20:44
+  - date: '2022_08_07'
+    rc:
+      - Bill_P
+      - Jim_S
+    races:
+      - notes: M3 Starboard Rounding
+        wind_bf: 2
+        offset_time: 5:00
+        times:
+          Rod_H: 40:12
+          David_Bu: 41:33
+          Matt_L: 43:37
+          Riz_J: DNF
+      - notes: M3 Starboard Rounding
+        wind_bf: 2
+        offset_time: 5:00
+        times:
+          Rod_H: 36:45
+          David_Bu: 47:24
+          Matt_L: 40:23
+          Nanette_V: DNF
