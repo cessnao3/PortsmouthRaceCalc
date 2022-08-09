@@ -63,6 +63,17 @@ def series_page(series_name: str):
         series=database.series[series_name])
 
 
+@app.route('/series/<string:series_name>/race_<int:series_name/series_race_index>.html')
+def series_race_page(series_name: str, series_race_index: int):
+    series = database.series[series_name]
+    race = series.races[series_race_index]
+
+    return app.render_template(
+        'race_page.html',
+        database=database,
+        series=series,
+        race=race)
+
 @app.route('/series/<string:series_name>/images/rank_history.png')
 def series_rank_history_plot(series_name: str):
     return database.series[series_name].get_plot_series_rank()
@@ -81,7 +92,6 @@ def series_normalized_race_results_plot(series_name: str):
 @app.route('/series/<string:series_name>/images/boat_pie_chart.png')
 def series_boat_pie_plot(series_name: str):
     return database.series[series_name].get_plot_boat_pie_chart()
-
 
 @app.route('/series/<string:series_name>/images/race_<int:series_name/series_race_index>.png')
 def series_individual_race_results_plot(series_name: str, series_race_index: int):

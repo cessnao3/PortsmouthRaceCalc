@@ -152,7 +152,7 @@
             </table>
         </p>
         <p>
-            <img src="{{ url_for('series_individual_race_results_plot', series_name=series.name, series_race_index=race.race_num) }}" alt="Race {{ race.race_num }} Results">
+            <a href="{{ url_for('series_race_page', series_name=series.name, series_race_index=race.race_num)}}">More Details</a>
         </p>
         <p>
             <a href="#top">Top</a>
