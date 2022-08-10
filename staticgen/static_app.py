@@ -5,12 +5,11 @@ Similar in functionality to a basic Flask application
 
 import copy
 import datetime
-import typing
 from pathlib import Path
 from os import PathLike
 import re
 import shutil
-from typing import Callable, Dict, List, Tuple, Optional, Union, Generator
+from typing import Any, Callable, Dict, List, Tuple, Optional, Union, Generator
 
 import jinja2
 
@@ -23,13 +22,13 @@ class StaticApplication:
     # Define the regular expressions to check for
 
     # Check for a specific variable value
-    __VAR_CHECK = re.compile(r"<(?P<type>[a-zA-z]+):(?P<varname>[\d\w_]+(/[\d\w_]+)*)>")
+    __VAR_CHECK = re.compile(r"<(?P<type>[a-zA-z]+):(?P<varname>[\w_]+(/[\w_]+)*)>")
 
     # Check for an overall path for validity
-    __PATH_CHECK = re.compile(r"^/(([\d\w_]+|<[a-zA-z]+:[\d\w_]+(/[\d\w_]+)*>)|/?)*([\d\w_]*\.[\w\d]+)$")
+    __PATH_CHECK = re.compile(r"^/(([\w_]+|<[a-zA-z]+:[\w_]+(/[\w_]+)*>)|/?)*([\w_]*\.\w+)$")
 
     # Check for a file extension
-    __EXT_CHECK = re.compile(r"\.[\w\d]+$")
+    __EXT_CHECK = re.compile(r"\.\w+$")
 
     def __init__(
             self,
@@ -44,16 +43,17 @@ class StaticApplication:
         self.name = name
 
         # Define maps to link path values to variable names and rendering functions
-        self.path_name_map: Dict[str, Callable[[typing.Any], Optional[Union[str, bytes]]]] = dict()
+        self.path_name_map: Dict[str, Callable[[Any], Optional[Union[str, bytes]]]] = dict()
         self.path_function_map: Dict[str, str] = dict()
 
         # Define path parameters
-        self.base_path = base_path
+        self.base_path = base_path.absolute()
         self.build_path = base_path / "build"
         self.static_path = base_path / "static"
 
         # Define the Jinja2 environment
         self.jinja_env = jinja2.Environment(loader=jinja2.FileSystemLoader(base_path / "templates"))
+        print(self.jinja_env.loader.list_templates())
         self.jinja_env.globals.update(url_for=self.url_for)
         self.jinja_env.globals.update(get_build_time=self.get_build_time)
 
@@ -222,24 +222,24 @@ class StaticApplication:
             search_result = self.__VAR_CHECK.search(url_val)
             while search_result:
                 # Extract search results
-                vartype = search_result.groupdict()['type']
-                varname = search_result.groupdict()['varname']
+                var_type = search_result.groupdict()['type']
+                var_name = search_result.groupdict()['varname']
 
                 # Find the true variable name
-                if '/' in varname:
-                    varname = varname[varname.rfind('/') + 1:]
+                if '/' in var_name:
+                    var_name = var_name[var_name.rfind('/') + 1:]
 
                 # Define the resulting variable value from the kwargs
-                if vartype == 'string':
-                    varval = kwargs[varname]
-                elif vartype == 'int':
-                    varval = f'{kwargs[varname]:d}'
+                if var_type == 'string':
+                    var_value = kwargs[var_name]
+                elif var_type == 'int':
+                    var_value = f'{kwargs[var_name]:d}'
                 else:
                     raise NotImplementedError()
 
                 # Replace the search values with the resulting strings
                 url_val = list(url_val)
-                url_val[search_result.start():search_result.end()] = varval
+                url_val[search_result.start():search_result.end()] = var_value
                 url_val = ''.join(url_val)
 
                 # Re-update the search results
