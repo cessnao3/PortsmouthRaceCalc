@@ -378,7 +378,11 @@ class MasterDatabase:
             # Iterate over each race date
             for race_date_dict in race_list:
                 # Extract the race committee
-                race_committee = [self.skippers[person] for person in race_date_dict['rc']]
+                rc_racers = race_date_dict["rc"]
+                if rc_racers is None:
+                    rc_racers = dict()
+
+                race_committee = [self.skippers[person] for person in rc_racers]
 
                 # Iterate over each race
                 for race_dict in race_date_dict['races']:

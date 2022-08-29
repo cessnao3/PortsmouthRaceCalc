@@ -1,0 +1,35 @@
+boats:
+  Bill_P: SF
+  Rod_H: LASEM
+  Lewis_V: BCN
+  Jim_S: SF
+  David_Bu: SF
+  Ian_O: SF
+  Barry_O: HLR14
+  Matt_L: F5
+  Nick_H: SF
+  Chris_E: SF
+  Ryan_C: SF
+  Matt_T: SF
+  Riz_J: SF
+races:
+  - date: '2022_08_14'
+    rc:
+    races:
+      - notes: No race due to lack of RC
+        wind_bf: 0
+        times:
+      - notes: No race due to lack of RC
+        wind_bf: 2
+        times:
+  - date: '2022_08_21'
+    rc:
+      - David_Bu
+      - Barry_O
+    races:
+      - notes: No race due to lack of skippers
+        wind_bf: 0
+        times:
+      - notes: No race due to lack of skippers
+        wind_bf: 0
+        times:
