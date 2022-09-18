@@ -113,7 +113,7 @@ races:
       - Bill_P
       - Ian_O
     races:
-      - notes: M3 Starboard shorted to M2
+      - notes: M3 Starboard shortened to M2
         wind_bf: 1
         offset_time: 5:00
         times:
