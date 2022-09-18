@@ -72,9 +72,9 @@ def round_score(score_in: decimal.Decimal) -> decimal.Decimal:
     """
     assert isinstance(score_in, decimal.Decimal)
 
-    with decimal.localcontext(ctx=None) as ctx:
+    with decimal.localcontext() as ctx:
         ctx.rounding = decimal.ROUND_HALF_UP
-        return decimal.Decimal(round(score_in * 10)) / 10
+        return decimal.Decimal(round(score_in, 1))
 
 
 def format_time(time_s: int) -> str:
