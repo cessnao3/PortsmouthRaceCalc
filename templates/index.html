@@ -16,16 +16,12 @@
             {% endfor %}
         </ul>
 
-        <h2>Fleets</h2>
-        <ul>
-            {% for fleet in fleets_list %}
-            <li><a href="{{ url_for('fleet_page', fleet_name=fleet.name) }}">{{ fleet.fancy_name() }}</a></li>
-            {% endfor %}
-        </ul>
-
-        <h2>Skippers</h2>
+        <h2>Database</h2>
         <ul>
             <li><a href="{{ url_for('skipper_page_all')}}">Skippers</a></li>
+            {% for fleet in fleets_list %}
+            <li><a href="{{ url_for('fleet_page', fleet_name=fleet.name) }}">Fleet {{ fleet.fancy_name() }}</a></li>
+            {% endfor %}
         </ul>
 
         <h2>Notes</h2>
