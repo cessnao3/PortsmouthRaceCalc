@@ -68,15 +68,6 @@ class BoatType:
         if type(beaufort) != int:
             raise ValueError('Beaufort number must be of type int')
 
-        # Wind Map Node
-        dpn_val = None
-        current_bf = beaufort
-
-        while dpn_val is None and current_bf >= 0:
-            node_val = self.wind_map.get_wind_map_for_beaufort(current_bf)
-            dpn_val = self.dpn_values[node_val.index]
-            current_bf -= 1
-
         # Find the ideal index for the given beaufort number
         if beaufort <= 1:
             dpn_ind = 1
@@ -88,11 +79,16 @@ class BoatType:
             dpn_ind = 4
 
         # If there is no DPN value at any index, raise an error
+        dpn_val = self.dpn_values[dpn_ind]
+        while dpn_ind > 0 and dpn_val is None:
+            dpn_ind -= 1
+            dpn_val = self.dpn_values[dpn_ind]
+
         if dpn_val is None:
             raise RuntimeError('No DPN provided for code {:s}, index {:d}'.format(self.code, dpn_ind))
 
         # Return the DPN value
-        return self.dpn_values[dpn_ind]
+        return dpn_val
 
     def __characteristic_tuple(self) -> Tuple[str, str, str, str]:
         """
