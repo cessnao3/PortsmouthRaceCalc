@@ -12,6 +12,7 @@ boats:
   Ryan_C: SF
   Matt_T: SF
   Riz_J: SF
+  David_Aidyl: SF
 races:
   - date: '2022_08_14'
     rc:
@@ -107,3 +108,25 @@ races:
           Ian_O: 32:40
           Jim_S: 41:59
           Matt_T: 32:09
+  - date: '2022_09_18'
+    rc:
+      - Bill_P
+      - Ian_O
+    races:
+      - notes: M3 Starboard shorted to M2
+        wind_bf: 1
+        offset_time: 5:00
+        times:
+          Rod_H: 38:10
+          Nick_H: 38:51
+          Matt_L: 38:55
+          David_Bu: 39:20
+          David_Aidyl: dnf
+      - notes: M3 Starboard
+        wind_bf: 2
+        offset_time: 5:00
+        times:
+          Rod_H: 28:18
+          Nick_H: dnf
+          Matt_L: 31:02
+          David_Bu: 33:44
