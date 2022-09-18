@@ -243,6 +243,19 @@ class Series:
                 # Define the number of RC points added
                 rc_points_added_count = 0
 
+                # Determine the maximum RC performed on a day
+                rc_day_values: Dict[str, int] = dict()
+                for r in self.races:
+                    if skip in r.rc_skippers():
+                        if r.date_string() not in rc_day_values:
+                            rc_day_values[r.date_string()] = 0
+                        rc_day_values[r.date_string()] += 1
+
+                if rc_day_values and max(rc_day_values.values()) > 2:
+                    rc_max_count = 3
+                else:
+                    rc_max_count = 2
+
                 # Iterate over each race
                 for r in [r for r in self.races if r.valid_for_rc(skip)]:
                     # Obtain the results
@@ -252,7 +265,7 @@ class Series:
 
                     # Define flags
                     can_add_rc = skip in r._race_finishes and isinstance(r._race_finishes[skip], finishes.RaceFinishRC)
-                    can_add_rc = can_add_rc and rc_points_added_count < 2
+                    can_add_rc = can_add_rc and rc_points_added_count < rc_max_count
 
                     # Add the results to the list if the skipper has a result
                     if skip in results:
