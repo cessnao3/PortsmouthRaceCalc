@@ -53,6 +53,8 @@ class Race:
 
         # Add the RC skippers to the race times as participating in RC
         for rc_skipper in rc:
+            if rc_skipper not in self.boat_dict:
+                raise RuntimeError(f"No boat found for {rc_skipper.identifier}")
             self.add_skipper_finish(finishes.RaceFinishRC(
                 boat=self.boat_dict[rc_skipper],
                 skipper=rc_skipper))
