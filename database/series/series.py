@@ -11,6 +11,7 @@ from typing import Union, List, Dict, Optional
 from dataclasses import dataclass
 
 from ..fleets import Fleet, BoatType
+from ..fleets.handicap import HandicapNumber
 from ..skippers import Skipper
 
 from ..utils import capitalize_words, round_score
@@ -181,7 +182,7 @@ class Series:
         # Return true if the count meets the qualify-count threshold
         return count + min(2, count_rc) + count_dnf >= self.qualify_count
 
-    def skipper_rc_points(self, skipper: Skipper) -> Optional[decimal.Decimal]:
+    def get_skipper_rc_points(self, skipper: Skipper) -> Optional[decimal.Decimal]:
         """
         Returns the number of points associated with RC for a given Skipper
         :param skipper: skipper to get RC points for
@@ -197,7 +198,7 @@ class Series:
                 skipper_races = [r for r in self.valid_races() if skip in r._race_finishes]
 
                 # Obtain the results from each of the finished series and sort
-                point_values = [r.skipper_race_points()[skip] for r in skipper_races if skip in r.skipper_race_points()]
+                point_values = [r.get_skipper_race_points()[skip] for r in skipper_races if skip in r.get_skipper_race_points()]
                 point_values = [p for p in point_values if p is not None]
                 point_values.sort()
 
@@ -249,7 +250,7 @@ class Series:
                 # Iterate over each race
                 for r in [r for r in self.races if r.valid_for_rc(skip)]:
                     # Obtain the results
-                    results = r.skipper_race_points()
+                    results = r.get_skipper_race_points()
 
                     value_to_add = None
 
@@ -261,7 +262,7 @@ class Series:
                     if skip in results:
                         value_to_add = results[skip]
                     elif can_add_rc:
-                        value_to_add = self.skipper_rc_points(skip)
+                        value_to_add = self.get_skipper_rc_points(skip)
                         rc_points_added_count += 1
 
                     if value_to_add is not None:
@@ -411,7 +412,7 @@ class Series:
 
                     # Otherwise, look at the latest race results
                     for race in reversed(self.races):
-                        res = race.skipper_race_points()
+                        res = race.get_skipper_race_points()
                         if a.skipper in res and b.skipper in res:
                             a_res = res[a.skipper]
                             b_res = res[b.skipper]
@@ -427,8 +428,8 @@ class Series:
                 # Check for lower RC score
                 # Otherwise, use alphabetic
 
-                a_rc = self.skipper_rc_points(a.skipper)
-                b_rc = self.skipper_rc_points(b.skipper)
+                a_rc = self.get_skipper_rc_points(a.skipper)
+                b_rc = self.get_skipper_rc_points(b.skipper)
 
                 if a_rc is not None and b_rc is not None:
                     if a_rc != b_rc:
@@ -488,7 +489,7 @@ class Series:
             results_list = list()
 
             # Add each valid item to the scatter plot
-            for skipper, score in race.skipper_race_points().items():
+            for skipper, score in race.get_skipper_race_points().items():
                 rt = race._race_finishes[skipper]
                 if isinstance(rt, finishes.RaceFinishTime):
                     results_list.append((score, rt.corrected_time_s / race.min_time_s()))
@@ -531,7 +532,7 @@ class Series:
         # Iterate over each race to calculate the boat result
         for r in self.races:
             for rt in r._race_finishes.values():
-                if rt.skipper not in skip_boat_dict and rt.skipper in r.skipper_race_points():
+                if rt.skipper not in skip_boat_dict and rt.skipper in r.get_skipper_race_points():
                     skip_boat_dict[rt.skipper] = rt.boat.code
 
                     if rt.boat.code not in boat_type_dict:
@@ -659,9 +660,9 @@ class Series:
         """
         return capitalize_words(self.name.replace('_', ' '))
 
-    def perl_yaml_output(self) -> str:
+    def perl_series_dict(self) -> dict:
         """
-        Provides Perl YAML output for compatibility with the previous scoring program
+        Provides the YAML series dictionary result
         """
         race_dict = dict()
 
@@ -689,4 +690,32 @@ class Series:
                 }
             }
 
-        return yaml.safe_dump({"race": race_dict})
+        return {"race": race_dict}
+
+    def perl_boat_dict(self) -> dict:
+        """
+        Provides the YAML boat dictionary result
+        """
+        # Create the boat dict
+        boat_dict = dict()
+        for r in self.races:
+            for b in r.boat_dict.values():
+                if b.display_code not in boat_dict:
+                    # Ensure that a default value is provided
+                    if b.dpn_values[0] is None:
+                        raise RuntimeError(f"unable to find default DPN for {b.display_code} boat")
+
+                    # Setup the boat dictionary
+                    boat_dict[b.display_code] = {
+                        "full_name": b.name,
+                        "hc_of_wind": {
+                            "D-PN": b.dpn_values[0].value(),
+                            "0-1": b.dpn_for_beaufort(0).value(),
+                            "2-3": b.dpn_for_beaufort(2).value(),
+                            "4": b.dpn_for_beaufort(4).value(),
+                            "5-9": b.dpn_for_beaufort(5).value(),
+                        }
+                    }
+
+        # Return the result
+        return { "boat": boat_dict }

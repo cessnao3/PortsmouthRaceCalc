@@ -135,7 +135,7 @@ class MasterDatabase:
         for series in self.series.values():
             for race in series.races:
                 # Iterate over the race results
-                for skipper, race_result in race.skipper_race_points().items():
+                for skipper, race_result in race.get_skipper_race_points().items():
                     # Define the rounded point result
                     point_value = int(round(race_result))
 
@@ -193,7 +193,7 @@ class MasterDatabase:
         for series in self.series.values():
             for race in series.races:
                 # Iterate over the race results
-                for skipper, race_result in race.skipper_race_points().items():
+                for skipper, race_result in race.get_skipper_race_points().items():
                     # Define the rounded point result
                     point_value = int(round(race_result))
 

@@ -46,4 +46,4 @@ class RaceFinishDQ(RaceFinishInterface):
         """
         Provides the resulting finish value for a given finish
         """
-        return f"DQ"
+        return f"DSQ"

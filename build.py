@@ -2,12 +2,12 @@
 Main entry point for a static compilation of the scoring
 """
 
-import pathlib
-
 from staticgen import StaticApplication
 
-from database import MasterDatabase
+from db_input import get_database
 import database.utils as utils
+
+import yaml
 
 # Disable live plotting of data, so plotting only writes to files
 import matplotlib
@@ -15,8 +15,7 @@ matplotlib.use('Agg')
 
 
 # Construct the database instance
-database = MasterDatabase(input_folder=pathlib.Path(__file__).parent / 'input')
-database.trim_fleets_lists()
+database = get_database()
 
 # Define the application
 app = StaticApplication(__name__)
@@ -100,7 +99,11 @@ def series_individual_race_results_plot(series_name: str, series_race_index: int
 
 @app.route('/series/<string:series_name>/previous_input.yaml')
 def series_previous_input_file(series_name: str):
-    return database.series[series_name].perl_yaml_output()
+    return yaml.safe_dump(database.series[series_name].perl_series_dict())
+
+@app.route('/series/<string:series_name>/previous_boat.yaml')
+def series_previous_boat_file(series_name: str):
+    return yaml.safe_dump(database.series[series_name].perl_boat_dict())
 
 
 @app.route('/fleet/<string:fleet_name>/index.html')

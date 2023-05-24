@@ -1,0 +1,243 @@
+---
+boat:
+  BCN:
+    full_name: Buccaneer 18' spi (SWN18)
+    hc_of_wind:
+      D-PN:   86.9
+      0-1:    89.2
+      2-3:    87.0
+      4:      86.3
+      5-9:    85.4
+  HLR14:
+    full_name: Holder 14 (H1-14)
+    hc_of_wind:
+      D-PN:   111.0
+      0-1:    113.3
+      2-3:    111.7
+      4:      108.4
+  PUF:
+    full_name: Puffer
+    hc_of_wind:
+      D-PN:   110.4
+      0-1:    108.7
+      2-3:    111.8
+      4:      108.8
+      5-9:    106.8
+  SF:
+    full_name: Sunfish (Int.)
+    hc_of_wind:
+      D-PN:   99.6
+      0-1:    103.0
+      2-3:    100.4
+      4:      97.8
+      5-9:    95.8
+  SSF:
+    full_name: Super Sunfish
+    hc_of_wind:
+      D-PN:   100.7
+      0-1:    102.4
+      2-3:    102.3
+      4:      99.3
+      5-9:    95.8
+  SWSX:
+    full_name: Sweet 16
+    hc_of_wind:
+      D-PN:   96.2
+      0-1:    99.4
+      2-3:    95.9
+      4:      94.7
+      5-9:    94.3
+  US-1:
+    full_name: US-1
+    hc_of_wind:
+      D-PN:   91.5
+      0-1:    90.6
+      2-3:    91.3
+      4:      92.3
+      5-9:    91.9
+  VGD15:
+    full_name: Vanguard 15
+    hc_of_wind:
+      D-PN:   90.5
+      0-1:    92.6
+      2-3:    91.2
+      4:      86.1
+      5-9:    
+  WF:
+    full_name: Wayfarer
+    hc_of_wind:
+      D-PN:   91.6
+      0-1:    94.0
+      2-3:    91.7
+      4:      90.5
+      5-9:    89.5
+  LASE:
+    full_name: Laser Int.
+    hc_of_wind:
+      D-PN:   91.1
+      0-1:    93.7
+      2-3:    92.3
+      4:      91.0
+      5-9:    88.2
+  LASE2:
+    full_name: Laser II
+    hc_of_wind:
+      D-PN:   92.8
+      0-1:    95.6
+      2-3:    94.6
+      4:      93.6
+      5-9:    88.8
+  LASEM:
+    full_name: Laser Radial 
+    hc_of_wind:
+      D-PN:   96.7
+      0-1:    99.4
+      2-3:    97.3
+      4:      93.6
+  SN:
+    full_name: Snipe (Int.) 
+    hc_of_wind:
+      D-PN:   91.9
+      0-1:    94.8
+      2-3:    92.5
+      4:      91.4
+      5-9:    89.0
+  F5:
+    full_name: Force Five
+    short_name: Force 5
+    hc_of_wind:
+      D-PN:   95.4
+      0-1:    98.1
+      2-3:    96.6
+      4:      95.3
+      5-9:    93.4
+  PHNTM:
+    full_name: Phantom (Lateen Rig)
+    short_name: PHNTM	
+    hc_of_wind:
+      D-PH:   103.5
+      0-1:    108.5
+      2-3:    104.5
+      4:      101.2
+      5-9:    99.1
+  SCOR:
+    full_name: Scorpion
+    short_name: SCOR
+    hc_of_wind:
+      D-PH:   112.1
+      0-1:    112.6
+      2-3:    111.0
+
+  FSCT:
+    full_name: Flying Scot
+    short_name: FSCT
+    hc_of_wind:
+      D-PH:   89.6
+      0-1:    92.1
+      2-3:    90.4
+      4:      89.1
+      5-9:    87.5
+
+  CAT125:
+    full_name: Catalina Expo 12.5
+    short_name: CAT125
+    hc_of_wind:
+      D-PH:   102.0
+      0-1:    102.0
+      2-3:    101.0
+      4:      102.0
+      5-9:    102.0
+
+---
+name:
+  Mike_S:
+    boat: FSCT
+    fleet: open
+  Art_M:
+    boat: SWSX
+    fleet: SWSX
+  Barry_O:
+    boat: HLR14
+    fleet: open
+  Betsy_H: 
+    boat: SF
+    fleet: open
+  Bill_P:
+    boat: VGD15
+    fleet: open
+  David_Bu:
+    boat: SF
+    fleet: open
+  David_Bl:
+    fleet: open
+  Eliott_A:
+    boat: LASE2
+    fleet: open
+  Jay_H:
+    boat: SWSX
+    fleet: SWSX
+  John_T:
+    boat: US-1
+    fleet: open
+  Ken_B:
+    boat: SWSX
+    fleet: SWSX
+  Mike_F:
+    boat: SF
+    fleet: open
+  Nedra_F:
+    boat: SF
+    fleet: open
+  Pat_B:
+    boat: WF
+    fleet: open
+  Paul_B:
+    boat: BCN
+    fleet: open
+  Ralph_H:
+    boat: SF
+    fleet: open
+  Rod_H:
+    boat: PUF
+    fleet: open
+  Ron_F:
+    boat: F5
+    fleet: open
+  Stacy_O:
+    boat: SWSX
+    fleet: SWSX
+  Gail_K:
+    boat: SWSX
+    fleet: SWSX
+  Anita_M:
+    boat: HLR14
+    fleet: open
+  Nick_H:
+    boat: SF
+    fleet: open
+  Kerry_B:
+    boat: SWSX
+    fleet: SWSX
+  Cindy_B:
+    boat: SF
+    fleet: open
+  Ed_R:
+    boat: SWSX
+    fleet: SWSX
+  James_B:
+    boat: SF
+    fleet: open
+  Todd_P:
+    boat: SN
+    fleet: open
+  Sara_M:
+    boat: SWSX
+    fleet: SWSX
+  Adrian_E:
+    boat: LASE
+  Laura_B:
+    boat: PHNTM
+  Lewis_V: 
+    boat: BCN
+    fleet: open
+
