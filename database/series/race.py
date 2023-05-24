@@ -49,7 +49,6 @@ class Race:
         self.notes = notes
         self.__race_index: Optional[int] = None
         self.__results_dict: Optional[Dict[Skipper, int]] = None
-        self.__plot_race_time: Optional[bytes] = None
 
         # Add the RC skippers to the race times as participating in RC
         for rc_skipper in rc:
@@ -165,7 +164,7 @@ class Race:
         """
         return [r for r in self._race_finishes.values() if not isinstance(r, finishes.RaceFinishRC)]
 
-    def skipper_race_points(self) -> Dict[Skipper, decimal.Decimal]:
+    def get_skipper_race_points(self) -> Dict[Skipper, decimal.Decimal]:
         """
         Provides the scores for each skipper in the race
         :return: dictionary of the skipper keyed to the resulting point score
@@ -246,7 +245,7 @@ class Race:
         # Check if the skipper is in the race times
         if skipper in self._race_finishes:
             # Obtain the results
-            results = self.skipper_race_points()
+            results = self.get_skipper_race_points()
 
             # If the skipper has result points, obtain those
             if skipper in results:
@@ -296,7 +295,7 @@ class Race:
         :return: a list of tuples containing the score and the race time object
         """
         # Obtain the race results
-        scores = self.skipper_race_points()
+        scores = self.get_skipper_race_points()
 
         # Obtain the list of skippers who finished the race and sort by the resulting scores obtained above
         race_time_list: List[finishes.RaceFinishInterface] = self.finished_race_times()
