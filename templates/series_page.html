@@ -49,11 +49,11 @@
                 {% endfor %}
                 {% set points = series.skipper_points_list(skipper) %}
                 {% if points %}
-                <td>{{ series.skipper_rc_points(skipper) }}</td>
+                <td>{{ series.get_skipper_rc_points(skipper) }}</td>
                 <td>{{ points.score }}</td>
                 {% else %}
-                {% if series.skipper_rc_points(skipper) %}
-                <td>{{ series.skipper_rc_points(skipper) }}</td>
+                {% if series.get_skipper_rc_points(skipper) %}
+                <td>{{ series.get_skipper_rc_points(skipper) }}</td>
                 <td>DNQ</td>
                 {% else %}
                 <td>N/A</td>
@@ -67,7 +67,7 @@
                 <th>Race Finishes</th>
                 <th></th>
                 {% for race in series.races %}
-                <th>{{ race.skipper_race_points() | length }}</th>
+                <th>{{ race.get_skipper_race_points() | length }}</th>
                 {% endfor %}
                 <th></th>
                 <th></th>
