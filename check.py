@@ -18,20 +18,21 @@ from typing import Any, Callable, List, Optional, Tuple
 import subprocess
 
 
-PERL_FILE = Path(__file__).parent / "perl" / "race_scorer_v04.pl"
+PERL_DIR = Path(__file__).parent / "perl"
+PERL_FILE = PERL_DIR / "race_scorer_v04.pl"
 
 
 def main():
     database = get_database()
 
-    base_dir = Path(__file__).parent / "perl" / "tests"
-    if not base_dir.exists():
-        base_dir.mkdir()
+    test_dir_base = PERL_DIR / "tests"
+    if not test_dir_base.exists():
+        test_dir_base.mkdir()
 
     overall_success = True
 
     for name, s in database.series.items():
-        check_dir = base_dir / name
+        check_dir = test_dir_base / name
         if check_dir.exists():
             rmtree(check_dir)
 
