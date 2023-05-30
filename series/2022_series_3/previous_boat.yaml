@@ -21,7 +21,7 @@ boat:
       0-1: 113.3
       2-3: 111.7
       '4': 108.4
-      5-9: 111.0
+      5-9: 108.4
       D-PN: 111.0
   LASEM:
     full_name: Laser Radial/Laser M
@@ -29,7 +29,7 @@ boat:
       0-1: 99.4
       2-3: 97.3
       '4': 93.6
-      5-9: 96.7
+      5-9: 93.6
       D-PN: 96.7
   SF:
     full_name: Sunfish (Int.)
