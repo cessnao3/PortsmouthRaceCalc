@@ -80,12 +80,9 @@ class BoatType:
 
         # If there is no DPN value at any index, raise an error
         dpn_val = self.dpn_values[dpn_ind]
-        while dpn_ind > 0 and dpn_val is None:
-            dpn_ind -= 1
-            dpn_val = self.dpn_values[dpn_ind]
-
         if dpn_val is None:
-            raise RuntimeError('No DPN provided for code {:s}, index {:d}'.format(self.code, dpn_ind))
+            print(f"No HC found for {self.code}/{self.name} from {self.fleet_name} for BF={beaufort} - using default DPN value")
+            dpn_val = self.dpn_values[0]
 
         # Return the DPN value
         return dpn_val

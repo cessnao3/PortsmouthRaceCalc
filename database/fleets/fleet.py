@@ -6,7 +6,7 @@ from typing import Dict, List, Optional
 
 from .. import utils
 
-from .boat_type import BoatType
+from .boat import BoatType
 from .wind_map import WindMap
 
 
