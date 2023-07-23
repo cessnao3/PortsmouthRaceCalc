@@ -1,0 +1,50 @@
+race:
+  1:
+    RC:
+    - Rod_H
+    - Jim_S
+    date: '2023_07_23'
+    notes: I2
+    skip:
+      Barry_O:
+        boat: HLR14
+        time: '35:25'
+      Bill_P:
+        boat: SF
+        time: '30:26'
+      Dennis_S:
+        boat: SF
+        time: FIP_6
+      Ian_O:
+        boat: SF
+        time: '29:51'
+      Lewis_V:
+        boat: BCN
+        time: '27:34'
+      Matt_L:
+        boat: F5
+        time: '31:02'
+    wind: 2-3
+  2:
+    RC:
+    - Rod_H
+    - Jim_S
+    date: '2023_07_23'
+    notes: I2
+    skip:
+      Barry_O:
+        boat: HLR14
+        time: '29:51'
+      Bill_P:
+        boat: SF
+        time: '27:19'
+      Ian_O:
+        boat: SF
+        time: '25:40'
+      Lewis_V:
+        boat: BCN
+        time: '21:16'
+      Matt_L:
+        boat: F5
+        time: '27:08'
+    wind: 2-3
