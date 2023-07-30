@@ -48,3 +48,61 @@ race:
         boat: F5
         time: '27:08'
     wind: 2-3
+  3:
+    RC:
+    - Nick_H
+    - Lewis_V
+    date: '2023_07_30'
+    notes: M2
+    skip:
+      Barry_O:
+        boat: HLR14
+        time: '28:27'
+      Bill_P:
+        boat: SF
+        time: '23:39'
+      Gary_V:
+        boat: SF
+        time: FIP_7
+      Ian_O:
+        boat: SF
+        time: '22:51'
+      Matt_L:
+        boat: F5
+        time: '24:43'
+      Matt_T:
+        boat: SF
+        time: '23:17'
+      Ryan_C:
+        boat: SF
+        time: '29:56'
+    wind: 2-3
+  4:
+    RC:
+    - Nick_H
+    - Lewis_V
+    date: '2023_07_30'
+    notes: M2
+    skip:
+      Barry_O:
+        boat: HLR14
+        time: '32:26'
+      Bill_P:
+        boat: SF
+        time: '25:15'
+      Gary_V:
+        boat: SF
+        time: '35:50'
+      Ian_O:
+        boat: SF
+        time: '24:33'
+      Matt_L:
+        boat: F5
+        time: '26:36'
+      Matt_T:
+        boat: SF
+        time: '25:26'
+      Ryan_C:
+        boat: SF
+        time: '33:53'
+    wind: 2-3
