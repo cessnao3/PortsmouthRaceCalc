@@ -12,6 +12,9 @@ boats:
   Nick_H: SF
   Chris_E: SF
   Dennis_S: SF
+  Gary_V: SF
+  Ryan_C: SF
+  Matt_T: SF
 races:
   - date: '2023_07_23'
     rc:
@@ -37,4 +40,28 @@ races:
           Ian_O: 30:40
           Lewis_V: 26:16
           Matt_L: 32:08
-
+  - date: '2023_07_30'
+    rc:
+      - Nick_H
+      - Lewis_V
+    races:
+      - notes: M2
+        wind_bf: 2
+        times:
+          Barry_O: 28:27
+          Bill_P: 23:39
+          Gary_V: FIP7
+          Ian_O: 22:51
+          Matt_L: 24:43
+          Matt_T: 23:17
+          Ryan_C: 29:56
+      - notes: M2
+        wind_bf: 2
+        times:
+          Barry_O: 32:26
+          Bill_P: 25:15
+          Gary_V: 35:50
+          Ian_O: 24:33
+          Matt_L: 26:36
+          Matt_T: 25:26
+          Ryan_C: 33:53
