@@ -15,6 +15,7 @@ boats:
   Gary_V: SF
   Ryan_C: SF
   Matt_T: SF
+  Craig: STFS
 races:
   - date: '2023_07_23'
     rc:
@@ -65,3 +66,26 @@ races:
           Matt_L: 26:36
           Matt_T: 25:26
           Ryan_C: 33:53
+  - date: '2023_08_06'
+    rc:
+      - Bill_P
+      - Barry_O
+    races:
+      - notes: M3
+        wind_bf: 2
+        offset_time: 5:00
+        times:
+          Rod_H: 27:14
+          Lewis_V: 27:59
+          Ian_O: 30:33
+          Craig: 39:34
+          Matt_L: 33:30
+      - notes: M3
+        wind_bf: 4
+        offset_time: 5:00
+        times:
+          Lewis_V: dnf
+          Rod_H: 26:43
+          Ian_O: 31:34
+          Craig: dnf
+          Matt_L: 29:10
