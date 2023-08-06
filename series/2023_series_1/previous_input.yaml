@@ -106,3 +106,49 @@ race:
         boat: SF
         time: '33:53'
     wind: 2-3
+  5:
+    RC:
+    - Bill_P
+    - Barry_O
+    date: '2023_08_06'
+    notes: M3
+    skip:
+      Craig:
+        boat: STFS
+        time: '34:34'
+      Ian_O:
+        boat: SF
+        time: '25:33'
+      Lewis_V:
+        boat: BCN
+        time: '22:59'
+      Matt_L:
+        boat: F5
+        time: '28:30'
+      Rod_H:
+        boat: LASEM
+        time: '22:14'
+    wind: 2-3
+  6:
+    RC:
+    - Bill_P
+    - Barry_O
+    date: '2023_08_06'
+    notes: M3
+    skip:
+      Craig:
+        boat: STFS
+        time: DNF
+      Ian_O:
+        boat: SF
+        time: '26:34'
+      Lewis_V:
+        boat: BCN
+        time: DNF
+      Matt_L:
+        boat: F5
+        time: '24:10'
+      Rod_H:
+        boat: LASEM
+        time: '21:43'
+    wind: '4'
