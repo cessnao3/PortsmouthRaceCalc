@@ -152,3 +152,43 @@ race:
         boat: LASEM
         time: '21:43'
     wind: '4'
+  7:
+    RC:
+    - Ian_O
+    - Matt_T
+    date: '2023_08_20'
+    notes: M2
+    skip:
+      David_Bu:
+        boat: SF
+        time: '29:45'
+      Matt_L:
+        boat: F5
+        time: '30:47'
+      Rod_H:
+        boat: LASEM
+        time: '29:13'
+      Ryan_C:
+        boat: SF
+        time: '33:03'
+    wind: 2-3
+  8:
+    RC:
+    - Ian_O
+    - Matt_T
+    date: '2023_08_20'
+    notes: M2
+    skip:
+      David_Bu:
+        boat: SF
+        time: '28:08'
+      Matt_L:
+        boat: F5
+        time: '28:26'
+      Rod_H:
+        boat: LASEM
+        time: '28:01'
+      Ryan_C:
+        boat: SF
+        time: '31:11'
+    wind: 2-3
