@@ -89,3 +89,24 @@ races:
           Ian_O: 31:34
           Craig: dnf
           Matt_L: 29:10
+  - date: '2023_08_20'
+    rc:
+      - Ian_O
+      - Matt_T
+    races:
+      - notes: M2
+        wind_bf: 2
+        offset_time: 5:00
+        times:
+          David_Bu: 34:45
+          Rod_H: 34:13
+          Matt_L: 35:47
+          Ryan_C: 38:03
+      - notes: M2
+        wind_bf: 2
+        offset_time: 5:00
+        times:
+          David_Bu: 33:08
+          Rod_H: 33:01
+          Matt_L: 33:26
+          Ryan_C: 36:11
