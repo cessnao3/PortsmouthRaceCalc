@@ -192,3 +192,61 @@ race:
         boat: SF
         time: '31:11'
     wind: 2-3
+  9:
+    RC:
+    - Nick_H
+    - Matt_L
+    date: '2023_08_27'
+    notes: M2
+    skip:
+      Bill_P:
+        boat: SF
+        time: '31:00'
+      Chris_E:
+        boat: SF
+        time: '34:19'
+      David_Bu:
+        boat: SF
+        time: '31:05'
+      Heather_B:
+        boat: SF
+        time: '34:23'
+      Ian_O:
+        boat: SF
+        time: '33:21'
+      Matt_T:
+        boat: SF
+        time: '31:55'
+      Rod_H:
+        boat: LASEM
+        time: '30:23'
+    wind: 2-3
+  10:
+    RC:
+    - Nick_H
+    - Matt_L
+    date: '2023_08_27'
+    notes: M2
+    skip:
+      Bill_P:
+        boat: SF
+        time: '33:51'
+      Chris_E:
+        boat: SF
+        time: '37:51'
+      David_Bu:
+        boat: SF
+        time: '34:47'
+      Heather_B:
+        boat: SF
+        time: '47:20'
+      Ian_O:
+        boat: SF
+        time: '35:41'
+      Matt_T:
+        boat: SF
+        time: '38:05'
+      Rod_H:
+        boat: LASEM
+        time: '33:56'
+    wind: 2-3
