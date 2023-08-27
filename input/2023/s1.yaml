@@ -16,6 +16,7 @@ boats:
   Ryan_C: SF
   Matt_T: SF
   Craig: STFS
+  Heather_B: SF
 races:
   - date: '2023_07_23'
     rc:
@@ -110,3 +111,30 @@ races:
           Rod_H: 33:01
           Matt_L: 33:26
           Ryan_C: 36:11
+  - date: '2023_08_27'
+    rc:
+      - Nick_H
+      - Matt_L
+    races:
+      - notes: M2
+        wind_bf: 2
+        offset_time: 0
+        times:
+          Bill_P: 31:00
+          Chris_E: 34:19
+          David_Bu: 31:05
+          Ian_O: 33:21
+          Matt_T: 31:55
+          Rod_H: 30:23
+          Heather_B: 34:23
+      - notes: M2
+        wind_bf: 2
+        offset_time: 5:00
+        times:
+          Bill_P: 38:51
+          Chris_E: 42:51
+          David_Bu: 39:47
+          Ian_O: 40:41
+          Matt_T: 43:05
+          Rod_H: 38:56
+          Heather_B: 52:20
