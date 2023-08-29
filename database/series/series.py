@@ -6,12 +6,11 @@ import datetime
 import decimal
 import math
 
-from typing import Union, List, Dict, Optional
+from typing import Union, List, Dict, Optional, Tuple
 
 from dataclasses import dataclass
 
 from ..fleets import Fleet, BoatType
-from ..fleets.handicap import HandicapNumber
 from ..skippers import Skipper
 
 from ..utils import capitalize_words, round_score
@@ -51,6 +50,30 @@ class ScoreList:
         return self.points_scored + self.points_excluded
 
 
+@dataclass
+class SkipperRank:
+    """
+    Provides a class to maintain the skipper rank
+    """
+
+    # Raw Rank (not tie-broken)
+    rank: int
+
+    # Tie-Broken Rank
+    rank_tie_broken: Optional[int]
+
+    def __lt__(self, other) -> bool:
+        if not isinstance(other, SkipperRank):
+            raise RuntimeError("cannot compare non-skipperrank objects")
+
+        if self.rank != other.rank:
+            return self.rank < other.rank
+        elif self.rank_tie_broken is not None and other.rank_tie_broken is not None:
+            return self.rank_tie_broken < other.rank_tie_broken
+        else:
+            raise RuntimeError("cannot compare one tie-broken rank to a non-tie-broken rank like this")
+
+
 class Series:
     """
     Defines a series of series, defined by a fleet type and a list of series
@@ -80,9 +103,7 @@ class Series:
         self.__skipper_rc_pts = None
         self.__skippers: Optional[List[Skipper]] = None
         self.__points: Optional[Dict[Skipper, List[Union[float, int]]]] = None
-        self.__ranks: Optional[Dict[Skipper, int]] = None
-        self.__plot_scatter_results: Optional[bytes] = None
-        self.__plot_boat_pie_chart: Optional[bytes] = None
+        self.__ranks: Optional[Dict[Skipper, SkipperRank]] = None
         self.__plot_series_rank_history: Optional[bytes] = None
         self.__plot_series_point_history: Optional[bytes] = None
 
@@ -95,8 +116,7 @@ class Series:
         self.__skippers = None
         self.__points = None
         self.__ranks = None
-        self.__plot_scatter_results = None
-        self.__plot_boat_pie_chart = None
+        self.__ranks_tie_broken = None
         self.__plot_series_rank_history = None
         self.__plot_series_point_history = None
 
@@ -349,7 +369,7 @@ class Series:
         # Return the skipper list
         return self.__skippers
 
-    def get_skipper_rank(self, skipper: Skipper) -> Optional[int]:
+    def __inner_get_skipper_rank(self, skipper: Skipper) -> Optional[SkipperRank]:
         """
         Provides the rank in the series for the given skipper
         :param skipper: the skipper to check
@@ -369,13 +389,33 @@ class Series:
                     else:
                         r = last_rank
 
-                    self.__ranks[skip_point] = r
+                    self.__ranks[skip_point] = SkipperRank(r, current_rank)
                     last_rank = r
                     last_score = pts.score
 
+            for val in set([val.rank for val in self.__ranks.values()]):
+                # Determine the count for the current value
+                cnt = len([None for v in self.__ranks.values() if val == v.rank])
+
+                # If the count is not large enough, set all the second values to 1
+                if cnt <= 1:
+                    for key, key_val in self.__ranks.items():
+                        if key_val.rank == val:
+                            self.__ranks[key].rank_tie_broken = None
+
         # Return the resulting rank
-        if skipper in self.__ranks:
-            return self.__ranks[skipper]
+        return self.__ranks.get(skipper, None)
+
+    def get_skipper_rank(self, skipper: Skipper) -> Optional[SkipperRank]:
+        """
+        Provides the rank in the series for the given skipper
+        :param skipper: the skipper to check
+        :return: the resulting rank, or None if skipper does not qualify
+        """
+        # Return the resulting rank
+        rnk = self.__inner_get_skipper_rank(skipper=skipper)
+        if rnk:
+            return rnk
         else:
             return None
 
@@ -598,7 +638,8 @@ class Series:
 
                 race_vals.append(i + 1)
                 for skipper, (list_val_rank, list_val_points) in skipper_db.items():
-                    list_val_rank.append(series.get_skipper_rank(skipper))
+                    r = series.get_skipper_rank(skipper)
+                    list_val_rank.append(r.rank if r is not None else None)
 
                     sp = series.skipper_points_list(skipper)
                     list_val_points.append(sp.score if sp else None)

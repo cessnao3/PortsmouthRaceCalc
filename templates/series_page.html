@@ -34,7 +34,11 @@
             <tr>
                 {% set rank = series.get_skipper_rank(skipper) %}
                 {% if rank %}
-                <td>{{ rank }}</td>
+                {% if rank.rank_tie_broken %}
+                <td>{{ rank.rank }} ({{ rank.rank_tie_broken }}*)</td>
+                {% else %}
+                <td>{{ rank.rank }}</td>
+                {% endif %}
                 {% else %}
                 <td></td>
                 {% endif %}
