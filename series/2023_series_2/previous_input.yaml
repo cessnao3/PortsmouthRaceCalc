@@ -1,0 +1,59 @@
+race:
+  1:
+    RC:
+    - Barry_O
+    - David_Bu
+    date: '2023_09_10'
+    notes: M
+    skip:
+      Bill_P:
+        boat: SF
+        time: '26:34'
+      Chris_E:
+        boat: SF
+        time: '28:47'
+      Heather_B:
+        boat: SF
+        time: FIP_7
+      John_M:
+        boat: SF
+        time: '30:10'
+      Lewis_V:
+        boat: BCN
+        time: '25:50'
+      Matt_L:
+        boat: F5
+        time: '29:12'
+      Ryan_C:
+        boat: SF
+        time: '31:52'
+    wind: 2-3
+  2:
+    RC:
+    - Barry_O
+    - David_Bu
+    date: '2023_09_10'
+    notes: M
+    skip:
+      Bill_P:
+        boat: SF
+        time: '41:38'
+      Chris_E:
+        boat: SF
+        time: '40:26'
+      Heather_B:
+        boat: SF
+        time: '45:02'
+      John_M:
+        boat: SF
+        time: FIP_7
+      Lewis_V:
+        boat: BCN
+        time: '37:25'
+      Matt_L:
+        boat: F5
+        time: '45:06'
+      Ryan_C:
+        boat: SF
+        time: '45:59'
+    wind: 2-3
