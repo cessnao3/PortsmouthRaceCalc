@@ -10,11 +10,28 @@
         <ul>
             <li><a href="{{ url_for('series_page', series_name=series_list[0].name) }}">Latest ({{ database.latest_race_date_string() }})</a></li>
         </ul>
-         <ul>
-            {% for series in series_list %}
-            <li><a href="{{ url_for('series_page', series_name=series.name) }}">{{ series.fancy_name() }}</a></li>
+        {% if series_group_count %}
+        <table border="1" style="text-align: center">
+            <tr>
+                <th>Year</th>
+                {% for i in range(series_group_count) %}
+                <th>Series {{ i + 1 }}</th>
+                {% endfor %}
+            </tr>
+            {% for name, serieses in series_group %}
+            <tr>
+                <th>{{ name }}</th>
+                {% for series in serieses %}
+                {%if series %}
+                <td><a href="{{ url_for('series_page', series_name=series.name) }}">{{ series.fancy_name() }}</a></td>
+                {% else %}
+                <td>-</td>
+                {% endif %}
+                {% endfor %}
+            </tr>
             {% endfor %}
-        </ul>
+        </table>
+        {% endif %}
 
         <h2>Database</h2>
         <ul>

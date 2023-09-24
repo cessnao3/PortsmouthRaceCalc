@@ -2,10 +2,13 @@
 Main entry point for a static compilation of the scoring
 """
 
+from typing import Dict, List, Optional, Tuple
+
 from staticgen import StaticApplication
 
 from db_input import get_database
 import database.utils as utils
+from database.series import Series
 
 import yaml
 
@@ -47,11 +50,32 @@ def favicon():
 
 @app.route('/index.html')
 def index_page():
+    series_group_dict: Dict[str, List[Series]] = dict()
+    for s in database.series.values():
+        s_g = s.name.split("_")[0].strip()
+        if s_g not in series_group_dict:
+            series_group_dict[s_g] = list()
+
+        series_group_dict[s_g].append(s)
+
+    max_count = max([len(l) for l in series_group_dict.values()])
+
+    series_group: List[Tuple[str, List[Optional[Series]]]] = list()
+
+    for sl_key in reversed(sorted(series_group_dict.keys())):
+        sl = series_group_dict[sl_key]
+        sl.sort(key=lambda x: x.name)
+        while len(sl) < max_count:
+            sl.append(None)
+        series_group.append((sl_key, sl))
+
     return app.render_template(
         'index.html',
         database=database,
         series_list=list(reversed(list(database.series.values()))),
-        fleets_list=list(database.fleets.values()))
+        fleets_list=list(database.fleets.values()),
+        series_group=series_group,
+        series_group_count=max_count)
 
 
 @app.route('/series/<string:series_name>/index.html')
