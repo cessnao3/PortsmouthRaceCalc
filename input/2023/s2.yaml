@@ -18,6 +18,8 @@ boats:
   Craig: STFS
   Heather_B: SF
   John_M: SF
+  JoDene: SF
+  Susan_D: SF
 races:
   - date: '2023_09_10'
     rc:
@@ -45,3 +47,27 @@ races:
           Ryan_C: 45:59
           John_M: FIP7
           Heather_B: 45:02
+  - date: '2023_09_24'
+    rc:
+      - Bill_P
+      - Matt_L
+      - JoDene
+    races:
+      - notes: M3
+        wind_bf: 2
+        times:
+          Barry_O: 43:38
+          David_Bu: 38:57
+          Ian_O: 35:32
+          Rod_H: 35:46
+          Heather_B: 52:14
+          John_M: 53:03
+          Susan_D: FIP7
+      - notes: M2
+        wind_bf: 2
+        times:
+          Barry_O: 28:01
+          David_Bu: 27:01
+          Ian_O: 25:59
+          Rod_H: 23:37
+          Heather_B: 28:52
