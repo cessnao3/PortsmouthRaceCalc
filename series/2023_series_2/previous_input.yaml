@@ -57,3 +57,57 @@ race:
         boat: SF
         time: '45:59'
     wind: 2-3
+  3:
+    RC:
+    - Bill_P
+    - Matt_L
+    - JoDene
+    date: '2023_09_24'
+    notes: M3
+    skip:
+      Barry_O:
+        boat: HLR14
+        time: '43:38'
+      David_Bu:
+        boat: SF
+        time: '38:57'
+      Heather_B:
+        boat: SF
+        time: '52:14'
+      Ian_O:
+        boat: SF
+        time: '35:32'
+      John_M:
+        boat: SF
+        time: '53:03'
+      Rod_H:
+        boat: LASEM
+        time: '35:46'
+      Susan_D:
+        boat: SF
+        time: FIP_7
+    wind: 2-3
+  4:
+    RC:
+    - Bill_P
+    - Matt_L
+    - JoDene
+    date: '2023_09_24'
+    notes: M2
+    skip:
+      Barry_O:
+        boat: HLR14
+        time: '28:01'
+      David_Bu:
+        boat: SF
+        time: '27:01'
+      Heather_B:
+        boat: SF
+        time: '28:52'
+      Ian_O:
+        boat: SF
+        time: '25:59'
+      Rod_H:
+        boat: LASEM
+        time: '23:37'
+    wind: 2-3
