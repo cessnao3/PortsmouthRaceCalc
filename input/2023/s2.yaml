@@ -20,6 +20,7 @@ boats:
   John_M: SF
   JoDene: SF
   Susan_D: SF
+  Craig_J: SF
 races:
   - date: '2023_09_10'
     rc:
@@ -71,3 +72,45 @@ races:
           Ian_O: 25:59
           Rod_H: 23:37
           Heather_B: 28:52
+  - date: '2023_10_01'
+    rc:
+      - Ian_O
+      - Nick_H
+    races:
+      - notes: Cancelled due to motor inop
+        wind_bf: 0
+        times:
+      - notes: Cancelled due to motor inop
+        wind_bf: 0
+        times:
+  - date: '2023_10_08'
+    rc:
+      - Ryan_C
+      - Nick_H
+    races:
+      - notes: M2
+        wind_bf: 2
+        times:
+          Barry_O: 43:25
+          Bill_P: 34:58
+          David_Bu: 35:20
+          Lewis_V: 39:55
+          Matt_L: 35:24
+          Rod_H: 34:06
+          Craig_J: 48:26
+          Susan_D: 56:55
+          John_M: 48:40
+          JoDene: FIP10
+      - notes: M2
+        wind_bf: 2
+        times:
+          Barry_O: 34:07
+          Bill_P: 26:57
+          David_Bu: 27:15
+          Lewis_V: 27:29
+          Matt_L: 29:21
+          Rod_H: 25:50
+          Craig_J: 41:47
+          Susan_D: 32:38
+          John_M: 33:54
+          JoDene: FIP10
