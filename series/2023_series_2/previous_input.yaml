@@ -111,3 +111,95 @@ race:
         boat: LASEM
         time: '23:37'
     wind: 2-3
+  5:
+    RC:
+    - Ian_O
+    - Nick_H
+    date: '2023_10_01'
+    notes: Cancelled due to motor inop
+    skip: {}
+    wind: 0-1
+  6:
+    RC:
+    - Ian_O
+    - Nick_H
+    date: '2023_10_01'
+    notes: Cancelled due to motor inop
+    skip: {}
+    wind: 0-1
+  7:
+    RC:
+    - Ryan_C
+    - Nick_H
+    date: '2023_10_08'
+    notes: M2
+    skip:
+      Barry_O:
+        boat: HLR14
+        time: '43:25'
+      Bill_P:
+        boat: SF
+        time: '34:58'
+      Craig_J:
+        boat: SF
+        time: '48:26'
+      David_Bu:
+        boat: SF
+        time: '35:20'
+      JoDene:
+        boat: SF
+        time: FIP_10
+      John_M:
+        boat: SF
+        time: '48:40'
+      Lewis_V:
+        boat: BCN
+        time: '39:55'
+      Matt_L:
+        boat: F5
+        time: '35:24'
+      Rod_H:
+        boat: LASEM
+        time: '34:06'
+      Susan_D:
+        boat: SF
+        time: '56:55'
+    wind: 2-3
+  8:
+    RC:
+    - Ryan_C
+    - Nick_H
+    date: '2023_10_08'
+    notes: M2
+    skip:
+      Barry_O:
+        boat: HLR14
+        time: '34:07'
+      Bill_P:
+        boat: SF
+        time: '26:57'
+      Craig_J:
+        boat: SF
+        time: '41:47'
+      David_Bu:
+        boat: SF
+        time: '27:15'
+      JoDene:
+        boat: SF
+        time: FIP_10
+      John_M:
+        boat: SF
+        time: '33:54'
+      Lewis_V:
+        boat: BCN
+        time: '27:29'
+      Matt_L:
+        boat: F5
+        time: '29:21'
+      Rod_H:
+        boat: LASEM
+        time: '25:50'
+      Susan_D:
+        boat: SF
+        time: '32:38'
+    wind: 2-3
