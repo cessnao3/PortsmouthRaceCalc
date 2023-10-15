@@ -203,3 +203,19 @@ race:
         boat: SF
         time: '32:38'
     wind: 2-3
+  9:
+    RC:
+    - Rod_H
+    - Ian_O
+    date: '2023_10_01'
+    notes: Cancelled due to insufficient sailors
+    skip: {}
+    wind: 0-1
+  10:
+    RC:
+    - Rod_H
+    - Ian_O
+    date: '2023_10_01'
+    notes: Cancelled due to insufficient sailors
+    skip: {}
+    wind: 0-1
