@@ -114,3 +114,14 @@ races:
           Susan_D: 32:38
           John_M: 33:54
           JoDene: FIP10
+  - date: '2023_10_01'
+    rc:
+      - Rod_H
+      - Ian_O
+    races:
+      - notes: Cancelled due to insufficient sailors
+        wind_bf: 0
+        times:
+      - notes: Cancelled due to insufficient sailors
+        wind_bf: 0
+        times:
