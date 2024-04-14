@@ -1,0 +1,47 @@
+race:
+  1:
+    RC:
+    - Rod_H
+    - Jim_S
+    date: '2023_07_23'
+    notes: M2
+    skip:
+      Bill_P:
+        boat: SF
+        time: '41:12'
+      Heather_B:
+        boat: SF
+        time: '43:08'
+      Ian_O:
+        boat: US-1
+        time: '40:42'
+      Jim_M:
+        boat: SF
+        time: '42:16'
+      Ryan_C:
+        boat: PIRAT
+        time: '44:00'
+    wind: 2-3
+  2:
+    RC:
+    - Rod_H
+    - Jim_S
+    date: '2023_07_23'
+    notes: M2
+    skip:
+      Bill_P:
+        boat: SF
+        time: '26:13'
+      Heather_B:
+        boat: SF
+        time: '29:36'
+      Ian_O:
+        boat: US-1
+        time: '22:39'
+      Jim_M:
+        boat: SF
+        time: '30:26'
+      Ryan_C:
+        boat: PIRAT
+        time: '31:20'
+    wind: 2-3
