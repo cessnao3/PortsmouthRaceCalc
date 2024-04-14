@@ -1,0 +1,43 @@
+boats:
+  Bill_P: SF
+  Rod_H: LASEM
+  Lewis_V: BCN
+  Jim_S: SF
+  David_Bu: SF
+  Ian_O: US-1
+  Barry_O: HLR14
+  Steve_S: SF
+  Matt_L: F5
+  Nick_H: SF
+  Chris_E: SF
+  Dennis_S: SF
+  Gary_V: SF
+  Ryan_C: PIRAT
+  Matt_T: SF
+  Craig: STFS
+  Heather_B: SF
+  Jim_M: SF
+races:
+  - date: '2023_07_23'
+    rc:
+      - Rod_H
+      - Jim_S
+    races:
+      - notes: M2
+        wind_bf: 2
+        offset_time: 0
+        times:
+          Bill_P: 41:12
+          Ian_O: 40:42
+          Ryan_C: 44:00
+          Heather_B: 43:08
+          Jim_M: 42:16
+      - notes: M2
+        wind_bf: 2
+        offset_time: 0
+        times:
+          Bill_P: 26:13
+          Ian_O: 22:39
+          Ryan_C: 31:20
+          Heather_B: 29:36
+          Jim_M: 30:26
