@@ -1,9 +1,9 @@
 race:
   1:
     RC:
-    - Rod_H
-    - Jim_S
-    date: '2023_07_23'
+    - Matt_L
+    - Chris_E
+    date: '2024_04_14'
     notes: M2
     skip:
       Bill_P:
@@ -24,9 +24,9 @@ race:
     wind: 2-3
   2:
     RC:
-    - Rod_H
-    - Jim_S
-    date: '2023_07_23'
+    - Matt_L
+    - Chris_E
+    date: '2024_04_14'
     notes: M2
     skip:
       Bill_P:
