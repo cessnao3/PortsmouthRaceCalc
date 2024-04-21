@@ -18,10 +18,10 @@ boats:
   Heather_B: SF
   Jim_M: SF
 races:
-  - date: '2023_07_23'
+  - date: '2024_04_14'
     rc:
-      - Rod_H
-      - Jim_S
+      - Matt_L
+      - Chris_E
     races:
       - notes: M2
         wind_bf: 2
