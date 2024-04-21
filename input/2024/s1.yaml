@@ -25,7 +25,6 @@ races:
     races:
       - notes: M2
         wind_bf: 2
-        offset_time: 0
         times:
           Bill_P: 41:12
           Ian_O: 40:42
@@ -34,10 +33,35 @@ races:
           Jim_M: 42:16
       - notes: M2
         wind_bf: 2
-        offset_time: 0
         times:
           Bill_P: 26:13
           Ian_O: 22:39
           Ryan_C: 31:20
           Heather_B: 29:36
           Jim_M: 30:26
+  - date: '2024_04_21'
+    rc:
+      - Rod_H
+      - Ian_O
+    races:
+      - notes: I3
+        wind_bf: 2
+        boat_overrides:
+          Jim_M: CAT125
+        times:
+          Barry_O: 27:15
+          Bill_P: 24:32
+          Matt_L: 25:35
+          Ryan_C: 35:19
+          Heather_B: DNF
+          Jim_M: 37:53
+      - notes: I3
+        wind_bf: 2
+        boat_overrides:
+          Jim_M: CAT125
+        times:
+          Barry_O: 34:11
+          Bill_P: 24:30
+          Matt_L: 25:33
+          Ryan_C: 36:13
+          Jim_M: 38:33
