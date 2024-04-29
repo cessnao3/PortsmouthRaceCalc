@@ -65,3 +65,25 @@ races:
           Matt_L: 25:33
           Ryan_C: 36:13
           Jim_M: 38:33
+  - date: '2024_04_28'
+    rc:
+      - Barry_O
+      - Bill_P
+      - Heather_B
+    races:
+      - notes: Triangle
+        wind_bf: 3
+        offset_time: 5:00
+        times:
+          Rod_H: 22:52
+          Matt_T: 31:14
+          Matt_L: 24:29
+          Ian_O: 25:02
+      - notes: Triangle
+        wind_bf: 3
+        offset_time: 5:00
+        times:
+          Rod_H: 24:26
+          Matt_T: 26:13
+          Matt_L: 25:06
+          Ian_O: 25:09
