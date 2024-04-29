@@ -94,3 +94,45 @@ race:
         boat: PIRAT
         time: '36:13'
     wind: 2-3
+  5:
+    RC:
+    - Barry_O
+    - Bill_P
+    - Heather_B
+    date: '2024_04_28'
+    notes: Triangle
+    skip:
+      Ian_O:
+        boat: US-1
+        time: '20:02'
+      Matt_L:
+        boat: F5
+        time: '19:29'
+      Matt_T:
+        boat: SF
+        time: '26:14'
+      Rod_H:
+        boat: LASEM
+        time: '17:52'
+    wind: 2-3
+  6:
+    RC:
+    - Barry_O
+    - Bill_P
+    - Heather_B
+    date: '2024_04_28'
+    notes: Triangle
+    skip:
+      Ian_O:
+        boat: US-1
+        time: '20:09'
+      Matt_L:
+        boat: F5
+        time: '20:06'
+      Matt_T:
+        boat: SF
+        time: '21:13'
+      Rod_H:
+        boat: LASEM
+        time: '19:26'
+    wind: 2-3
