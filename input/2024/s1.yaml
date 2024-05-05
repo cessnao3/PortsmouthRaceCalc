@@ -87,3 +87,27 @@ races:
           Matt_T: 26:13
           Matt_L: 25:06
           Ian_O: 25:09
+  - date: '2024_05_05'
+    rc:
+      - Nick_H
+      - Ryan_C
+    races:
+      - notes: M2
+        wind_bf: 1
+        offset_time: 6:00
+        times:
+          Bill_P: 36:25
+          Chris_E: 36:55
+          Heather_B: FIP6
+          Ian_O: 33:31
+          Matt_L: 35:43
+          Rod_H: 33:26
+      - notes: M2
+        wind_bf: 2
+        offset_time: 5:00
+        times:
+          Bill_P: 27:18
+          Chris_E: 28:47
+          Ian_O: DNF
+          Matt_L: 27:48
+          Rod_H: 25:16
