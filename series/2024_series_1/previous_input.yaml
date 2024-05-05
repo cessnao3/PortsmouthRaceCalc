@@ -136,3 +136,52 @@ race:
         boat: LASEM
         time: '19:26'
     wind: 2-3
+  7:
+    RC:
+    - Nick_H
+    - Ryan_C
+    date: '2024_05_05'
+    notes: M2
+    skip:
+      Bill_P:
+        boat: SF
+        time: '30:25'
+      Chris_E:
+        boat: SF
+        time: '30:55'
+      Heather_B:
+        boat: SF
+        time: FIP_6
+      Ian_O:
+        boat: US-1
+        time: '27:31'
+      Matt_L:
+        boat: F5
+        time: '29:43'
+      Rod_H:
+        boat: LASEM
+        time: '27:26'
+    wind: 0-1
+  8:
+    RC:
+    - Nick_H
+    - Ryan_C
+    date: '2024_05_05'
+    notes: M2
+    skip:
+      Bill_P:
+        boat: SF
+        time: '22:18'
+      Chris_E:
+        boat: SF
+        time: '23:47'
+      Ian_O:
+        boat: US-1
+        time: DNF
+      Matt_L:
+        boat: F5
+        time: '22:48'
+      Rod_H:
+        boat: LASEM
+        time: '20:16'
+    wind: 2-3
