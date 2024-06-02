@@ -185,3 +185,61 @@ race:
         boat: LASEM
         time: '20:16'
     wind: 2-3
+  9:
+    RC:
+    - Nick_H
+    - David_Bu
+    date: '2024_06_02'
+    notes: M2
+    skip:
+      Gary_V:
+        boat: SF
+        time: '23:33'
+      Heather_B:
+        boat: SF
+        time: '23:00'
+      Jim_S:
+        boat: SF
+        time: '26:06'
+      John_M:
+        boat: SF
+        time: '22:13'
+      Matt_L:
+        boat: F5
+        time: '21:48'
+      Ryan_C:
+        boat: PIRAT
+        time: '24:22'
+      Sam:
+        boat: SF
+        time: '26:04'
+    wind: 2-3
+  10:
+    RC:
+    - Nick_H
+    - David_Bu
+    date: '2024_06_02'
+    notes: M2
+    skip:
+      Gary_V:
+        boat: SF
+        time: '21:30'
+      Heather_B:
+        boat: SF
+        time: '23:33'
+      Jim_S:
+        boat: SF
+        time: DNF
+      John_M:
+        boat: SF
+        time: '20:57'
+      Matt_L:
+        boat: F5
+        time: '18:52'
+      Ryan_C:
+        boat: PIRAT
+        time: DNF
+      Sam:
+        boat: SF
+        time: '27:14'
+    wind: 2-3
