@@ -17,6 +17,8 @@ boats:
   Craig: STFS
   Heather_B: SF
   Jim_M: SF
+  John_M: SF
+  Sam: SF
 races:
   - date: '2024_04_14'
     rc:
@@ -111,3 +113,30 @@ races:
           Ian_O: DNF
           Matt_L: 27:48
           Rod_H: 25:16
+  - date: '2024_06_02'
+    rc:
+      - Nick_H
+      - David_Bu
+    races:
+      - notes: M2
+        wind_bf: 2
+        offset_time: 5:00
+        times:
+          Heather_B: 28:00
+          Jim_S: 31:06
+          Matt_L: 26:48
+          Ryan_C: 29:22
+          John_M: 27:13
+          Gary_V: 28:33
+          Sam: 31:04
+      - notes: M2
+        wind_bf: 2
+        offset_time: 5:00
+        times:
+          Heather_B: 28:33
+          Jim_S: DNF
+          Matt_L: 23:52
+          Ryan_C: DNF
+          John_M: 25:57
+          Gary_V: 26:30
+          Sam: 32:14
