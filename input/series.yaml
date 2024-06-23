@@ -86,3 +86,7 @@
   fleet: portsmouth_2017
   valid_required_skippers: 4
   race_file: 2024/s1.yaml
+2024_series_2:
+  fleet: portsmouth_2017
+  valid_required_skippers: 4
+  race_file: 2024/s2.yaml

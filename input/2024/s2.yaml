@@ -1,0 +1,47 @@
+boats:
+  Bill_P: SF
+  Rod_H: LASEM
+  Lewis_V: BCN
+  Jim_S: SF
+  David_Bu: SF
+  Ian_O: US-1
+  Barry_O: HLR14
+  Steve_S: SF
+  Matt_L: F5
+  Nick_H: SF
+  Chris_E: SF
+  Dennis_S: SF
+  Gary_V: SF
+  Ryan_C: PIRAT
+  Matt_T: SF
+  Craig: STFS
+  Heather_B: SF
+  Jim_M: SF
+  John_M: SF
+  Sam: SF
+  Tyler_T: SF
+  Nick_Ally: SF
+races:
+  - date: '2024_06_23'
+    rc:
+      - Nick_H
+      - Ryan_C
+    races:
+      - notes: M1
+        wind_bf: 0
+        times:
+          Bill_P: 45:15
+          David_Bu: 45:10
+          Heather_B: 46:40
+          Matt_L: 45:42
+          Tyler_T: 46:07
+          Nick_Ally: 46:09
+      - notes: M1
+        wind_bf: 0
+        times:
+          Bill_P: 31:03
+          David_Bu: 30:57
+          Heather_B: 35:38
+          Matt_L: 32:21
+          Tyler_T: 32:26
+          Nick_Ally: 33:52
