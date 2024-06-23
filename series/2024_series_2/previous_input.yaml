@@ -1,0 +1,53 @@
+race:
+  1:
+    RC:
+    - Nick_H
+    - Ryan_C
+    date: '2024_06_23'
+    notes: M1
+    skip:
+      Bill_P:
+        boat: SF
+        time: '45:15'
+      David_Bu:
+        boat: SF
+        time: '45:10'
+      Heather_B:
+        boat: SF
+        time: '46:40'
+      Matt_L:
+        boat: F5
+        time: '45:42'
+      Nick_Ally:
+        boat: SF
+        time: '46:09'
+      Tyler_T:
+        boat: SF
+        time: '46:07'
+    wind: 0-1
+  2:
+    RC:
+    - Nick_H
+    - Ryan_C
+    date: '2024_06_23'
+    notes: M1
+    skip:
+      Bill_P:
+        boat: SF
+        time: '31:03'
+      David_Bu:
+        boat: SF
+        time: '30:57'
+      Heather_B:
+        boat: SF
+        time: '35:38'
+      Matt_L:
+        boat: F5
+        time: '32:21'
+      Nick_Ally:
+        boat: SF
+        time: '33:52'
+      Tyler_T:
+        boat: SF
+        time: '32:26'
+    wind: 0-1
