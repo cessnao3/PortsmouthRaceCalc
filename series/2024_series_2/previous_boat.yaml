@@ -31,14 +31,6 @@ boat:
       '4': 93.6
       5-9: 96.7
       D-PN: 96.7
-  PIRAT:
-    full_name: Pirateer
-    hc_of_wind:
-      0-1: 104.9
-      2-3: 102.9
-      '4': 101.5
-      5-9: 102.9
-      D-PN: 102.9
   SF:
     full_name: Sunfish (Int.)
     hc_of_wind:
