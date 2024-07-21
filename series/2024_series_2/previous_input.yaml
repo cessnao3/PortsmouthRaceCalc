@@ -109,3 +109,52 @@ race:
         boat: SF
         time: '34:43'
     wind: 2-3
+  5:
+    RC:
+    - Ian_O
+    - Nick_H
+    date: '2024_07_21'
+    notes: M2 90
+    skip:
+      Bill_P:
+        boat: SF
+        time: '25:33'
+      David_Bu:
+        boat: SF
+        time: '22:32'
+      Heather_B:
+        boat: SF
+        time: '37:41'
+      Jim_S:
+        boat: SF
+        time: '38:37'
+      JoDene_C:
+        boat: SF
+        time: FIP_6
+      Larry_G:
+        boat: SF
+        time: '43:53'
+    wind: 2-3
+  6:
+    RC:
+    - Ian_O
+    - Nick_H
+    date: '2024_07_21'
+    notes: M2 90
+    skip:
+      Bill_P:
+        boat: SF
+        time: '24:02'
+      David_Bu:
+        boat: SF
+        time: '25:10'
+      Heather_B:
+        boat: SF
+        time: '33:33'
+      Jim_S:
+        boat: SF
+        time: '36:50'
+      Larry_G:
+        boat: SF
+        time: DNF
+    wind: 2-3
