@@ -23,6 +23,7 @@ boats:
   Nick_Ally: SF
   JoDene_C: SF
   Larry_G: SF
+  Craig_J: SF
 races:
   - date: '2024_06_23'
     rc:
@@ -98,3 +99,26 @@ races:
           Jim_S: 42:50
           Larry_G: DNF
           Heather_B: 39:33
+  - date: '2024_07_28'
+    rc:
+      - David_Bu
+      - Matt_L
+    races:
+      - notes: M3 220
+        wind_bf: 3
+        times:
+          Heather_B: 47:25
+          Ian_O: 30:20
+          Rod_H: 30:15
+          Ryan_C: 39:24
+          Craig_J: DNF
+          Tyler_T: 53:30
+      - notes: M2
+        wind_bf: 2
+        times:
+          Heather_B: 29:48
+          Ian_O: 23:29
+          Rod_H: 23:12
+          Ryan_C: 26:02
+          Craig_J: DNF
+          Tyler_T: 33:40
