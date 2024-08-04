@@ -419,7 +419,7 @@ class MasterDatabase:
                         notes=race_dict['notes'])
 
                     # Extract the race time results
-                    time_values = race_dict['times']
+                    time_values = race_dict.get('times', {})
 
                     # Define the override time
                     offset_time = series_offset_time
