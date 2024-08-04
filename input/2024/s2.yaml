@@ -25,7 +25,7 @@ boats:
   Larry_G: SF
   Craig_J: SF
 races:
-  - date: '2024_06_23'
+  - date: "2024_06_23"
     rc:
       - Nick_H
       - Ryan_C
@@ -48,7 +48,7 @@ races:
           Matt_L: 32:21
           Tyler_T: 32:26
           Nick_Ally: 33:52
-  - date: '2024_06_30'
+  - date: "2024_06_30"
     rc:
       - Bill_P
       - Barry_O
@@ -75,7 +75,7 @@ races:
           Ryan_C: 39:43
           JoDene_C: FIP6
           Heather_B: FIP7
-  - date: '2024_07_21'
+  - date: "2024_07_21"
     rc:
       - Ian_O
       - Nick_H
@@ -99,7 +99,7 @@ races:
           Jim_S: 42:50
           Larry_G: DNF
           Heather_B: 39:33
-  - date: '2024_07_28'
+  - date: "2024_07_28"
     rc:
       - David_Bu
       - Matt_L
@@ -122,3 +122,11 @@ races:
           Ryan_C: 26:02
           Craig_J: DNF
           Tyler_T: 33:40
+  - date: "2024_08_04"
+    rc:
+      - Barry_O
+    races:
+      - notes: Insufficient Racers
+        wind_bf: 0
+      - notes: Insufficient Racers
+        wind_bf: 0
