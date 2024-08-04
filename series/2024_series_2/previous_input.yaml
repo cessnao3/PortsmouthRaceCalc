@@ -210,3 +210,17 @@ race:
         boat: SF
         time: '33:40'
     wind: 2-3
+  9:
+    RC:
+    - Barry_O
+    date: '2024_08_04'
+    notes: Insufficient Racers
+    skip: {}
+    wind: 0-1
+  10:
+    RC:
+    - Barry_O
+    date: '2024_08_04'
+    notes: Insufficient Racers
+    skip: {}
+    wind: 0-1
