@@ -1,0 +1,44 @@
+race:
+  1:
+    RC:
+    - Heather_B
+    - Ryan_C
+    date: '2024_08_18'
+    notes: M2 - Shortened from M3
+    skip:
+      Bill_P:
+        boat: SF
+        time: '33:03'
+      Craig_J:
+        boat: SF
+        time: '39:39'
+      Ian_O:
+        boat: US-1
+        time: '33:12'
+      Matt_L:
+        boat: F5
+        time: '33:26'
+      Melissa_W:
+        boat: SF
+        time: FIP_5
+    wind: 2-3
+  2:
+    RC:
+    - Heather_B
+    - Ryan_C
+    date: '2024_08_18'
+    notes: M1 - Shortened from M2
+    skip:
+      Bill_P:
+        boat: SF
+        time: '27:19'
+      Craig_J:
+        boat: SF
+        time: '31:37'
+      Ian_O:
+        boat: US-1
+        time: '30:28'
+      Matt_L:
+        boat: F5
+        time: '28:03'
+    wind: 2-3
