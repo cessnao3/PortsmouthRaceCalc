@@ -1,0 +1,48 @@
+boats:
+  Bill_P: SF
+  Rod_H: LASEM
+  Lewis_V: BCN
+  Jim_S: SF
+  David_Bu: SF
+  Ian_O: US-1
+  Barry_O: HLR14
+  Steve_S: SF
+  Matt_L: F5
+  Nick_H: SF
+  Chris_E: SF
+  Dennis_S: SF
+  Gary_V: SF
+  Ryan_C: SF
+  Matt_T: SF
+  Craig: STFS
+  Heather_B: SF
+  Jim_M: SF
+  John_M: SF
+  Sam: SF
+  Tyler_T: SF
+  Nick_Ally: SF
+  JoDene_C: SF
+  Larry_G: SF
+  Craig_J: SF
+  Melissa_W: SF
+races:
+  - date: "2024_08_18"
+    rc:
+      - Heather_B
+      - Ryan_C
+    races:
+      - notes: M2 - Shortened from M3
+        wind_bf: 2
+        times:
+          Bill_P: 33:03
+          Ian_O: 33:12
+          Matt_L: 33:26
+          Craig_J: 39:39
+          Melissa_W: FIP5
+      - notes: M1 - Shortened from M2
+        wind_bf: 2
+        times:
+          Bill_P: 27:19
+          Ian_O: 30:28
+          Matt_L: 28:03
+          Craig_J: 31:37
