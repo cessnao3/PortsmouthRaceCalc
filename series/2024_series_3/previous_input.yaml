@@ -8,16 +8,16 @@ race:
     skip:
       Bill_P:
         boat: SF
-        time: '33:03'
+        time: '27:03'
       Craig_J:
         boat: SF
-        time: '39:39'
+        time: '33:39'
       Ian_O:
         boat: US-1
-        time: '33:12'
+        time: '27:12'
       Matt_L:
         boat: F5
-        time: '33:26'
+        time: '27:26'
       Melissa_W:
         boat: SF
         time: FIP_5
@@ -31,14 +31,14 @@ race:
     skip:
       Bill_P:
         boat: SF
-        time: '27:19'
+        time: '21:19'
       Craig_J:
         boat: SF
-        time: '31:37'
+        time: '25:37'
       Ian_O:
         boat: US-1
-        time: '30:28'
+        time: '24:28'
       Matt_L:
         boat: F5
-        time: '28:03'
+        time: '22:03'
     wind: 2-3
