@@ -1,5 +1,4 @@
-boats:
-  Bill_P: SF
+boats:  Bill_P: SF
   Rod_H: LASEM
   Lewis_V: BCN
   Jim_S: SF
@@ -33,6 +32,7 @@ races:
     races:
       - notes: M2 - Shortened from M3
         wind_bf: 2
+        offset_time: 6:00
         times:
           Bill_P: 33:03
           Ian_O: 33:12
@@ -41,6 +41,7 @@ races:
           Melissa_W: FIP5
       - notes: M1 - Shortened from M2
         wind_bf: 2
+        offset_time: 6:00
         times:
           Bill_P: 27:19
           Ian_O: 30:28
