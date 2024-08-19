@@ -1,4 +1,5 @@
-boats:  Bill_P: SF
+boats:
+  Bill_P: SF
   Rod_H: LASEM
   Lewis_V: BCN
   Jim_S: SF
