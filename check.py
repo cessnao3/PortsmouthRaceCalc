@@ -176,7 +176,7 @@ def check_series_with_file(series: Series, perl_output: dict) -> bool:
 
         return None
 
-    check_functions: Callable[[Series, dict], Optional[Tuple[str, Any, Any]]] = [
+    check_functions: List[Callable[[Series, dict], Optional[Tuple[str, Any, Any]]]] = [
         check_finished_race_count,
         check_series_points,
         check_race_results,
