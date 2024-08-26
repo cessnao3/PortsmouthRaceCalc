@@ -25,6 +25,7 @@ boats:
   Larry_G: SF
   Craig_J: SF
   Melissa_W: SF
+  Marja_J: SF
 races:
   - date: "2024_08_18"
     rc:
@@ -48,3 +49,25 @@ races:
           Ian_O: 30:28
           Matt_L: 28:03
           Craig_J: 31:37
+  - date: "2024_08_26"
+    rc:
+      - Matt_L
+      - David_Bu
+    races:
+      - notes: M3
+        wind_bf: 2
+        times:
+          Ian_O: 35:52
+          Jim_M: 44:40
+          Matt_T: 40:09
+          Ryan_C: 46:06
+          Craig_J: 45:58
+          Marja_J: FIP6
+      - notes: M2
+        wind_bf: 4
+        times:
+          Ian_O: 26:48
+          Jim_M: 32:08
+          Matt_T: 32:49
+          Ryan_C: 30:57
+          Craig_J: 35:38
