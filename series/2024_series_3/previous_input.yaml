@@ -42,3 +42,52 @@ race:
         boat: F5
         time: '22:03'
     wind: 2-3
+  3:
+    RC:
+    - Matt_L
+    - David_Bu
+    date: '2024_08_26'
+    notes: M3
+    skip:
+      Craig_J:
+        boat: SF
+        time: '45:58'
+      Ian_O:
+        boat: US-1
+        time: '35:52'
+      Jim_M:
+        boat: SF
+        time: '44:40'
+      Marja_J:
+        boat: SF
+        time: FIP_6
+      Matt_T:
+        boat: SF
+        time: '40:09'
+      Ryan_C:
+        boat: SF
+        time: '46:06'
+    wind: 2-3
+  4:
+    RC:
+    - Matt_L
+    - David_Bu
+    date: '2024_08_26'
+    notes: M2
+    skip:
+      Craig_J:
+        boat: SF
+        time: '35:38'
+      Ian_O:
+        boat: US-1
+        time: '26:48'
+      Jim_M:
+        boat: SF
+        time: '32:08'
+      Matt_T:
+        boat: SF
+        time: '32:49'
+      Ryan_C:
+        boat: SF
+        time: '30:57'
+    wind: '4'
