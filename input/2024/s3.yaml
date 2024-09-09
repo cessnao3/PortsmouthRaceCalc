@@ -26,6 +26,8 @@ boats:
   Craig_J: SF
   Melissa_W: SF
   Marja_J: SF
+  Matthew_J: SF
+  Jim_H: LASE
 races:
   - date: "2024_08_18"
     rc:
@@ -71,3 +73,31 @@ races:
           Matt_T: 32:49
           Ryan_C: 30:57
           Craig_J: 35:38
+  - date: "2024_09_08"
+    rc:
+      - Marja_J
+      - Jim_M
+    races:
+      - notes: M2
+        wind_bf: 2
+        times:
+          Barry_O: 41:08
+          David_Bu: 35:03
+          Heather_B: 40:29
+          Ian_O: 34:35
+          Matt_L: 40:26
+          Ryan_C: 40:02
+          Matthew_J: 41:36
+          Jim_H: DNF
+      - notes: M2
+        wind_bf: 0
+        offset_time: 5:00
+        times:
+          Barry_O: 53:57
+          David_Bu: 52:58
+          Heather_B: 52:33
+          Ian_O: 52:34
+          Matt_L: 54:53
+          Ryan_C: 53:36
+          Matthew_J: 55:46
+          Jim_H: DNF
