@@ -91,3 +91,67 @@ race:
         boat: SF
         time: '30:57'
     wind: '4'
+  5:
+    RC:
+    - Marja_J
+    - Jim_M
+    date: '2024_09_08'
+    notes: M2
+    skip:
+      Barry_O:
+        boat: HLR14
+        time: '41:08'
+      David_Bu:
+        boat: SF
+        time: '35:03'
+      Heather_B:
+        boat: SF
+        time: '40:29'
+      Ian_O:
+        boat: US-1
+        time: '34:35'
+      Jim_H:
+        boat: LASE
+        time: DNF
+      Matt_L:
+        boat: F5
+        time: '40:26'
+      Matthew_J:
+        boat: SF
+        time: '41:36'
+      Ryan_C:
+        boat: SF
+        time: '40:02'
+    wind: 2-3
+  6:
+    RC:
+    - Marja_J
+    - Jim_M
+    date: '2024_09_08'
+    notes: M2
+    skip:
+      Barry_O:
+        boat: HLR14
+        time: '48:57'
+      David_Bu:
+        boat: SF
+        time: '47:58'
+      Heather_B:
+        boat: SF
+        time: '47:33'
+      Ian_O:
+        boat: US-1
+        time: '47:34'
+      Jim_H:
+        boat: LASE
+        time: DNF
+      Matt_L:
+        boat: F5
+        time: '49:53'
+      Matthew_J:
+        boat: SF
+        time: '50:46'
+      Ryan_C:
+        boat: SF
+        time: '48:36'
+    wind: 0-1
