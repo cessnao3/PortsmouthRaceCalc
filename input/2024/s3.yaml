@@ -101,3 +101,26 @@ races:
           Ryan_C: 53:36
           Matthew_J: 55:46
           Jim_H: DNF
+  - date: "2024_09_15"
+    rc:
+      - Matt_T
+      - Ian_O
+    races:
+      - notes: M3 180
+        wind_bf: 2
+        offset_time: 6:00
+        times:
+          David_Bu: 48:26
+          Jim_M: 52:52
+          Ryan_C: 54:43
+          Marja_J: 62:04
+          Matthew_J: 56:11
+      - notes: M2 180
+        wind_bf: 2
+        offset_time: 6:00
+        times:
+          David_Bu: 32:21
+          Jim_M: 37:30
+          Ryan_C: 35:31
+          Marja_J: 39:35
+          Matthew_J: 40:14
