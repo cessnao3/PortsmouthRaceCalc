@@ -201,3 +201,17 @@ race:
         boat: SF
         time: '29:31'
     wind: 2-3
+  9:
+    RC:
+    - Barry_O
+    date: '2024_09_22'
+    notes: Cancelled due to lack of racers
+    skip: {}
+    wind: 0-1
+  10:
+    RC:
+    - Barry_O
+    date: '2024_09_22'
+    notes: Cancelled due to lack of racers
+    skip: {}
+    wind: 0-1
