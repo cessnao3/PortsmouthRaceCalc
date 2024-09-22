@@ -1,4 +1,4 @@
-boats:
+boats:  
   Bill_P: SF
   Rod_H: LASEM
   Lewis_V: BCN
@@ -124,3 +124,11 @@ races:
           Ryan_C: 35:31
           Marja_J: 39:35
           Matthew_J: 40:14
+  - date: "2024_09_22"
+    rc:
+      - Barry_O
+    races:
+      - notes: Cancelled due to lack of racers
+        wind_bf: 0
+      - notes: Cancelled due to lack of racers
+        wind_bf: 0
