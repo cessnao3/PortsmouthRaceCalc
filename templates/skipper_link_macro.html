@@ -1,7 +1,4 @@
-{% macro skip_link(skipper) -%}
-{% if skipper.series_identifier %}
-{{ skipper.identifier }}
-{% else %}
-<a href="{{ url_for('skipper_page_ind', skipper_name=skipper.identifier) }}">{{ skipper.identifier }}</a>
-{% endif %}
-{%- endmacro %}
+{% macro skip_link(skipper) -%} {% if skipper.has_db_page %}
+<a href="{{ url_for('skipper_page_ind', skipper_name=skipper.identifier) }}"
+    >{{ skipper.identifier }}</a
+>{% else %}{{ skipper.identifier }}{% endif %} {%- endmacro %}

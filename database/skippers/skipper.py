@@ -11,7 +11,7 @@ class Skipper:
     def __init__(
             self,
             identifier: str,
-            series_identifier: Optional[str] = None):
+            has_db_page: bool = False):
         """
         Defines a skipper object used in the race
         :param identifier: identification string used to match a skipper object with race performance
@@ -19,7 +19,7 @@ class Skipper:
         other files
         """
         self.identifier = identifier
-        self.series_identifier = series_identifier
+        self.has_db_page = has_db_page
 
     @staticmethod
     def load_from_csv(csv_table: str) -> Dict[str, 'Skipper']:
@@ -47,7 +47,7 @@ class Skipper:
             elif identifier in skippers:
                 raise ValueError('Skipper {:s} cannot be added twice in the database'.format(identifier))
             else:
-                skippers[identifier] = Skipper(identifier=identifier)
+                skippers[identifier] = Skipper(identifier=identifier, has_db_page=True)
 
         # Load the file
         utils.load_from_csv(
@@ -73,11 +73,6 @@ class Skipper:
         :return: True if the identifiers are equal in lower-case
         """
         if isinstance(other, Skipper):
-            if self.series_identifier is None:
-                identifier_match = other.series_identifier is None
-            else:
-                identifier_match = self.series_identifier == other.series_identifier
-
-            return self.identifier == other.identifier and identifier_match
+            return self.identifier == other.identifier and self.has_db_page == other.has_db_page
         else:
             return False

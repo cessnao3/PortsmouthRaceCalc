@@ -67,6 +67,7 @@ class MasterDatabase:
         # Load the database
         self.fleets = self.__load_fleets()
         self.skippers = self.__load_skippers()
+        self._skippers_adhoc: Dict[str, Skipper] = dict()
         self.series = self.__load_series()
 
         # Group series values by name
@@ -424,9 +425,12 @@ class MasterDatabase:
                 if skip_id_val in self.skippers:
                     return self.skippers[skip_id_val]
                 else:
-                    return Skipper(
-                        identifier=skip_id_val,
-                        series_identifier=series_name)
+                    if skip_id_val not in self._skippers_adhoc:
+                        self._skippers_adhoc[skip_id_val] = Skipper(
+                            identifier=skip_id_val,
+                            has_db_page=False)
+
+                    return self._skippers_adhoc[skip_id_val]
 
             # Extract the boat data and set default boats for each skipper
             boat_list = all_race_data['boats']
