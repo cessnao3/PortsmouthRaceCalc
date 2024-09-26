@@ -10,7 +10,7 @@
         <ul>
             <li>
                 <a
-                    href="{{ url_for('series_page', series_name=series_list[0].name) }}"
+                    href="{{ url_for('series_page', series_name=series_latest.name) }}"
                     >Latest ({{ database.latest_race_date_string() }})</a
                 >
             </li>

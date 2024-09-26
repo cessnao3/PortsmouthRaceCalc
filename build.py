@@ -57,6 +57,7 @@ def index_page():
         'index.html',
         database=database,
         series_list=list(reversed(list(database.series.values()))),
+        series_latest=database.series_latest,
         fleets_list=list(database.fleets.values()),
         series_group=database.series_display_group,
         series_group_count=max_count)

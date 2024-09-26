@@ -70,6 +70,8 @@ class MasterDatabase:
         self._skippers_adhoc: Dict[str, Skipper] = dict()
         self.series = self.__load_series()
 
+        self.series_latest = list(reversed(list(self.series.values())))[0]
+
         # Group series values by name
         self.series_by_year: Dict[str, List[Series]] = dict()
         for s in self.series.values():
