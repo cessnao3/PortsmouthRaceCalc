@@ -14,7 +14,8 @@ import datetime
 import pathlib
 import yaml
 
-from typing import Dict, List, Optional
+from collections.abc import Sequence
+from typing import Dict, List, Optional, Tuple
 
 
 class MasterDatabase:
@@ -67,6 +68,59 @@ class MasterDatabase:
         self.fleets = self.__load_fleets()
         self.skippers = self.__load_skippers()
         self.series = self.__load_series()
+
+        # Group series values by name
+        self.series_by_year: Dict[str, List[Series]] = dict()
+        for s in self.series.values():
+            s_g = s.name.split("_")[0].strip()
+            if s_g not in self.series_by_year:
+                self.series_by_year[s_g] = list()
+
+            self.series_by_year[s_g].append(s)
+
+        # Create the new series values
+        total_series: Dict[str, Series] = dict()
+
+        for year_name, year_series in self.series_by_year.items():
+            new_s_fleet = None
+            fleet_options: Optional[Tuple[int, Fleet]] = None
+            for s in year_series:
+                s_opts = s.valid_required_skippers, s.fleet
+                if fleet_options is None:
+                    fleet_options = s_opts
+                elif fleet_options != s_opts:
+                    raise RuntimeError(f"cannot create overall series for {year_name}")
+
+            if fleet_options is None:
+                continue
+
+            new_s = Series(name=f"{year_name}_season_total", valid_required_skippers=fleet_options[0], fleet=fleet_options[1], qualify_count_override=None)
+
+            for s in year_series:
+                for r in s.races:
+                    new_s.add_race(r)
+
+            total_series[year_name] = new_s
+
+        max_count = max([len(l) for l in self.series_by_year.values()])
+
+        self.series_display_group: List[Tuple[str, Sequence[Optional[Series]]]] = list()
+
+        for sl_key in reversed(sorted(self.series_by_year.keys())):
+            sl: List[Series] = self.series_by_year[sl_key]
+            sl_opt: List[Optional[Series]] = list(sorted(sl, key=lambda x: x.name))
+
+            while len(sl_opt) < max_count:
+                sl_opt.append(None)
+
+            sl_opt.append(total_series[sl_key] if sl_key in total_series else None)
+
+            self.series_display_group.append((sl_key, sl_opt))
+
+        for y, s in total_series.items():
+            if s.name not in self.series:
+                self.series[s.name] = s
+                self.series_by_year[y].append(s)
 
         # Define the statistics
         self.skipper_statistics: Dict[str, SkipperStatistics] = dict()

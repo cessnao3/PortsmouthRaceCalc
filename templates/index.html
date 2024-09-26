@@ -8,26 +8,37 @@
 
         <h2>Race Series</h2>
         <ul>
-            <li><a href="{{ url_for('series_page', series_name=series_list[0].name) }}">Latest ({{ database.latest_race_date_string() }})</a></li>
+            <li>
+                <a
+                    href="{{ url_for('series_page', series_name=series_list[0].name) }}"
+                    >Latest ({{ database.latest_race_date_string() }})</a
+                >
+            </li>
         </ul>
         {% if series_group_count %}
         <table border="1" style="text-align: center">
             <tr>
                 <th>Year</th>
                 {% for i in range(series_group_count) %}
-                <th>Series {{ i + 1 }}</th>
+                <th>
+                    {% if i + 1 < series_group_count %} Series {{ i + 1 }} {%
+                    else %} Season Total {% endif %}
+                </th>
                 {% endfor %}
             </tr>
             {% for name, serieses in series_group %}
             <tr>
                 <th>{{ name }}</th>
-                {% for series in serieses %}
-                {%if series %}
-                <td><a href="{{ url_for('series_page', series_name=series.name) }}">{{ series.fancy_name() }}</a></td>
+                {% for series in serieses %} {%if series %}
+                <td>
+                    <a
+                        href="{{ url_for('series_page', series_name=series.name) }}"
+                        >{{ series.fancy_name() }}</a
+                    >
+                </td>
                 {% else %}
                 <td>-</td>
-                {% endif %}
-                {% endfor %}
+                {% endif %} {% endfor %}
             </tr>
             {% endfor %}
         </table>
@@ -37,14 +48,16 @@
         <ul>
             <li><a href="{{ url_for('skipper_page_all')}}">Skippers</a></li>
             {% for fleet in fleets_list %}
-            <li><a href="{{ url_for('fleet_page', fleet_name=fleet.name) }}">Fleet {{ fleet.fancy_name() }}</a></li>
+            <li>
+                <a href="{{ url_for('fleet_page', fleet_name=fleet.name) }}"
+                    >Fleet {{ fleet.fancy_name() }}</a
+                >
+            </li>
             {% endfor %}
         </ul>
 
         <h2>Notes</h2>
-        <p>
-            Compiled on: {{ get_build_time() }}
-        </p>
+        <p>Compiled on: {{ get_build_time() }}</p>
 
         {% include 'footer.html' %}
     </body>
