@@ -1,4 +1,4 @@
-{% macro skip_link(skipper) -%} {% if skipper.has_db_page %}
+{% macro skip_link(skipper) -%}
 <a href="{{ url_for('skipper_page_ind', skipper_name=skipper.identifier) }}"
     >{{ skipper.identifier }}</a
->{% else %}{{ skipper.identifier }}{% endif %} {%- endmacro %}
+{%- endmacro %}

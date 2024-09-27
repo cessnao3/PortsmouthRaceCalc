@@ -83,13 +83,15 @@ class Series:
             name: str,
             valid_required_skippers: int,
             fleet: Fleet,
-            qualify_count_override: Union[int, None] = None):
+            qualify_count_override: Union[int, None] = None,
+            exclude_from_statistics: bool = False):
         """
         Initializes the series with the input parameters
         :param name: The unique name of the series
         :param valid_required_skippers: The number of racers needed to indicate a valid race
         :param fleet: The fleet object to be used to define the corrected scoring parameters
         :param qualify_count_override: The number of series required to qualify for a scoring place
+        :param exclude_from_statistics: True if this is a series that is automatically generated and should be excluded from statistics
         """
         # Save input values and setup for races
         self.name = name
@@ -98,6 +100,7 @@ class Series:
         self.fleet = fleet
         self.races: List[Race] = list()
         self.boat_dict: Dict[Skipper, BoatType] = dict()
+        self.exclude_from_statistics = exclude_from_statistics
 
         # Define memoization parameters
         self.__skipper_rc_pts = None

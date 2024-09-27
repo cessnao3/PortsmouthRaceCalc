@@ -66,9 +66,7 @@ class MasterDatabase:
 
         # Load the database
         self.fleets = self.__load_fleets()
-        self.skippers = self.__load_skippers()
-        self._skippers_adhoc: Dict[str, Skipper] = dict()
-        self.series = self.__load_series()
+        self.series, self.skippers = self.__load_series()
 
         self.series_latest = list(reversed(list(self.series.values())))[0]
 
@@ -97,7 +95,12 @@ class MasterDatabase:
             if fleet_options is None:
                 continue
 
-            new_s = Series(name=f"{year_name}_season_total", valid_required_skippers=fleet_options[0], fleet=fleet_options[1], qualify_count_override=None)
+            new_s = Series(
+                name=f"{year_name}_season_total",
+                valid_required_skippers=fleet_options[0],
+                fleet=fleet_options[1],
+                qualify_count_override=None,
+                exclude_from_statistics=True)
 
             for s in year_series:
                 for r in s.races:
@@ -111,7 +114,8 @@ class MasterDatabase:
 
         for sl_key in reversed(sorted(self.series_by_year.keys())):
             sl: List[Series] = self.series_by_year[sl_key]
-            sl_opt: List[Optional[Series]] = list(sorted(sl, key=lambda x: x.name))
+            sl.sort(key=lambda x: x.name)
+            sl_opt: List[Optional[Series]] = list(sl)
 
             while len(sl_opt) < max_count:
                 sl_opt.append(None)
@@ -190,6 +194,9 @@ class MasterDatabase:
 
         # Check all series, races, and values for results
         for series in self.series.values():
+            if series.exclude_from_statistics:
+                continue
+
             for race in series.races:
                 # Iterate over the race results
                 for skipper, race_result in race.get_skipper_race_points().items():
@@ -248,6 +255,9 @@ class MasterDatabase:
 
         # Check all series, races, and values for results
         for series in self.series.values():
+            if series.exclude_from_statistics:
+                continue
+
             for race in series.races:
                 # Iterate over the race results
                 for skipper, race_result in race.get_skipper_race_points().items():
@@ -362,23 +372,13 @@ class MasterDatabase:
         # Set the fleet object to the loaded parameters
         return fleets
 
-    def __load_skippers(self) -> Dict[str, Skipper]:
-        """
-        Loads the skipper database from the provided files
-        """
-        # Read in the skipper object and load the CSV parameters
-        with self.skipper_file.open('r') as skipper_handle:
-            skippers = Skipper.load_from_csv(skipper_handle.read())
-
-        # Set the skipper object to the loaded parameters
-        return skippers
-
-    def __load_series(self) -> Dict[str, Series]:
+    def __load_series(self) -> Tuple[Dict[str, Series], Dict[str, Skipper]]:
         """
         Loads the series database from the provided files
         """
         # Initialize the series dictionary
         series_values = dict()
+        series_skippers: Dict[str, Skipper] = dict()
 
         # Read in the series YAML data
         with self.series_file.open('r') as f:
@@ -424,15 +424,10 @@ class MasterDatabase:
 
             # Define a function for getting skipper values
             def get_skipper(skip_id_val: str) -> Skipper:
-                if skip_id_val in self.skippers:
-                    return self.skippers[skip_id_val]
-                else:
-                    if skip_id_val not in self._skippers_adhoc:
-                        self._skippers_adhoc[skip_id_val] = Skipper(
-                            identifier=skip_id_val,
-                            has_db_page=False)
+                if skip_id_val not in series_skippers:
+                    series_skippers[skip_id_val] = Skipper(identifier=skip_id_val)
 
-                    return self._skippers_adhoc[skip_id_val]
+                return series_skippers[skip_id_val]
 
             # Extract the boat data and set default boats for each skipper
             boat_list = all_race_data['boats']
@@ -543,4 +538,4 @@ class MasterDatabase:
             series_values[series_name] = series
 
         # Set the series object to the loaded parameters
-        return series_values
+        return series_values, series_skippers
