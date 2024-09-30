@@ -24,11 +24,12 @@ class Race:
 
     def __init__(
             self,
+            name: str,
             fleet: Fleet,
             boat_dict: Dict[Skipper, BoatType],
             required_skippers: int,
             rc: List[Skipper],
-            date_string: str, # TODO - Move directly to datetime, add a race_name as input to move race_num to the series
+            date: datetime.datetime,
             wind_bf: int,
             notes: str):
         """
@@ -41,14 +42,14 @@ class Race:
         :param wind_bf: the Beaufort wind condition number associated with the race
         :param notes: any additional notes about the race
         """
+        self.name = name
         self._race_finishes: Dict[Skipper, finishes.RaceFinishInterface] = dict()
         self.fleet = fleet
         self.boat_dict = boat_dict
         self.required_skippers = required_skippers
-        self.date = datetime.datetime.strptime(date_string, '%Y_%m_%d')
+        self.date = date
         self.wind_bf = wind_bf
         self.notes = notes
-        self.__race_index: Optional[int] = None
         self.__results_dict: Optional[Dict[Skipper, decimal.Decimal]] = None
 
         # Add the RC skippers to the race times as participating in RC
@@ -74,24 +75,6 @@ class Race:
         for rt in self._race_finishes.values():
             rt.reset()
         self.__results_dict = None
-
-    def set_index(self, i: int) -> None:
-        """
-        Sets the index to the provided value
-        :param i: Value to set the race index to
-        """
-        self.__race_index = i
-
-    @property
-    def race_num(self) -> int:
-        """
-        Provides the 1's indexed race number
-        :return: race index + 1
-        """
-        if self.__race_index is not None:
-            return self.__race_index + 1
-        else:
-            return 0
 
     def min_time_s(self) -> Union[None, int]:
         """

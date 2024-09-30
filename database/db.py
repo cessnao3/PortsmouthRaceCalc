@@ -464,12 +464,14 @@ class MasterDatabase:
                                 race_boat_dict[skip] = series.fleet.get_boat(boat_code)
 
                     # Create the race object
+                    race_name = f"{series.name}##{len(series.races)}"
                     race = Race(
+                        name=race_name,
                         fleet=series.fleet,
                         boat_dict=race_boat_dict,
                         required_skippers=series.valid_required_skippers,
                         rc=race_committee,
-                        date_string=race_date_dict['date'],
+                        date=datetime.datetime.strptime(race_date_dict['date'], '%Y_%m_%d'),
                         wind_bf=race_dict['wind_bf'],
                         notes=race_dict['notes'])
 

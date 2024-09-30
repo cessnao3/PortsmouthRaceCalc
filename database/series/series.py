@@ -101,6 +101,7 @@ class Series:
         self.races: List[Race] = list()
         self.boat_dict: Dict[Skipper, BoatType] = dict()
         self.exclude_from_statistics = exclude_from_statistics
+        self.race_order: Dict[str, int] = dict()
 
         # Define memoization parameters
         self.__skipper_rc_pts = None
@@ -126,7 +127,6 @@ class Series:
         # Clear the race counter and reset all races
         for i, r in enumerate(self.races):
             r.reset()
-            r.set_index(i)
 
     def latest_race_date(self) -> Optional[datetime.datetime]:
         """
@@ -328,8 +328,21 @@ class Series:
         Adds a race to the race list. Races are in the order they are added to the list
         :param race: The race object to add
         """
+        if race.name in self.race_order:
+            raise ValueError(f"Duplicate race with name {race.name} provided!")
+
+        self.race_order[race.name] = len(self.races)
         self.races.append(race)
         self.reset()
+
+    def get_race_num(self, race: Race) -> int:
+        """
+        Gets the race index for the given race in the series as a 1-index value
+        """
+        if race.name in self.race_order:
+            return self.race_order[race.name] + 1
+        else:
+            raise RuntimeError(f"No race with {race.name} found in series {self.name}")
 
     @property
     def qualify_count(self) -> int:
@@ -550,7 +563,7 @@ class Series:
 
         # Assign the legend and axes labels
         plt.legend(
-            ['Race {:d}'.format(r.race_num) for r in self.valid_races()],
+            ['Race {:d}'.format(self.get_race_num(r)) for r in self.valid_races()],
             loc='upper left',
             bbox_to_anchor=(1.04, 1),
             borderaxespad=0)
@@ -653,8 +666,12 @@ class Series:
                 plt.ioff()
                 f = plt.figure()
 
+                # Ignore none skippers
+                finished_skippers = {s: self.get_skipper_rank(skipper=s) for s in skipper_db.keys()}
+                finished_skippers = {s: r for s, r in finished_skippers.items() if r is not None}
+
                 # Plot each skipper that has finished
-                for skipper in sorted(skipper_db.keys(), key=lambda x: self.get_skipper_rank(skipper=x)):
+                for skipper, _ in sorted(finished_skippers.items(), key=lambda x: x[1]):
                     plt.plot(
                         race_vals,
                         skipper_db[skipper][i],
@@ -685,6 +702,9 @@ class Series:
         if self.__plot_series_point_history is None:
             self._setup_point_rank_plots()
 
+        if self.__plot_series_point_history is None:
+            raise RuntimeError("no plot series point history provided")
+
         return self.__plot_series_point_history
 
     def get_plot_series_rank(self) -> bytes:
@@ -694,6 +714,9 @@ class Series:
         """
         if self.__plot_series_rank_history is None:
             self._setup_point_rank_plots()
+
+        if self.__plot_series_rank_history is None:
+            raise RuntimeError("no plot series rank history provided")
 
         return self.__plot_series_rank_history
 

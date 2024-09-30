@@ -1,23 +1,25 @@
+{% set race_num = series.get_race_num(race) %}
+
 <html>
     <head>
-        <title>PRC - {{ series.fancy_name() }} - Race {{ race.race_num }}</title>
+        <title>PRC - {{ series.fancy_name() }} - Race {{ race_num }}</title>
         {% include 'head_items.html' %}
     </head>
     <body>
-        <h1>Series - {{series.fancy_name()}} - Race {{ race.race_num }}</h1>
+        <h1>Series - {{series.fancy_name()}} - Race {{ race_num }}</h1>
         <a href="{{url_for('index_page')}}">Home</a>
         <br>
         <a href="{{url_for('fleet_page', fleet_name=series.fleet.name)}}">Fleet: {{ series.fleet.fancy_name() }}</a>
         <br>
         <a href="{{url_for('series_page', series_name=series.name)}}">{{ series.fancy_name() }}</a>
 
-        <h2>{{ series.fancy_name() }} Race {{ race.race_num }}</a></h2>
+        <h2>{{ series.fancy_name() }} Race {{ race_num }}</a></h2>
         <p>
             {% import 'race_table_macro.html' as tables %}
             {{ tables.race_table(race) }}
         </p>
         <p>
-            <img src="{{ url_for('series_individual_race_results_plot', series_name=series.name, series_race_index=race.race_num) }}" alt="Race {{ race.race_num }} Results">
+            <img src="{{ url_for('series_individual_race_results_plot', series_name=series.name, series_race_index=race_num - 1) }}" alt="Race {{ race_num }} Results">
         </p>
 
         {% include 'footer.html' %}

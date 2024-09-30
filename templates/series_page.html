@@ -6,16 +6,18 @@
     <body>
         <h1>Series - {{series.fancy_name()}}</h1>
         <a href="{{url_for('index_page')}}">Home</a>
-        <br>
-        <a href="{{url_for('fleet_page', fleet_name=series.fleet.name)}}">Fleet: {{ series.fleet.fancy_name() }}</a>
+        <br />
+        <a href="{{url_for('fleet_page', fleet_name=series.fleet.name)}}"
+            >Fleet: {{ series.fleet.fancy_name() }}</a
+        >
 
         <h2><a id="top">Overall Results</a></h2>
 
         <b>Valid Races Held:</b> {{ series.valid_races() | length }}
-        <br>
+        <br />
         <b>Number to Qualify:</b> {{ series.qualify_count }}
-        <br>
-        <br>
+        <br />
+        <br />
 
         {% import 'skipper_link_macro.html' as skiputils %}
 
@@ -23,8 +25,13 @@
             <tr>
                 <th>Rank</th>
                 <th>Skipper</th>
-                {% for race in series.races %}
-                <th><a href="#race_{{ race.race_num }}">{{ '%2d' | format(race.race_num) }}</a></th>
+                {% for race in series.races %} {% set race_num =
+                series.get_race_num(race) %}
+                <th>
+                    <a href="#race_{{ race_num }}"
+                        >{{ '%2d' | format(race_num) }}</a
+                    >
+                </th>
                 {% endfor %}
                 <th>RC Points</th>
                 <th>Overall Points</th>
@@ -32,38 +39,31 @@
             </tr>
             {% for skipper in series.get_all_skippers_sorted() %}
             <tr>
-                {% set rank = series.get_skipper_rank(skipper) %}
-                {% if rank %}
+                {% set rank = series.get_skipper_rank(skipper) %} {% if rank %}
                 {% if rank.rank_tie_broken %}
                 <td>{{ rank.rank }} ({{ rank.rank_tie_broken }}*)</td>
                 {% else %}
                 <td>{{ rank.rank }}</td>
-                {% endif %}
-                {% else %}
+                {% endif %} {% else %}
                 <td></td>
                 {% endif %}
                 <td>{{ skiputils.skip_link(skipper) }}</td>
-                {% for race in series.races %}
-                    {% set result = race.get_skipper_result_string(skipper) %}
-                    {% if result %}
-                    <td>{{ result }}</td>
-                    {% else %}
-                    <td>--</td>
-                    {% endif %}
-                {% endfor %}
-                {% set points = series.skipper_points_list(skipper) %}
-                {% if points %}
+                {% for race in series.races %} {% set result =
+                race.get_skipper_result_string(skipper) %} {% if result %}
+                <td>{{ result }}</td>
+                {% else %}
+                <td>--</td>
+                {% endif %} {% endfor %} {% set points =
+                series.skipper_points_list(skipper) %} {% if points %}
                 <td>{{ series.get_skipper_rc_points(skipper) }}</td>
                 <td>{{ points.score }}</td>
-                {% else %}
-                {% if series.get_skipper_rc_points(skipper) %}
+                {% else %} {% if series.get_skipper_rc_points(skipper) %}
                 <td>{{ series.get_skipper_rc_points(skipper) }}</td>
                 <td>DNQ</td>
                 {% else %}
                 <td>N/A</td>
                 <td>N/A</td>
-                {% endif %}
-                {% endif %}
+                {% endif %} {% endif %}
                 <td>{{ series.skipper_points_string(skipper) }}</td>
             </tr>
             {% endfor %}
@@ -81,14 +81,18 @@
 
         <h2>Races</h2>
 
-        {% for race in series.races %}
-        <h3><a id="race_{{ race.race_num }}">Race {{ race.race_num }}</a></h3>
+        {% for race in series.races %} {% set race_num =
+        series.get_race_num(race) %}
+        <h3><a id="race_{{ race_num }}">Race {{ race_num }}</a></h3>
         <p>
-            {% import 'race_table_macro.html' as tables %}
-            {{ tables.race_table(race) }}
+            {% import 'race_table_macro.html' as tables %} {{
+            tables.race_table(race) }}
         </p>
         <p>
-            <a href="{{ url_for('series_race_page', series_name=series.name, series_race_index=race.race_num)}}">More Details</a>
+            <a
+                href="{{ url_for('series_race_page', series_name=series.name, series_race_index=race_num - 1)}}"
+                >More Details</a
+            >
         </p>
         <p>
             <a href="#top">Goto Top</a>
@@ -98,19 +102,42 @@
         <h2>Statistics</h2>
 
         <h3>Normalized Results</h3>
-        <img src="{{ url_for('series_normalized_race_results_plot', series_name=series.name) }}" alt="Normalized Results">
+        <img
+            src="{{ url_for('series_normalized_race_results_plot', series_name=series.name) }}"
+            alt="Normalized Results"
+        />
 
         <h3>Boats Types in Series</h3>
-        <img src="{{ url_for('series_boat_pie_plot', series_name=series.name) }}" alt="Boats in Series">
+        <img
+            src="{{ url_for('series_boat_pie_plot', series_name=series.name) }}"
+            alt="Boats in Series"
+        />
 
         <h3>Rank History</h3>
-        <img src="{{ url_for('series_rank_history_plot', series_name=series.name) }}" alt="Rank History">
-        <br>
-        <img src="{{ url_for('series_point_history_plot', series_name=series.name) }}" alt="Point History">
+        <img
+            src="{{ url_for('series_rank_history_plot', series_name=series.name) }}"
+            alt="Rank History"
+        />
+        <br />
+        <img
+            src="{{ url_for('series_point_history_plot', series_name=series.name) }}"
+            alt="Point History"
+        />
 
         <h3>Previous Input File</h3>
         <p>
-            Previous input file for <a href="https://github.com/rodinski/sailing">https://github.com/rodinski/sailing</a>: <a href="{{ url_for('series_previous_input_file', series_name=series.name) }}">previous_input.yaml</a>, <a href="{{ url_for('series_previous_boat_file', series_name=series.name) }}">previous_boat.yaml</a>
+            Previous input file for
+            <a href="https://github.com/rodinski/sailing"
+                >https://github.com/rodinski/sailing</a
+            >:
+            <a
+                href="{{ url_for('series_previous_input_file', series_name=series.name) }}"
+                >previous_input.yaml</a
+            >,
+            <a
+                href="{{ url_for('series_previous_boat_file', series_name=series.name) }}"
+                >previous_boat.yaml</a
+            >
         </p>
 
         {% include 'footer.html' %}
