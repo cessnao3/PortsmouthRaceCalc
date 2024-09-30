@@ -1,4 +1,4 @@
-boats:  
+boats:
   Bill_P: SF
   Rod_H: LASEM
   Lewis_V: BCN
@@ -132,3 +132,26 @@ races:
         wind_bf: 0
       - notes: Cancelled due to lack of racers
         wind_bf: 0
+  - date: "2024_09_29"
+    rc:
+      - Heather_B
+      - Craig_J
+    races:
+      - notes: I2
+        wind_bf: 1
+        offset_time: 6:00
+        times:
+          David_Bu: 31:50
+          Matt_L: 33:59
+          Rod_H: 32:38
+          Ryan_C: 32:40
+          John_M: 33:47
+      - notes: I2
+        wind_bf: 0
+        offset_time: 6:00
+        times:
+          David_Bu: 27:23
+          Matt_L: FIP5
+          Rod_H: 26:52
+          Ryan_C: 29:10
+          John_M: 33:58
