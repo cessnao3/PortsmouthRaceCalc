@@ -2,6 +2,7 @@
 Provides a database for use in calculating the corrected times for race parameters and scoring
 """
 
+from collections.abc import Sequence
 import datetime
 import decimal
 from typing import List, Dict, Optional, Tuple, Union
@@ -27,7 +28,7 @@ class Race:
             boat_dict: Dict[Skipper, BoatType],
             required_skippers: int,
             rc: List[Skipper],
-            date_string: str,
+            date_string: str, # TODO - Move directly to datetime, add a race_name as input to move race_num to the series
             wind_bf: int,
             notes: str):
         """
@@ -48,7 +49,7 @@ class Race:
         self.wind_bf = wind_bf
         self.notes = notes
         self.__race_index: Optional[int] = None
-        self.__results_dict: Optional[Dict[Skipper, int]] = None
+        self.__results_dict: Optional[Dict[Skipper, decimal.Decimal]] = None
 
         # Add the RC skippers to the race times as participating in RC
         for rc_skipper in rc:
@@ -201,7 +202,7 @@ class Race:
                 current_place += num_for_time
 
             # Result Dictionary Creation
-            result_dict: Dict[Skipper, Optional[decimal.Decimal]] = {
+            result_dict: Dict[Skipper, decimal.Decimal] = {
                 rt.skipper: round_score(place_dict[rt.corrected_time_s])
                 for rt
                 in race_results}
@@ -217,13 +218,14 @@ class Race:
                 starting_skippers_count = None
 
             # Add in all the other results
-            for rt in self.other_results():
-                if isinstance(rt, finishes.RaceFinishDNF):
-                    result_dict[rt.skipper] = starting_skippers_count
-                elif isinstance(rt, finishes.RaceFinishDQ):
-                    result_dict[rt.skipper] = starting_skippers_count + 2
-                else:
-                    result_dict[rt.skipper] = None
+            if starting_skippers_count is not None:
+                for rt in self.other_results():
+                    if isinstance(rt, finishes.RaceFinishDNF):
+                        result_dict[rt.skipper] = starting_skippers_count
+                    elif isinstance(rt, finishes.RaceFinishDQ):
+                        result_dict[rt.skipper] = starting_skippers_count + 2
+                    else:
+                        result_dict[rt.skipper] = decimal.Decimal(0)
 
             # Round all race results
             for key, val in result_dict.items():
@@ -282,7 +284,7 @@ class Race:
         """
         return [r for r in self._race_finishes.values() if isinstance(r, finishes.RaceFinishFIP)]
 
-    def finished_race_times(self) -> List[finishes.RaceFinishTime]:
+    def finished_race_times(self) -> Sequence[finishes.RaceFinishTime]:
         """
         Provides a list of the finished race times
         :return: a list of the race times that were completed
@@ -298,7 +300,7 @@ class Race:
         scores = self.get_skipper_race_points()
 
         # Obtain the list of skippers who finished the race and sort by the resulting scores obtained above
-        race_time_list: List[finishes.RaceFinishInterface] = self.finished_race_times()
+        race_time_list: List[finishes.RaceFinishInterface] = list(self.finished_race_times())
         race_time_list.extend(self.other_results())
         race_time_list.extend(self.fip_results())
 
