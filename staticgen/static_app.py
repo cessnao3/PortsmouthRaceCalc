@@ -141,6 +141,8 @@ class StaticApplication:
                 value_list = self.iter_lists[actual_varname]
                 while '/' in var_str:
                     init_varname = var_str[:var_str.find('/')]
+                    if vars_so_far is None:
+                        raise RuntimeError("variable cannot be None")
                     value_list = value_list[vars_so_far[init_varname]]
                     var_str = var_str[var_str.find('/') + 1:]
             else:
@@ -353,7 +355,7 @@ class StaticApplication:
 
                 # Run the function to get the resulting data
                 self._url_for_relative = Path(path_val).parent
-                parse_result = func(**kwargs)
+                parse_result = func(*[], **kwargs)
                 self._url_for_relative = None
 
                 # Write either the string or bytes to the output

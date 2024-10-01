@@ -158,8 +158,7 @@ class Race:
             result_times = dict()
 
             # Race result list
-            race_results = self.finished_race_times()
-            race_results.sort(key=lambda x: x.corrected_time_s)
+            race_results = list(sorted(self.finished_race_times(), key=lambda x: x.corrected_time_s))
 
             # Add each result to the list based on bucket to provide a count for the number of times each result appears
             for result in race_results:
