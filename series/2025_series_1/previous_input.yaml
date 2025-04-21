@@ -1,0 +1,19 @@
+race:
+  1:
+    RC:
+    - Ian_O
+    - Nick_H
+    - Marja_J
+    date: '2024_04_13'
+    notes: Cancelled due to wind
+    skip: {}
+    wind: '4'
+  2:
+    RC:
+    - Ian_O
+    - Nick_H
+    - Marja_J
+    date: '2024_04_13'
+    notes: Cancelled due to wind
+    skip: {}
+    wind: '4'
