@@ -1,0 +1,33 @@
+boats:
+  Bill_P: SF
+  Rod_H: LASEM
+  Lewis_V: BCN
+  Jim_S: SF
+  David_Bu: SF
+  Ian_O: US-1
+  Barry_O: HLR14
+  Steve_S: SF
+  Matt_L: F5
+  Nick_H: SF
+  Chris_E: SF
+  Dennis_S: SF
+  Gary_V: SF
+  Ryan_C: PIRAT
+  Matt_T: SF
+  Craig: STFS
+  Heather_B: SF
+  Jim_M: SF
+  John_M: SF
+  Sam: SF
+  Marja_J: SF
+races:
+  - date: '2024_04_13'
+    rc:
+      - Ian_O
+      - Nick_H
+      - Marja_J
+    races:
+      - notes: Cancelled due to wind
+        wind_bf: 4
+      - notes: Cancelled due to wind
+        wind_bf: 4
