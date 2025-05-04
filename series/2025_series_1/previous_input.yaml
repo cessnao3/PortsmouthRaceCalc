@@ -4,7 +4,7 @@ race:
     - Ian_O
     - Nick_H
     - Marja_J
-    date: '2024_04_13'
+    date: '2025_04_13'
     notes: Cancelled due to wind
     skip: {}
     wind: '4'
@@ -13,7 +13,65 @@ race:
     - Ian_O
     - Nick_H
     - Marja_J
-    date: '2024_04_13'
+    date: '2025_04_13'
     notes: Cancelled due to wind
     skip: {}
     wind: '4'
+  3:
+    RC:
+    - Heather_B
+    - Nick_H
+    - Marja_J
+    date: '2025_04_27'
+    notes: Cancelled due to weather
+    skip: {}
+    wind: 2-3
+  4:
+    RC:
+    - Heather_B
+    - Nick_H
+    - Marja_J
+    date: '2025_04_27'
+    notes: Cancelled due to weather
+    skip: {}
+    wind: 2-3
+  5:
+    RC:
+    - Barry_O
+    - Nick_H
+    date: '2025_05_04'
+    notes: M2
+    skip:
+      Heather_B:
+        boat: SF
+        time: FIP_4
+      Ian_O:
+        boat: US-1
+        time: '28:07'
+      Matt_L:
+        boat: F5
+        time: '29:16'
+      Rod_H:
+        boat: LASEM
+        time: '27:40'
+    wind: 0-1
+  6:
+    RC:
+    - Barry_O
+    - Nick_H
+    date: '2025_05_04'
+    notes: M2
+    skip:
+      Heather_B:
+        boat: SF
+        time: '29:42'
+      Ian_O:
+        boat: US-1
+        time: '21:41'
+      Matt_L:
+        boat: F5
+        time: '29:07'
+      Rod_H:
+        boat: LASEM
+        time: '26:08'
+    wind: 0-1
