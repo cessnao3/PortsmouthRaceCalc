@@ -21,7 +21,7 @@ boats:
   Sam: SF
   Marja_J: SF
 races:
-  - date: '2024_04_13'
+  - date: "2025_04_13"
     rc:
       - Ian_O
       - Nick_H
@@ -31,3 +31,34 @@ races:
         wind_bf: 4
       - notes: Cancelled due to wind
         wind_bf: 4
+  - date: "2025_04_27"
+    rc:
+      - Heather_B
+      - Nick_H
+      - Marja_J
+    races:
+      - notes: Cancelled due to weather
+        wind_bf: 2
+      - notes: Cancelled due to weather
+        wind_bf: 2
+  - date: "2025_05_04"
+    rc:
+      - Barry_O
+      - Nick_H
+    races:
+      - notes: M2
+        wind_bf: 1
+        offset_time: 6:00
+        times:
+          Heather_B: FIP4
+          Matt_L: 35:16
+          Rod_H: 33:40
+          Ian_O: 34:07
+      - notes: M2
+        wind_bf: 1
+        offset_time: 5:00
+        times:
+          Ian_O: 26:41
+          Rod_H: 31:08
+          Matt_L: 34:07
+          Heather_B: 34:42
