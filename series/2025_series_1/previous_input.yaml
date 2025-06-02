@@ -75,3 +75,31 @@ race:
         boat: LASEM
         time: '26:08'
     wind: 0-1
+  7:
+    RC:
+    - Matt_L
+    - Nick_H
+    date: '2025_06_01'
+    notes: M1
+    skip:
+      Bill_P:
+        boat: SF
+        time: '26:33'
+      Danielle:
+        boat: SF
+        time: '44:16'
+      Dennis_S:
+        boat: SF
+        time: FIP_4
+      Heather_B:
+        boat: SF
+        time: '33:40'
+    wind: 0-1
+  8:
+    RC:
+    - Matt_L
+    - Nick_H
+    date: '2025_06_01'
+    notes: Cancelled due to lack of wind.
+    skip: {}
+    wind: 0-1
