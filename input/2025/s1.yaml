@@ -20,6 +20,7 @@ boats:
   John_M: SF
   Sam: SF
   Marja_J: SF
+  Danielle: SF
 races:
   - date: "2025_04_13"
     rc:
@@ -62,3 +63,17 @@ races:
           Rod_H: 31:08
           Matt_L: 34:07
           Heather_B: 34:42
+  - date: "2025_06_01"
+    rc:
+      - Matt_L
+      - Nick_H
+    races:
+      - notes: M1
+        wind_bf: 0
+        times:
+          Heather_B: 33:40
+          Dennis_S: FIP4
+          Danielle: 44:16
+          Bill_P: 26:33
+      - notes: Cancelled due to lack of wind.
+        wind_bf: 0
