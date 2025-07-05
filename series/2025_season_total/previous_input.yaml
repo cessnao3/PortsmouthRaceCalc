@@ -103,3 +103,33 @@ race:
     notes: Cancelled due to lack of wind.
     skip: {}
     wind: 0-1
+  9:
+    RC:
+    - Ryan_C
+    date: '2025_06_22'
+    notes: Cancelled due to high winds.
+    skip: {}
+    wind: 0-1
+  10:
+    RC:
+    - Ryan_C
+    date: '2025_06_22'
+    notes: Cancelled due to high winds.
+    skip: {}
+    wind: 0-1
+  11:
+    RC:
+    - Lewis_V
+    - Dennis_S
+    date: '2025_06_29'
+    notes: Cancelled due to storms.
+    skip: {}
+    wind: 0-1
+  12:
+    RC:
+    - Lewis_V
+    - Dennis_S
+    date: '2025_06_29'
+    notes: Cancelled due to storms.
+    skip: {}
+    wind: 0-1
