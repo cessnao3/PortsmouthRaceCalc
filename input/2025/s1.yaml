@@ -77,3 +77,20 @@ races:
           Bill_P: 26:33
       - notes: Cancelled due to lack of wind.
         wind_bf: 0
+  - date: "2025_06_22"
+    rc:
+      - Ryan_C
+    races:
+      - notes: Cancelled due to high winds.
+        wind_bf: 0
+      - notes: Cancelled due to high winds.
+        wind_bf: 0
+  - date: "2025_06_29"
+    rc:
+      - Lewis_V
+      - Dennis_S
+    races:
+      - notes: Cancelled due to storms.
+        wind_bf: 0
+      - notes: Cancelled due to storms.
+        wind_bf: 0
