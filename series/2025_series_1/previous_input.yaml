@@ -133,3 +133,43 @@ race:
     notes: Cancelled due to storms.
     skip: {}
     wind: 0-1
+  13:
+    RC:
+    - Ian_O
+    - Nick_H
+    date: '2025_07_20'
+    notes: M2 Shortened to M1
+    skip:
+      Adam_E:
+        boat: SF
+        time: FIP_7
+      Bill_P:
+        boat: SF
+        time: '36:58'
+      Craig_J:
+        boat: STFS
+        time: '43:15'
+      Heather_B:
+        boat: SF
+        time: '42:58'
+      Larry_G:
+        boat: SF
+        time: DNF
+      Marcus_M:
+        boat: SF
+        time: FIP_6
+      Rod_H:
+        boat: LASEM
+        time: '36:39'
+      Sofia:
+        boat: SF
+        time: '43:48'
+    wind: 0-1
+  14:
+    RC:
+    - Ian_O
+    - Nick_H
+    date: '2025_07_20'
+    notes: Cancelled due to lack of wind.
+    skip: {}
+    wind: 0-1

@@ -410,7 +410,7 @@ race:
     notes: M3 220
     skip:
       Craig_J:
-        boat: SF
+        boat: STFS
         time: DNF
       Heather_B:
         boat: SF
@@ -436,7 +436,7 @@ race:
     notes: M2
     skip:
       Craig_J:
-        boat: SF
+        boat: STFS
         time: DNF
       Heather_B:
         boat: SF
@@ -479,7 +479,7 @@ race:
         boat: SF
         time: '27:03'
       Craig_J:
-        boat: SF
+        boat: STFS
         time: '33:39'
       Ian_O:
         boat: US-1
@@ -502,7 +502,7 @@ race:
         boat: SF
         time: '21:19'
       Craig_J:
-        boat: SF
+        boat: STFS
         time: '25:37'
       Ian_O:
         boat: US-1
@@ -519,7 +519,7 @@ race:
     notes: M3
     skip:
       Craig_J:
-        boat: SF
+        boat: STFS
         time: '45:58'
       Ian_O:
         boat: US-1
@@ -545,7 +545,7 @@ race:
     notes: M2
     skip:
       Craig_J:
-        boat: SF
+        boat: STFS
         time: '35:38'
       Ian_O:
         boat: US-1

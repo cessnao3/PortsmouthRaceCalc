@@ -113,7 +113,7 @@ race:
     date: '2023_08_06'
     notes: M3
     skip:
-      Craig:
+      Craig_J:
         boat: STFS
         time: '34:34'
       Ian_O:
@@ -136,7 +136,7 @@ race:
     date: '2023_08_06'
     notes: M3
     skip:
-      Craig:
+      Craig_J:
         boat: STFS
         time: DNF
       Ian_O:
@@ -392,7 +392,7 @@ race:
         boat: SF
         time: '34:58'
       Craig_J:
-        boat: SF
+        boat: STFS
         time: '48:26'
       David_Bu:
         boat: SF
@@ -430,7 +430,7 @@ race:
         boat: SF
         time: '26:57'
       Craig_J:
-        boat: SF
+        boat: STFS
         time: '41:47'
       David_Bu:
         boat: SF
