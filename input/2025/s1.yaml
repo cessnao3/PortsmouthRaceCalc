@@ -14,13 +14,17 @@ boats:
   Gary_V: SF
   Ryan_C: PIRAT
   Matt_T: SF
-  Craig: STFS
+  Craig_J: STFS
   Heather_B: SF
   Jim_M: SF
   John_M: SF
   Sam: SF
   Marja_J: SF
   Danielle: SF
+  Adam_E: SF
+  Marcus_M: SF
+  Sofia: SF
+  Larry_G: SF
 races:
   - date: "2025_04_13"
     rc:
@@ -93,4 +97,23 @@ races:
       - notes: Cancelled due to storms.
         wind_bf: 0
       - notes: Cancelled due to storms.
+        wind_bf: 0
+  - date: "2025_07_20"
+    rc:
+      - Ian_O
+      - Nick_H
+    races:
+      - notes: M2 Shortened to M1
+        wind_bf: 0
+        offset_time: 5:00
+        times:
+          Bill_P: 41:58
+          Heather_B: 47:58
+          Larry_G: DNF
+          Adam_E: FIP7
+          Rod_H: 41:39
+          Craig_J: 48:15
+          Marcus_M: FIP6
+          Sofia: 48:48
+      - notes: Cancelled due to lack of wind.
         wind_bf: 0

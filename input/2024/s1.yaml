@@ -14,13 +14,13 @@ boats:
   Gary_V: SF
   Ryan_C: PIRAT
   Matt_T: SF
-  Craig: STFS
+  Craig_J: STFS
   Heather_B: SF
   Jim_M: SF
   John_M: SF
   Sam: SF
 races:
-  - date: '2024_04_14'
+  - date: "2024_04_14"
     rc:
       - Matt_L
       - Chris_E
@@ -41,7 +41,7 @@ races:
           Ryan_C: 31:20
           Heather_B: 29:36
           Jim_M: 30:26
-  - date: '2024_04_21'
+  - date: "2024_04_21"
     rc:
       - Rod_H
       - Ian_O
@@ -67,7 +67,7 @@ races:
           Matt_L: 25:33
           Ryan_C: 36:13
           Jim_M: 38:33
-  - date: '2024_04_28'
+  - date: "2024_04_28"
     rc:
       - Barry_O
       - Bill_P
@@ -89,7 +89,7 @@ races:
           Matt_T: 26:13
           Matt_L: 25:06
           Ian_O: 25:09
-  - date: '2024_05_05'
+  - date: "2024_05_05"
     rc:
       - Nick_H
       - Ryan_C
@@ -113,7 +113,7 @@ races:
           Ian_O: DNF
           Matt_L: 27:48
           Rod_H: 25:16
-  - date: '2024_06_02'
+  - date: "2024_06_02"
     rc:
       - Nick_H
       - David_Bu

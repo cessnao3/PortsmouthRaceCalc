@@ -15,10 +15,10 @@ boats:
   Gary_V: SF
   Ryan_C: SF
   Matt_T: SF
-  Craig: STFS
+  Craig_J: STFS
   Heather_B: SF
 races:
-  - date: '2023_07_23'
+  - date: "2023_07_23"
     rc:
       - Rod_H
       - Jim_S
@@ -42,7 +42,7 @@ races:
           Ian_O: 30:40
           Lewis_V: 26:16
           Matt_L: 32:08
-  - date: '2023_07_30'
+  - date: "2023_07_30"
     rc:
       - Nick_H
       - Lewis_V
@@ -67,7 +67,7 @@ races:
           Matt_L: 26:36
           Matt_T: 25:26
           Ryan_C: 33:53
-  - date: '2023_08_06'
+  - date: "2023_08_06"
     rc:
       - Bill_P
       - Barry_O
@@ -79,7 +79,7 @@ races:
           Rod_H: 27:14
           Lewis_V: 27:59
           Ian_O: 30:33
-          Craig: 39:34
+          Craig_J: 39:34
           Matt_L: 33:30
       - notes: M3
         wind_bf: 4
@@ -88,9 +88,9 @@ races:
           Lewis_V: dnf
           Rod_H: 26:43
           Ian_O: 31:34
-          Craig: dnf
+          Craig_J: dnf
           Matt_L: 29:10
-  - date: '2023_08_20'
+  - date: "2023_08_20"
     rc:
       - Ian_O
       - Matt_T
@@ -111,7 +111,7 @@ races:
           Rod_H: 33:01
           Matt_L: 33:26
           Ryan_C: 36:11
-  - date: '2023_08_27'
+  - date: "2023_08_27"
     rc:
       - Nick_H
       - Matt_L

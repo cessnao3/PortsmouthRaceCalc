@@ -15,14 +15,13 @@ boats:
   Gary_V: SF
   Ryan_C: SF
   Matt_T: SF
-  Craig: STFS
+  Craig_J: STFS
   Heather_B: SF
   John_M: SF
   JoDene: SF
   Susan_D: SF
-  Craig_J: SF
 races:
-  - date: '2023_09_10'
+  - date: "2023_09_10"
     rc:
       - Barry_O
       - David_Bu
@@ -48,7 +47,7 @@ races:
           Ryan_C: 45:59
           John_M: FIP7
           Heather_B: 45:02
-  - date: '2023_09_24'
+  - date: "2023_09_24"
     rc:
       - Bill_P
       - Matt_L
@@ -72,7 +71,7 @@ races:
           Ian_O: 25:59
           Rod_H: 23:37
           Heather_B: 28:52
-  - date: '2023_10_01'
+  - date: "2023_10_01"
     rc:
       - Ian_O
       - Nick_H
@@ -83,7 +82,7 @@ races:
       - notes: Cancelled due to motor inop
         wind_bf: 0
         times:
-  - date: '2023_10_08'
+  - date: "2023_10_08"
     rc:
       - Ryan_C
       - Nick_H
@@ -114,7 +113,7 @@ races:
           Susan_D: 32:38
           John_M: 33:54
           JoDene: FIP10
-  - date: '2023_10_01'
+  - date: "2023_10_01"
     rc:
       - Rod_H
       - Ian_O
