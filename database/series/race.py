@@ -206,8 +206,6 @@ class Race:
                         result_dict[rt.skipper] = starting_skippers_count
                     elif isinstance(rt, finishes.RaceFinishDQ):
                         result_dict[rt.skipper] = starting_skippers_count + 2
-                    else:
-                        result_dict[rt.skipper] = decimal.Decimal(0)
 
             # Round all race results
             for key, val in result_dict.items():
@@ -287,10 +285,12 @@ class Race:
         race_time_list.extend(self.fip_results())
 
         # Create the resulting dictionary
-        all_races = [(scores[rt.skipper], rt) for rt in race_time_list]
+        reminaing = [rt for rt in race_time_list if rt.skipper not in scores]
+        all_races = [(scores[rt.skipper], rt) for rt in race_time_list if rt.skipper in scores]
         race_result_list = list(filter(lambda x: x[0] is not None and x[0] != 0, all_races))
         race_result_list.sort(key=lambda x: x[0])
         race_result_list.extend(filter(lambda x: x[0] is None or x[0] == 0, all_races))
+        race_result_list.extend([(decimal.Decimal(0), rt) for rt in reminaing])
 
         # Return the results
         return race_result_list
