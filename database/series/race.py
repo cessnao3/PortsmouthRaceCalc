@@ -9,7 +9,7 @@ from typing import List, Dict, Optional, Tuple, Union
 
 from ..fleets import Fleet, BoatType
 from ..skippers import Skipper
-from ..utils import round_score, format_time
+from ..utils import round_score
 from ..utils.plotting import figure_to_data
 
 import matplotlib.pyplot as plt
@@ -146,7 +146,7 @@ class Race:
         Provides a list of race result values for boats that start
         :return: the list of starting skippers
         """
-        return [r for r in self._race_finishes.values() if not isinstance(r, finishes.RaceFinishRC)]
+        return [r for r in self._race_finishes.values() if not isinstance(r, finishes.RaceFinishRC) and r.started()]
 
     def get_skipper_race_points(self) -> Dict[Skipper, decimal.Decimal]:
         """
@@ -288,9 +288,9 @@ class Race:
 
         # Create the resulting dictionary
         all_races = [(scores[rt.skipper], rt) for rt in race_time_list]
-        race_result_list = list(filter(lambda x: x[0] is not None, all_races))
+        race_result_list = list(filter(lambda x: x[0] is not None and x[0] != 0, all_races))
         race_result_list.sort(key=lambda x: x[0])
-        race_result_list.extend(filter(lambda x: x[0] is None, all_races))
+        race_result_list.extend(filter(lambda x: x[0] is None or x[0] == 0, all_races))
 
         # Return the results
         return race_result_list

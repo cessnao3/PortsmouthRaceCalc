@@ -10,9 +10,9 @@ from .interface import RaceFinishInterface
 from typing import Union
 
 
-class RaceFinishDNF(RaceFinishInterface):
+class RaceFinishDNS(RaceFinishInterface):
     """
-    A class to define the database parameters for a DNF finish
+    A class to define the database parameters for a DNS finish
     """
 
     def __init__(
@@ -20,7 +20,7 @@ class RaceFinishDNF(RaceFinishInterface):
             boat: BoatType,
             skipper: Skipper):
         """
-        Defines a race finish for the Did-Not-Finish race type
+        Defines a race finish for the Did-Not-Start race type
         :param boat: the boat for the skipper
         :param skipper: the associated skipper
         """
@@ -30,10 +30,10 @@ class RaceFinishDNF(RaceFinishInterface):
 
     def name(self) -> str:
         """
-        Provides the DNF finish string
-        :return: the string "DNF"
+        Provides the DNS finish string
+        :return: the string "DNS"
         """
-        return 'DNF'
+        return 'DNS'
 
     def finished(self) -> bool:
         """
@@ -42,8 +42,11 @@ class RaceFinishDNF(RaceFinishInterface):
         """
         return False
 
+    def started(self) -> bool:
+        return False
+
     def perl_entry(self) -> Union[int, str]:
         """
         Provides the resulting finish value for a given finish
         """
-        return "DNF"
+        return "DNS"

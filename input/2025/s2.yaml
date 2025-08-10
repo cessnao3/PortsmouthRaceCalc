@@ -1,0 +1,83 @@
+boats:
+  Bill_P: SF
+  Rod_H: LASEM
+  Lewis_V: BCN
+  Jim_S: SF
+  David_Bu: SF
+  Ian_O: US-1
+  Barry_O: HLR14
+  Steve_S: SF
+  Matt_L: F5
+  Nick_H: SF
+  Chris_E: SF
+  Dennis_S: SF
+  Gary_V: SF
+  Ryan_C: PIRAT
+  Matt_T: SF
+  Craig_J: STFS
+  Heather_B: SF
+  Jim_M: SF
+  John_M: SF
+  Sam: SF
+  Marja_J: SF
+  Danielle: SF
+  Adam_E: SF
+  Marcus_M: SF
+  Sofia: SF
+  Larry_G: SF
+  Chris_Y: SF
+  Elliot_F: SF
+  Jay_H: SWSX
+races:
+  - date: "2025_08_03"
+    rc:
+      - Marcus_M
+      - Nick_H
+    races:
+      - notes: M2
+        wind_bf: 2
+        offset_time: 6:00
+        times:
+          Bill_P: 40:32
+          Chris_E: 41:50
+          Dennis_S: FIP5
+          Larry_G: FIP4
+          Chris_Y: 43:57
+      - notes: M2
+        wind_bf: 2
+        offset_time: 6:00
+        times:
+          Bill_P: 49:15
+          Chris_E: 47:01
+          Dennis_S: DNF
+          Larry_G: 53:23
+          Chris_Y: 50:45
+  - date: "2025_08_10"
+    rc:
+      - Rod_H
+      - Nick_H
+    races:
+      - notes: M2 - Late Start (Rain)
+        wind_bf: 2
+        offset_time: 5:00
+        times:
+          Heather_B: 33:08
+          Ian_O: 20:36
+          Matt_L: 27:18
+          Ryan_C: 34:23
+          Elliot_F: 31:07
+          Jay_H: 33:32
+          Adam_E: FIP8
+          Craig_J: 33:53
+      - notes: M2 - Late Start (Rain)
+        wind_bf: 2
+        offset_time: 5:00
+        times:
+          Heather_B: 39:07
+          Ian_O: 22:30
+          Matt_L: 28:33
+          Ryan_C: 32:10
+          Elliot_F: 34:48
+          Jay_H: 31:11
+          Adam_E: DNS
+          Craig_J: DNF

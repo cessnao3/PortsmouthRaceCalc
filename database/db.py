@@ -510,6 +510,8 @@ class MasterDatabase:
                                 race_finish = finishes.RaceFinishDNF(boat=boat, skipper=skipper)
                             elif input_finish_result == 'dsq':
                                 race_finish = finishes.RaceFinishDQ(boat=boat, skipper=skipper)
+                            elif input_finish_result == 'dns':
+                                race_finish = finishes.RaceFinishDNS(boat=boat, skipper=skipper)
                             elif input_finish_result[:3] == 'fip':
                                 race_finish = finishes.RaceFinishFIP(
                                     boat=boat,

@@ -33,6 +33,13 @@ class RaceFinishInterface:
         """
         raise NotImplementedError()
 
+    def started(self) -> bool:
+        """
+        Function to detemrine if a skipper is considered started for a race
+        :return: True if the race can be scored and the skipper started
+        """
+        return True
+
     def name(self) -> str:
         """
         The associated name for the race finish type
