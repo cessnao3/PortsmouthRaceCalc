@@ -17,10 +17,10 @@ race:
         time: '37:57'
       Dennis_S:
         boat: SF
-        time: FIP_5
+        time: FIP_4
       Larry_G:
         boat: SF
-        time: FIP_4
+        time: DNF
     wind: 2-3
   2:
     RC:
@@ -43,7 +43,7 @@ race:
         time: DNF
       Larry_G:
         boat: SF
-        time: '47:23'
+        time: DNF
     wind: 2-3
   3:
     RC:
