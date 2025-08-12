@@ -40,8 +40,8 @@ races:
         times:
           Bill_P: 40:32
           Chris_E: 41:50
-          Dennis_S: FIP5
-          Larry_G: FIP4
+          Dennis_S: FIP4
+          Larry_G: DNF
           Chris_Y: 43:57
       - notes: M2
         wind_bf: 2
@@ -50,7 +50,7 @@ races:
           Bill_P: 49:15
           Chris_E: 47:01
           Dennis_S: DNF
-          Larry_G: 53:23
+          Larry_G: DNF
           Chris_Y: 50:45
   - date: "2025_08_10"
     rc:
