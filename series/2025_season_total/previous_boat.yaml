@@ -23,6 +23,14 @@ boat:
       '4': 108.4
       5-9: 111.0
       D-PN: 111.0
+  LASE:
+    full_name: Laser (Int.)
+    hc_of_wind:
+      0-1: 93.7
+      2-3: 92.3
+      '4': 91.0
+      5-9: 88.2
+      D-PN: 91.1
   LASEM:
     full_name: Laser Radial/Laser M
     hc_of_wind:
