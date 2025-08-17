@@ -289,6 +289,44 @@ race:
     skip:
       Chris_E:
         boat: SF
+        time: '31:40'
+      Chris_P:
+        boat: SF
+        time: '40:58'
+      Craig_J:
+        boat: STFS
+        time: '40:02'
+      Heather_B:
+        boat: SF
+        time: '39:35'
+      Ian_O:
+        boat: US-1
+        time: '25:19'
+      Jay_H:
+        boat: SWSX
+        time: '38:04'
+      Larry_G:
+        boat: SF
+        time: '37:16'
+      Lewis_V:
+        boat: SF
+        time: '39:48'
+      Rod_H:
+        boat: LASEM
+        time: '28:21'
+      Ryan_C:
+        boat: PIRAT
+        time: '34:23'
+    wind: 2-3
+  20:
+    RC:
+    - Matt_L
+    - Adam_E
+    date: '2025_08_17'
+    notes: M3
+    skip:
+      Chris_E:
+        boat: SF
         time: '30:56'
       Chris_P:
         boat: SF
