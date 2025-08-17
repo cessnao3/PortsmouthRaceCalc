@@ -74,7 +74,7 @@ race:
         boat: F5
         time: '22:18'
       Ryan_C:
-        boat: PIRAT
+        boat: SF
         time: '29:23'
     wind: 2-3
   4:
@@ -103,7 +103,7 @@ race:
         boat: F5
         time: '23:33'
       Ryan_C:
-        boat: PIRAT
+        boat: SF
         time: '27:10'
     wind: 2-3
   5:
@@ -141,7 +141,7 @@ race:
         boat: LASEM
         time: '28:21'
       Ryan_C:
-        boat: PIRAT
+        boat: SF
         time: '34:23'
     wind: 2-3
   6:
@@ -179,6 +179,6 @@ race:
         boat: LASEM
         time: '30:47'
       Ryan_C:
-        boat: PIRAT
+        boat: SF
         time: '37:23'
     wind: 2-3
