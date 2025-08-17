@@ -280,3 +280,41 @@ race:
         boat: PIRAT
         time: '27:10'
     wind: 2-3
+  19:
+    RC:
+    - Matt_L
+    - Adam_E
+    date: '2025_08_17'
+    notes: M3
+    skip:
+      Chris_E:
+        boat: SF
+        time: '30:56'
+      Chris_P:
+        boat: SF
+        time: '37:20'
+      Craig_J:
+        boat: STFS
+        time: '41:11'
+      Heather_B:
+        boat: SF
+        time: '42:07'
+      Ian_O:
+        boat: US-1
+        time: '25:29'
+      Jay_H:
+        boat: SWSX
+        time: '31:17'
+      Larry_G:
+        boat: SF
+        time: DNF
+      Lewis_V:
+        boat: SF
+        time: DNF
+      Rod_H:
+        boat: LASEM
+        time: '30:47'
+      Ryan_C:
+        boat: PIRAT
+        time: '37:23'
+    wind: 2-3
