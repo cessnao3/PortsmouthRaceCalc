@@ -26,7 +26,7 @@ boats:
   Sofia: SF
   Larry_G: SF
   Chris_Y: SF
-  Elliot_F: SF
+  Elliott_F: SF
   Jay_H: SWSX
   Chris_P: SF
 races:
@@ -66,7 +66,7 @@ races:
           Ian_O: 20:36
           Matt_L: 27:18
           Ryan_C: 34:23
-          Elliot_F: 31:07
+          Elliott_F: 31:07
           Jay_H: 33:32
           Adam_E: FIP8
           Craig_J: 33:53
@@ -78,7 +78,7 @@ races:
           Ian_O: 22:30
           Matt_L: 28:33
           Ryan_C: 32:10
-          Elliot_F: 34:48
+          Elliott_F: 34:48
           Jay_H: 31:11
           Adam_E: DNS
           Craig_J: DNF
@@ -117,3 +117,36 @@ races:
           Ian_O: 25:29
           Jay_H: 31:17
           Rod_H: 30:47
+  - date: "2025_08_24"
+    rc:
+      - Lewis_V
+      - Barry_O
+    races:
+      - notes: M3
+        wind_bf: 2
+        boat_overrides:
+          Jay_H: LASE
+        times:
+          Chris_E: 25:00
+          Ryan_C: 33:51
+          Heather_B: 32:52
+          Adam_E: FIP9
+          Marcus_M: 37:50
+          Elliott_F: 37:28
+          Ian_O: 25:33
+          Matt_L: 26:40
+          Jay_H: 32:10
+      - notes: M3
+        wind_bf: 2
+        boat_overrides:
+          Jay_H: LASE
+        times:
+          Chris_E: 30:19
+          Ryan_C: 33:21
+          Heather_B: 30:43
+          Adam_E: 35:28
+          Marcus_M: 32:02
+          Elliott_F: 37:47
+          Ian_O: 24:21
+          Matt_L: 29:55
+          Jay_H: 30:07
